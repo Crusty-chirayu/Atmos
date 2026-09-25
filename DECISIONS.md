@@ -27,4 +27,7 @@ Record material decisions with date, status, rationale, and consequences. Do not
 | D-021 | Mobile-first adaptive PWA | Recommended default, accepted as current blueprint |
 | D-022 | Three.js client-only dynamic loading for 3D globe with procedural vector Earth texture and 2.5D CSS SVG fallback | Locked (M3) |
 | D-023 | In-memory sliding window rate limiting for public endpoints returning 429 and Retry-After headers | Locked (M3) |
+| D-024 | `@supabase/ssr` with Next.js 16 `src/proxy.ts` cookie session management, separating browser, server, and administrative tiers | Locked (M4) |
+| D-025 | PostgreSQL Row Level Security on `profiles`, `saved_locations`, and `user_preferences` with `anon` privileges revoked and server-derived identity enforcement | Locked (M4) |
+| D-026 | Non-blocking unconfigured Supabase fallback: missing Supabase credentials gracefully disable only account persistence without blocking anonymous weather exploration | Locked (M4) |
 

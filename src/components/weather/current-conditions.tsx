@@ -2,6 +2,7 @@ import React from "react";
 import { WeatherBundle } from "@/lib/weather/domain/weather";
 import { WeatherIcon } from "./weather-icon";
 import { formatLocalTime } from "@/lib/weather/utils/date-format";
+import { SaveLocationButton } from "./save-location-button";
 
 export interface CurrentConditionsProps {
   bundle: WeatherBundle;
@@ -141,6 +142,16 @@ export function CurrentConditions({
                   Cached
                 </span>
               )}
+              <SaveLocationButton
+                location={{
+                  name: location.name,
+                  latitude: location.latitude,
+                  longitude: location.longitude,
+                  countryCode: location.countryCode,
+                  country: location.country,
+                  adminArea: location.adminArea,
+                }}
+              />
             </div>
 
             <h1

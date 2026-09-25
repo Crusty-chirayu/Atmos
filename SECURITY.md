@@ -11,11 +11,13 @@ Protect account data, API credentials, user location history, AI conversations, 
 - Commit only `.env.example`; add actual env files to ignore rules.
 
 ## 3. Authentication and authorization
-- Use Supabase Auth with secure session handling compatible with Next.js.
-- Protect server routes and server actions with verified sessions and ownership checks.
-- RLS is mandatory for user-owned database records.
-- Enforce ownership in nested resources such as messages belonging to conversations.
-- Handle sign-out, expired sessions, account deletion, and revoked push subscriptions.
+- Implemented Supabase Auth with secure session handling via `@supabase/ssr` and Next.js 16 `src/proxy.ts`.
+- Server routes (`/api/user/*`) derive user identity strictly from verified server-side session cookies via `getAuthenticatedUser()`. Never trust client-supplied owner or user IDs.
+- Mandatory PostgreSQL Row Level Security (RLS) enabled on all user-owned tables (`profiles`, `saved_locations`, `user_preferences`), scoping operations to `auth.uid() = user_id` / `auth.uid() = id`.
+- Explicit revocation of table privileges from the `anon` database role, ensuring anonymous visitors cannot read or mutate private user records.
+- Open-redirect protection implemented in `validateRedirectTarget()` (`src/app/api/auth/callback/route.ts`), blocking absolute URLs, protocol-relative attacks (`//evil.com`), and Windows backslash tricks (`/\evil.com`).
+- Verified account deletion workflow (`DELETE /api/user/account`) enforcing cascading data deletion and privileged `auth.admin.deleteUser` execution via server-only service role credentials.
+- Graceful degradation: public weather queries (`/api/weather`, `/api/weather/geocoding`) operate independently and never require authentication or Supabase availability.
 
 ## 4. Input and API security
 - Validate and bound all query/body/path inputs using Zod schemas (`WeatherApiQuerySchema`, `GeocodingQuerySchema`).

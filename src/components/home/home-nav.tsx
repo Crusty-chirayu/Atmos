@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { UserMenu } from "@/components/auth/user-menu";
 
 export type HomeViewMode = "overview" | "globe" | "dashboard";
 
@@ -177,6 +178,9 @@ export function HomeNav({
             </svg>
           )}
         </button>
+
+        {/* User Account Menu */}
+        <UserMenu />
       </div>
     </header>
   );

@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { AuthProvider } from "@/lib/auth/auth-context";
 import "./globals.css";
 
 export const viewport: Viewport = {
@@ -91,13 +92,11 @@ export default function RootLayout({
           Skip to content
         </a>
 
-        {/*
-          ThemeProvider, Toaster, and analytics will be added in M1-T2
-          (auth/providers layer). Shell is intentionally minimal here.
-        */}
-        <main id="main-content" className="flex-1 flex flex-col">
-          {children}
-        </main>
+        <AuthProvider>
+          <main id="main-content" className="flex-1 flex flex-col">
+            {children}
+          </main>
+        </AuthProvider>
       </body>
     </html>
   );

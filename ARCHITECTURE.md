@@ -3,19 +3,20 @@
 ## 1. High-level request flow
 
 Browser / PWA
-→ Next.js application shell
+→ Next.js application shell (with AuthProvider state synchronization)
+→ Next.js 16 proxy / session refresh (`src/proxy.ts`)
 → authenticated or public server route/action
-→ domain service
-→ provider adapter (weather, geocoding, Gemini, map configuration, speech, push)
+→ domain service (locations-service, preferences-service, weather service)
+→ provider adapter (Open-Meteo, geocoding, future Gemini/speech/push)
 → normalized response with source, freshness, and error metadata
 → UI rendering and accessible feedback.
 
-Supabase stores user-owned records and application state. External provider secrets remain server-side.
+Supabase PostgreSQL with Row Level Security stores user-owned records (profiles, saved locations, preferences). External provider secrets remain strictly server-side.
 
 ## 2. Domain boundaries
-- Identity: Supabase Auth and server-side session validation.
-- Profile/preferences: theme, units, locale, timezone preference, alert preferences.
-- Location: geocoding, canonical coordinates, display name, timezone, saved-location ownership.
+- Identity: Supabase Auth, session refresh via Next.js 16 `src/proxy.ts`, server session extraction via `getAuthenticatedUser()`, and client-side subscription via `onAuthStateChange`.
+- Profile/preferences: `profiles`, `user_preferences` with optimistic UI updates, live server persistence, and fallback to local state for anonymous visitors.
+- Location: geocoding, canonical coordinates, display name, timezone, and user-scoped `saved_locations` with coordinate deduplication.
 - Weather: current, hourly, daily, historical, air quality and alerts when supported.
 - Visualization: presentation-only rendering driven by normalized weather domain data.
 - AI: prompt construction, context assembly, safety and quota enforcement, model adapter, response persistence.

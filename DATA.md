@@ -33,17 +33,13 @@ Use nullable fields for unavailable values. Never substitute zero for missing da
 - Surface stale data and last-updated time. Do not silently present stale cached values as current.
 - Avoid caching personalized or private AI responses in shared public caches.
 
-## 5. Suggested Supabase entities
-Design migrations and RLS for entities such as:
-- `profiles` — user-owned profile and preference fields.
-- `saved_locations` — owner ID, location coordinates, display name, ordering.
-- `ai_conversations` — owner ID, title, timestamps.
-- `ai_messages` — conversation ID, owner-scoped access, role, content, safe metadata.
-- `notification_preferences` — owner ID, location/rule preferences, quiet hours.
-- `notifications` — owner ID, type, payload, created/read timestamps, dedupe key.
-- `push_subscriptions` — owner ID, endpoint and encrypted/appropriately protected key material, created/last-used timestamps.
-
-This is a logical starting point, not a mandate to create every table immediately. Minimize personal data and define retention/deletion behavior.
+## 5. Supabase entities (M4 Implementation)
+Implemented in migration `supabase/migrations/20260926000000_m4_auth_and_user_data.sql`:
+- `profiles` — `id UUID REFERENCES auth.users(id) ON DELETE CASCADE`, `display_name`, `avatar_url`, `created_at`, `updated_at`.
+- `saved_locations` — `id UUID PRIMARY KEY`, `user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE`, normalized geocoding coordinates (`latitude NUMERIC(8,5)`, `longitude NUMERIC(8,5)`), `name`, `country`, `country_code`, `admin_area`, `timezone`, `provider_location_id`, `label`, `display_order`. Unique constraint `uq_saved_locations_user_coords` prevents duplicate coordinate saves per user.
+- `user_preferences` — `user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE`, `temperature_unit` ('celsius', 'fahrenheit'), `wind_speed_unit` ('kmh', 'mph', 'ms', 'knots'), `precipitation_unit` ('mm', 'inch'), `theme` ('dark', 'light', 'system'), `reduced_motion`, `default_location_id REFERENCES saved_locations(id) ON DELETE SET NULL`.
+- Automatic triggers: `set_updated_at()` for automatic timestamping; `handle_new_user()` `SECURITY DEFINER` function for idempotent bootstrap of profile and default preferences upon signup.
+- Additional roadmap entities (`ai_conversations`, `notifications`, `push_subscriptions`) remain planned for M6 and M7.
 
 ## 6. RLS and integrity
 - Enable RLS on every user-owned table.
