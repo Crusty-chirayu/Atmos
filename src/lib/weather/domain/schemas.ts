@@ -119,7 +119,9 @@ export const ForecastQueryOptionsSchema = CoordinatesSchema.extend({
 });
 
 export type ForecastQueryOptions = z.infer<typeof ForecastQueryOptionsSchema>;
-export type ForecastQueryOptionsInput = z.input<typeof ForecastQueryOptionsSchema>;
+export type ForecastQueryOptionsInput = z.input<
+  typeof ForecastQueryOptionsSchema
+>;
 
 /**
  * Options schema for querying historical weather.
