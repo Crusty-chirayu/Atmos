@@ -28,9 +28,7 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "ATMOS" }],
   creator: "ATMOS",
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_APP_URL ?? "https://atmos.app"
-  ),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "https://atmos.app"),
   openGraph: {
     type: "website",
     locale: "en_US",

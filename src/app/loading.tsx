@@ -41,7 +41,8 @@ export default function Loading() {
           <div
             style={{
               height: "100%",
-              background: "linear-gradient(90deg, transparent, #00d4ff, transparent)",
+              background:
+                "linear-gradient(90deg, transparent, #00d4ff, transparent)",
               animation: "atmos-shimmer 1.4s ease-in-out infinite",
             }}
           />
