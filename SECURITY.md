@@ -27,6 +27,7 @@ Protect account data, API credentials, user location history, AI conversations, 
     - `GET /api/weather/geocoding`: 100 requests/minute per client IP.
     - `GET /api/weather/historical`: 30 requests/minute per client IP (bounded to max 90 days query window, >= 1940).
     - `POST /api/weather/batch`: 30 requests/minute per client IP (bounded to 1..12 locations, maxConcurrency: 5).
+    - `POST /api/ai/chat`: 20 requests/minute per client IP (bounded to 1..1000 chars prompt length).
   - Safe client IP resolution with `x-forwarded-for`, `x-real-ip`, and `cf-connecting-ip` inspection.
   - Responses include `X-RateLimit-Limit`, `X-RateLimit-Remaining`, and `X-RateLimit-Reset` headers.
   - Exceeded quotas return HTTP 429 Too Many Requests with a `Retry-After` header and sanitized error payload.
@@ -45,12 +46,13 @@ Protect account data, API credentials, user location history, AI conversations, 
 - Do not sell user data or use private conversations for unrelated purposes.
 - Avoid sending unnecessary personal profile data to Gemini.
 
-## 6. AI-specific controls
-- Treat prompt injection as untrusted input.
-- Use server-owned system prompts and narrowly scoped tools.
-- Prevent cross-user retrieval and tool access.
-- Limit output size and tool-call count.
-- Test requests asking for secrets, unauthorized records, or unsupported emergency claims.
+## 6. AI-specific controls (M6 Implementation)
+- Treat prompt injection as untrusted input; user prompt text is kept separate from system instructions and authoritative meteorological telemetry baseline envelopes.
+- Server-side Gemini 2.0 REST adapter keeping `GEMINI_API_KEY` private to server execution (`process.env.GEMINI_API_KEY`); zero client bundle exposure.
+- Mandatory PostgreSQL Row Level Security (RLS) on `ai_conversations` and `ai_messages` with strict `auth.uid() = user_id` and anonymous access revoked.
+- Prevent cross-user retrieval: conversation CRUD operations (`/api/ai/conversations/*`) derive identity from server-verified session cookies.
+- Quota and timeout protection: 12-second bounded AbortSignal timeout and HTTP 429 quota handling.
+- Graceful unconfigured preview mode: when `GEMINI_API_KEY` is not present, returns structured preview responses rather than throwing errors.
 
 ## 7. Notification security
 - Validate push subscription payloads and protect subscription key material.

@@ -39,6 +39,8 @@ export const CanonicalUnits: UnitPreferences = {
   elevation: "m",
 } as const;
 
+export const MetricUnits = CanonicalUnits;
+
 export const ImperialUnits: UnitPreferences = {
   temperature: "fahrenheit",
   windSpeed: "mph",

@@ -18,7 +18,7 @@ Premium, cinematic, immersive, highly responsive, and usable. The interface shou
 5. Maps & Overlays: 2D Web Mercator slippy tile map with live RainViewer Doppler radar overlay and Three.js 3D globe toggle; accessible non-map summaries.
 6. Historical Weather Explorer: ECMWF ERA5 reanalysis interface with statistical cards (mean temp, record high/low, total precipitation, max gust) and provenance disclosures.
 7. Multi-City Overview: live condition cards for saved locations or global metropolises with 1-click jump and bookmark toggles.
-8. AI: floating assistant entry point and dedicated workspace.
+8. AI: ambient floating assistant (`FloatingAiAssistant`) with speech synthesis playback, and full-screen conversational workspace (`/ai`, `AiWorkspace`) featuring multi-turn threads, Grounded Q&A, Trip Planner, City Compare modes, and microphone dictation.
 9. Alerts and settings.
 
 Do not force every metric into the first viewport. Use progressive disclosure and purposeful transitions.

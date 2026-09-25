@@ -93,6 +93,18 @@ Gate: provider provenance, units, timezone, loading/error/stale states, WebGL fa
 ### M6 — Gemini AI platform
 Tasks: server-side Gemini adapter, weather-grounded chat, floating assistant, dedicated workspace, conversation persistence, quotas, voice integration, trip planning.
 Gate: grounding, prompt injection, rate limits, provider failures, and fabricated-data tests pass.
+- **M6-T1 (Gemini AI Platform & Meteorological Grounding Engine)**: ✅ Verified Complete (2026-09-26).
+  - Server-side Gemini 2.0 REST adapter (`src/lib/ai/providers/gemini/adapter.ts`) querying `gemini-2.0-flash` with 12s bounded timeout, AbortSignal support, and zero client credential leakage (`process.env.GEMINI_API_KEY`).
+  - Meteorological grounding engine (`src/lib/ai/context/grounding.ts`) converting real-time Open-Meteo telemetry into a structured `WeatherGroundingSnapshot` (current telemetry, 24h hourly curve, 7d outlook, WMO labels, and data quality notes) injected alongside anti-hallucination system instructions.
+  - Rate limiting via in-memory `SlidingWindowRateLimiter` (20 req/min) on `POST /api/ai/chat` with IP extraction.
+  - Multi-turn conversation persistence in Supabase (`supabase/migrations/20260926010000_m6_ai_conversations.sql`) with tables `ai_conversations` and `ai_messages`, cascading deletes, timestamp triggers, and strict RLS (`auth.uid() = user_id`) with anonymous access revoked.
+  - Full-screen conversational AI workspace (`/ai`, `src/components/ai/ai-workspace.tsx`) featuring 3 intelligence modes (Grounded Q&A, Trip Planner, City Compare), sidebar conversation threads, custom location selector, and markdown rendering.
+  - Ambient floating assistant (`FloatingAiAssistant`) mounted in root layout with quick prompt chips, audio narration, and location synchronization.
+  - Zero-dependency voice I/O (`src/components/ai/voice-controls.tsx`) integrating browser Web Speech API (`SpeechRecognition` for microphone dictation; `SpeechSynthesis` for audio response narration) with React 19 / Next.js 16 `useSyncExternalStore` hydration safety.
+  - Added 21 new automated tests (272 total tests passing across 85 suites).
+  - Turbopack production build verified, 0 TypeScript errors, 0 ESLint warnings, 100% Prettier compliance. Developer documentation in `docs/GEMINI_AI_PLATFORM.md`.
+- **M6 Gate Status**: ✅ PASSED. Meteorological grounding, prompt isolation, rate limits, quota and unconfigured fallback, Supabase RLS thread persistence, voice I/O, and Next.js 16 build green.
+- **Recommended Next Milestone**: **M7 — Notification system** (user-configurable alerts, threshold rules, in-app notification center, browser push).
 
 ### M7 — Notification system
 Tasks: preference UI, alert rules, scheduled processing, in-app inbox, browser push subscription lifecycle, deduplication, quiet hours, unsubscribe.

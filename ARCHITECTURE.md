@@ -19,7 +19,7 @@ Supabase PostgreSQL with Row Level Security stores user-owned records (profiles,
 - Location: geocoding, canonical coordinates, display name, timezone, and user-scoped `saved_locations` with coordinate deduplication.
 - Weather: current, hourly, daily, historical reanalysis (ECMWF ERA5 via `/api/weather/historical`), and batch multi-location fetching via `/api/weather/batch` with worker pool concurrency limiting.
 - Visualization: presentation-only rendering driven by normalized weather domain data: responsive vector SVG charts (temperature splines, dual-axis precipitation, wind velocity vectors, barometric pressure), 2D Web Mercator slippy tile maps (CartoDB tiles + live RainViewer radar overlay), and 3D Three.js planetary globe.
-- AI: prompt construction, context assembly, safety and quota enforcement, model adapter, response persistence.
+- AI: server-side Gemini 2.0 REST adapter (`gemini-2.0-flash`), meteorological grounding engine (`WeatherGroundingSnapshot` synthesizing real-time Open-Meteo telemetry), sliding window rate limiting (20 req/min), anti-hallucination system instructions, multi-turn thread persistence in Supabase (`ai_conversations`, `ai_messages`) with strict RLS (`auth.uid() = user_id`), Web Speech API voice synthesis and speech recognition, and unconfigured preview fallback.
 - Notifications: alert evaluation, deduplication, delivery, subscription management, user preferences.
 - Observability: sanitized logs, metrics, provider latency/errors, quota events.
 

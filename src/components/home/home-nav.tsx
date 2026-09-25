@@ -7,16 +7,16 @@ import { UserMenu } from "@/components/auth/user-menu";
 export type HomeViewMode = "overview" | "globe" | "dashboard";
 
 export interface HomeNavProps {
-  viewMode: HomeViewMode;
-  onViewModeChange: (mode: HomeViewMode) => void;
-  units: "metric" | "imperial";
-  onToggleUnits: () => void;
+  viewMode?: HomeViewMode;
+  onViewModeChange?: (mode: HomeViewMode) => void;
+  units?: "metric" | "imperial";
+  onToggleUnits?: () => void;
 }
 
 export function HomeNav({
   viewMode,
   onViewModeChange,
-  units,
+  units = "metric",
   onToggleUnits,
 }: HomeNavProps) {
   const [currentTheme, setCurrentTheme] = useState<"dark" | "light">(() => {
@@ -59,7 +59,7 @@ export function HomeNav({
               border: "1px solid rgb(0 212 255 / 0.25)",
             }}
           >
-            v0.5 · M5
+            v0.6 · M6
           </span>
         </Link>
 
@@ -70,6 +70,15 @@ export function HomeNav({
         >
           <span>Dashboard</span>
           <span aria-hidden="true">→</span>
+        </Link>
+
+        {/* AI Workspace Quick Link */}
+        <Link
+          href="/ai"
+          className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-xl glass text-xs font-semibold text-accent-400 hover:bg-accent-500/10 transition-colors border border-accent-500/20"
+        >
+          <span className="w-1.5 h-1.5 rounded-full bg-accent-400 animate-pulse" />
+          <span>AI Intelligence</span>
         </Link>
 
         {/* Engine status indicator */}
@@ -97,7 +106,7 @@ export function HomeNav({
             type="button"
             role="tab"
             aria-selected={viewMode === "overview"}
-            onClick={() => onViewModeChange("overview")}
+            onClick={() => onViewModeChange?.("overview")}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
               viewMode === "overview"
                 ? "bg-accent-500 text-atmos-950 font-semibold shadow-sm"
@@ -110,7 +119,7 @@ export function HomeNav({
             type="button"
             role="tab"
             aria-selected={viewMode === "globe"}
-            onClick={() => onViewModeChange("globe")}
+            onClick={() => onViewModeChange?.("globe")}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
               viewMode === "globe"
                 ? "bg-accent-500 text-atmos-950 font-semibold shadow-sm"
@@ -123,7 +132,7 @@ export function HomeNav({
             type="button"
             role="tab"
             aria-selected={viewMode === "dashboard"}
-            onClick={() => onViewModeChange("dashboard")}
+            onClick={() => onViewModeChange?.("dashboard")}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
               viewMode === "dashboard"
                 ? "bg-accent-500 text-atmos-950 font-semibold shadow-sm"

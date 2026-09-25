@@ -33,4 +33,6 @@ Record material decisions with date, status, rationale, and consequences. Do not
 | D-027 | Zero-dependency bespoke SVG vector weather charts instead of external charting packages (chart.js/recharts), minimizing bundle size, eliminating SSR hydration mismatches, and matching ATMOS design tokens | Locked (M5) |
 | D-028 | 2D Slippy Map with CartoDB Dark Matter / Positron tiles and live RainViewer Doppler precipitation radar layer with dynamic frame lookup and honest provenance notices | Locked (M5) |
 | D-029 | Bounded concurrency worker pool (maxConcurrency: 5) and error isolation for batch weather endpoint (`POST /api/weather/batch`), preventing upstream request bursts and isolating partial location failures | Locked (M5) |
-
+| D-030 | Server-side Gemini 2.0 REST adapter (`gemini-2.0-flash`) with mandatory meteorological grounding via `WeatherGroundingSnapshot` and anti-hallucination system instructions | Locked (M6) |
+| D-031 | Native Web Speech API integration (`SpeechRecognition` & `SpeechSynthesis`) for zero-dependency hands-free voice I/O, audio narration, and graceful browser capability degradation | Locked (M6) |
+| D-032 | Multi-turn AI conversation persistence in Supabase (`ai_conversations`, `ai_messages`) with strict RLS (`auth.uid() = user_id`) and non-blocking unconfigured preview mode | Locked (M6) |

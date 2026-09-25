@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { AuthProvider } from "@/lib/auth/auth-context";
+import { FloatingAiAssistant } from "@/components/ai/floating-ai-assistant";
 import "./globals.css";
 
 export const viewport: Viewport = {
@@ -96,6 +97,7 @@ export default function RootLayout({
           <main id="main-content" className="flex-1 flex flex-col">
             {children}
           </main>
+          <FloatingAiAssistant />
         </AuthProvider>
       </body>
     </html>

@@ -40,7 +40,10 @@ Implemented in migration `supabase/migrations/20260926000000_m4_auth_and_user_da
 - `saved_locations` — `id UUID PRIMARY KEY`, `user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE`, normalized geocoding coordinates (`latitude NUMERIC(8,5)`, `longitude NUMERIC(8,5)`), `name`, `country`, `country_code`, `admin_area`, `timezone`, `provider_location_id`, `label`, `display_order`. Unique constraint `uq_saved_locations_user_coords` prevents duplicate coordinate saves per user.
 - `user_preferences` — `user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE`, `temperature_unit` ('celsius', 'fahrenheit'), `wind_speed_unit` ('kmh', 'mph', 'ms', 'knots'), `precipitation_unit` ('mm', 'inch'), `theme` ('dark', 'light', 'system'), `reduced_motion`, `default_location_id REFERENCES saved_locations(id) ON DELETE SET NULL`.
 - Automatic triggers: `set_updated_at()` for automatic timestamping; `handle_new_user()` `SECURITY DEFINER` function for idempotent bootstrap of profile and default preferences upon signup.
-- Additional roadmap entities (`ai_conversations`, `notifications`, `push_subscriptions`) remain planned for M6 and M7.
+- Additional entities implemented in M6 migration `supabase/migrations/20260926010000_m6_ai_conversations.sql`:
+  - `ai_conversations` — `id UUID PRIMARY KEY`, `user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE`, `title TEXT`, `location_name TEXT`, `latitude NUMERIC(8,5)`, `longitude NUMERIC(8,5)`, `created_at`, `updated_at`. RLS enforces `auth.uid() = user_id`.
+  - `ai_messages` — `id UUID PRIMARY KEY`, `conversation_id UUID REFERENCES ai_conversations(id) ON DELETE CASCADE`, `user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE`, `role TEXT` ('user' | 'assistant' | 'system'), `content TEXT`, `grounding_snapshot JSONB`, `model_name TEXT`, `tokens_used INT`, `created_at`.
+- Roadmap entities (`notifications`, `push_subscriptions`) remain planned for M7.
 
 ## 6. RLS and integrity
 - Enable RLS on every user-owned table.

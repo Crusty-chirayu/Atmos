@@ -48,5 +48,10 @@ If required data is unavailable, the assistant must say so and offer a supported
 ## 7. Honest UX
 - Mark AI-generated interpretations as AI insights.
 - Show the relevant weather data timestamp/source when claims depend on live data.
-- State when data is stale, incomplete, or beyond a reliable forecast horizon.
-- Never frame the platform as a substitute for official emergency alerts or professional advice.
+## 8. Implementation Status (M6)
+- **Adapter**: `src/lib/ai/providers/gemini/adapter.ts` (`gemini-2.0-flash`, REST API, 12s timeout, AbortSignal, HTTP 429 quota handling, unconfigured preview mode).
+- **Grounding Engine**: `src/lib/ai/context/grounding.ts` (`WeatherGroundingSnapshot` synthesizing Open-Meteo current telemetry, 24h hourly curve, and 7d outlook).
+- **Persistence**: `supabase/migrations/20260926010000_m6_ai_conversations.sql` (`ai_conversations`, `ai_messages` with strict RLS and user isolation).
+- **UI Surfaces**: Full-screen workspace (`/ai`, `AiWorkspace`) with Q&A, Trip Planner, and City Compare modes; ambient floating assistant (`FloatingAiAssistant`).
+- **Voice Controls**: Zero-dependency native Web Speech API (`SpeechRecognition` + `SpeechSynthesis` in `voice-controls.tsx`).
+- **Documentation**: Detailed guide in `docs/GEMINI_AI_PLATFORM.md`.

@@ -68,16 +68,30 @@ For each run record:
 - Follow-up issue and owner.
 
 ## 8. M5 Verified Test Evidence Log (2026-09-26)
-- **Commit**: In progress (`feat(M5): weather dashboard and visualization`)
+- **Commit**: `da607a3` (`feat(M5): weather dashboard and visualization`)
 - **Node & Next.js**: Node 20+, Next.js 16.3.6 (Turbopack), React 19.2.8
 - **Commands Executed**:
   1. `npm test` — **251 passed**, 0 failed, 80 suites (duration ~3.1s).
-     - Includes 25 new M5 unit & integration tests covering historical query boundaries, batch location schemas, service concurrency, route status codes, and error isolation.
   2. `npm run typecheck` — **0 errors** (`tsc --noEmit`).
   3. `npm run lint` — **0 errors, 0 warnings** (`eslint src/`).
   4. `npm run format:check` — **All matched files use Prettier code style**.
   5. `npm run build` — **Production build exit 0** (Turbopack compiled routes `/`, `/dashboard`, `/account`, `/login`, `/signup`, `/api/weather/historical`, `/api/weather/batch`, etc.).
+
+## 9. M6 Verified Test Evidence Log (2026-09-26)
+- **Commit**: In progress (`feat(M6): Gemini AI platform, weather grounding, and conversational workspace`)
+- **Node & Next.js**: Node 20+, Next.js 16.3.6 (Turbopack), React 19.2.8
+- **Commands Executed**:
+  1. `npm test` — **272 passed**, 0 failed, 85 suites (duration ~3.4s).
+     - Includes 21 new M6 unit & integration tests:
+       - `tests/unit/ai-chat-schema.test.ts` (6 tests): Payload limits, coordinate validation, mode parsing.
+       - `tests/unit/gemini-adapter.test.ts` (4 tests): Adapter REST call creation, timeout handling, unconfigured fallback mode.
+       - `tests/unit/grounding-snapshot.test.ts` (3 tests): Grounding synthesis from Open-Meteo bundle, hourly/daily slicing.
+       - `tests/integration/ai-chat-route.test.ts` (4 tests): Rate limiting (20 req/min), anonymous vs authenticated flow, telemetry injection.
+       - `tests/integration/ai-conversations-routes.test.ts` (4 tests): Authenticated CRUD, 401 rejection, thread deletion.
+  2. `npm run typecheck` — **0 errors** (`tsc --noEmit`).
+  3. `npm run lint` — **0 errors, 0 warnings** (`eslint src/`).
+  4. `npm run format:check` — **All matched files use Prettier code style**.
+  5. `npm run build` — **Production build exit 0** (Turbopack compiled all routes including `/ai`, `/api/ai/chat`, `/api/ai/conversations`, `/api/ai/conversations/[id]`).
 - **Environment Limitations**:
-  - Open-Meteo, RainViewer radar, and CartoDB tile URLs are accessed via HTTP/S without requiring paid API keys.
-  - End-to-end browser tests run in mock mode when live Supabase or private network access is not configured.
+  - Live Gemini API requests require `GEMINI_API_KEY` in environment; when absent, the system operates in verified preview mode without throwing errors.
 

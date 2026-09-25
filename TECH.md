@@ -5,7 +5,8 @@
 - Vercel for application hosting and supported scheduled workloads.
 - Supabase PostgreSQL, Auth, and Row Level Security.
 - Open-Meteo as initial primary weather API behind a provider-neutral interface.
-- Google Gemini API called only from trusted server-side code.
+- Google Gemini API (Gemini 2.0 Flash) called only from trusted server-side code with meteorological telemetry grounding.
+- Voice I/O: Native browser Web Speech API (`SpeechRecognition` and `SpeechSynthesis`) for zero-dependency hands-free input and audio playback.
 - Motion for React transitions and interactions.
 - Three.js with React Three Fiber for 3D scenes and globe layers; procedural vector fallback for non-WebGL devices.
 - GSAP for coordinated timelines and scroll-driven sequences where appropriate.
