@@ -148,3 +148,45 @@ export type HistoricalQueryOptions = z.infer<
 export type HistoricalQueryOptionsInput = z.input<
   typeof HistoricalQueryOptionsSchema
 >;
+
+/**
+ * Schema for validating incoming HTTP request query parameters to the Weather API route.
+ * Handles string-to-number/boolean conversions safely.
+ */
+export const WeatherApiQuerySchema = z.object({
+  lat: z.preprocess(
+    (val) =>
+      val === null || val === undefined || val === "" ? NaN : Number(val),
+    z
+      .number()
+      .min(-90, "Latitude must be >= -90")
+      .max(90, "Latitude must be <= 90")
+  ),
+  lon: z.preprocess(
+    (val) =>
+      val === null || val === undefined || val === "" ? NaN : Number(val),
+    z
+      .number()
+      .min(-180, "Longitude must be >= -180")
+      .max(180, "Longitude must be <= 180")
+  ),
+  name: z.string().max(200).optional().default("Selected Location"),
+  country: z.string().max(100).optional(),
+  countryCode: z.string().length(2).toUpperCase().optional(),
+  adminArea: z.string().max(100).optional(),
+  timezone: z.string().max(100).default("auto"),
+  forecastDays: z.coerce
+    .number()
+    .int()
+    .min(1, "Forecast days must be at least 1")
+    .max(16, "Forecast days cannot exceed 16")
+    .default(7),
+  units: z.enum(["metric", "imperial", "canonical"]).default("metric"),
+  bypassCache: z
+    .enum(["true", "false"])
+    .optional()
+    .transform((val) => val === "true"),
+});
+
+export type WeatherApiQuery = z.infer<typeof WeatherApiQuerySchema>;
+export type WeatherApiQueryInput = z.input<typeof WeatherApiQuerySchema>;

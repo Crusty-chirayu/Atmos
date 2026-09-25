@@ -36,6 +36,32 @@ The selected direction is authoritative unless explicitly changed by the project
 
 Never display fabricated weather, pretend a failed API call succeeded, or represent a mock as live data. Clearly label demo fixtures, stale/cached results, forecast horizons, and provider limitations. Every visible control must work or be clearly disabled/labeled as coming later.
 
+## Implementation Status
+
+- **M0 (Repository & Specification Audit)**: ✅ Complete (`docs/BASELINE_AUDIT.md`)
+- **M1-T1 (Framework Scaffold & Design System)**: ✅ Complete (Next.js 16 App Router, React 19, Tailwind CSS v4, dark-first tokens)
+- **M2-T1 (Weather Provider Foundation)**: ✅ Complete (Open-Meteo adapter, unit normalization, in-memory TTL caching, deduplication, `docs/WEATHER_ENGINE.md`)
+- **M2-T2 (Geocoding & Location Search)**: ✅ Complete (Search API `/api/weather/geocoding`, relevance ranking, coordinate deduplication, accessible combobox UI, `docs/GEOCODING.md`)
+- **M2-T3 (Weather Query API & Interactive Dashboard Core)**: ✅ Complete (`GET /api/weather`, hero current conditions, 24-hr hourly timeline, 7-day outlook with range gradient bars, deep meteorological telemetry, timezone-aware formatting, dynamic °C/°F unit switching)
+
+### Verification & Quality Gates
+
+```bash
+# Run complete test suite (155 passing unit and integration tests)
+npm test
+
+# Static type analysis
+npm run typecheck
+
+# Code formatting and linting
+npm run lint
+npm run format:check
+
+# Production build
+npm run build
+```
+
 ## How to use this blueprint
 
 Antigravity should read the entire specification set before making architectural changes. Implement in milestone order. Keep `PLAN.md` and the decision log updated as work progresses. Do not mark a milestone complete until its acceptance criteria and tests pass.
+

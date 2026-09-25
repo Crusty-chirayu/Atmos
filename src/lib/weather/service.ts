@@ -242,7 +242,15 @@ export class WeatherService {
    * Convenience bundle containing current weather, hourly forecast, and daily forecast.
    */
   async getWeatherBundle(
-    locationName: string,
+    locationInput:
+      | string
+      | {
+          name: string;
+          country?: string;
+          countryCode?: string;
+          adminArea?: string;
+          id?: string;
+        },
     coords: Coordinates,
     options: ServiceExecutionOptions & {
       timezone?: string;
@@ -250,6 +258,11 @@ export class WeatherService {
     } = {}
   ): Promise<WeatherBundle> {
     const norm = normalizeCoordinates(coords);
+    const locationObj =
+      typeof locationInput === "string"
+        ? { name: locationInput }
+        : locationInput;
+
     const forecast = await this.getForecast(
       {
         latitude: norm.latitude,
@@ -272,7 +285,11 @@ export class WeatherService {
 
     return {
       location: {
-        name: locationName,
+        id: locationObj.id,
+        name: locationObj.name,
+        country: locationObj.country,
+        countryCode: locationObj.countryCode,
+        adminArea: locationObj.adminArea,
         latitude: norm.latitude,
         longitude: norm.longitude,
         timezone: forecast.meta.timezone,

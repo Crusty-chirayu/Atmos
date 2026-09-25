@@ -164,3 +164,122 @@ const weather = await weatherService.getCurrentWeather(coords, {
   providerId: "alternate-provider",
 });
 ```
+
+---
+
+## 8. Weather Route Handler (`GET /api/weather`)
+
+The Next.js App Router endpoint [`src/app/api/weather/route.ts`](file:///E:/projects/Atmos/src/app/api/weather/route.ts) exposes full weather forecast bundles for client UI and external integrations.
+
+### Query Parameters
+
+| Parameter | Type | Required | Default | Description |
+|---|---|---|---|---|
+| `lat` | `number` | **Yes** | — | Latitude (-90 to 90) |
+| `lon` | `number` | **Yes** | — | Longitude (-180 to 180) |
+| `name` | `string` | No | `Custom Location` | Human-readable location name |
+| `country` | `string` | No | — | Country name |
+| `countryCode` | `string` | No | — | 2-letter ISO country code |
+| `adminArea` | `string` | No | — | State / province / administrative region |
+| `locationId` | `number` | No | — | Upstream unique location identifier |
+| `units` | `string` | No | `"metric"` | Presentation units: `"metric"` (°C, km/h, mm) or `"imperial"` (°F, mph, in) |
+| `timezone` | `string` | No | `"auto"` | IANA timezone string (e.g., `"America/New_York"`, `"Europe/London"`) |
+| `forecastDays` | `number` | No | `7` | Forecast horizon in days (1 to 16) |
+| `nocache` | `boolean` | No | `false` | When `true`, bypasses the in-memory cache |
+
+### Response Contract (`WeatherBundle`)
+
+```json
+{
+  "location": {
+    "latitude": 51.5074,
+    "longitude": -0.1278,
+    "name": "London",
+    "country": "United Kingdom",
+    "countryCode": "GB",
+    "adminArea": "Greater London",
+    "timezone": "Europe/London"
+  },
+  "current": {
+    "temperature": 15.2,
+    "apparentTemperature": 14.8,
+    "relativeHumidity": 72,
+    "precipitation": 0.0,
+    "weatherCode": 1,
+    "condition": "Mainly clear",
+    "isDay": true,
+    "windSpeed": 14.5,
+    "windDirection": 220,
+    "pressureMsl": 1014.2,
+    "uvIndex": 3.4,
+    "timestamp": "2026-09-25T14:00:00Z"
+  },
+  "hourly": [ ... ],
+  "daily": [ ... ],
+  "units": {
+    "temperature": "°C",
+    "windSpeed": "km/h",
+    "precipitation": "mm",
+    "pressure": "hPa",
+    "visibility": "km",
+    "elevation": "m"
+  },
+  "meta": {
+    "provider": "open-meteo",
+    "retrievedAt": "2026-09-25T14:05:12.345Z",
+    "cached": true,
+    "stale": false
+  }
+}
+```
+
+### HTTP Caching & Edge Optimization
+- Responses return `Cache-Control: public, s-maxage=600, stale-while-revalidate=1800` for CDN and Edge caching.
+- Stale background revalidation ensures instant client responses with up-to-date meteorological observations.
+
+---
+
+## 9. Timezone-Aware Localization
+
+Weather telemetry must always be displayed in the target location's native local timezone rather than the user's browser timezone.
+
+[`src/lib/weather/utils/date-format.ts`](file:///E:/projects/Atmos/src/lib/weather/utils/date-format.ts) provides robust `Intl.DateTimeFormat` wrappers:
+- `formatLocalTime(isoString, timezone)`: Formats hours and minutes (e.g. `2:30 PM`).
+- `formatLocalDate(isoString, timezone)`: Formats weekday and calendar date (e.g. `Thursday, Sep 25`).
+- `formatHourlyTime(isoString, timezone)`: Compact hour display for timeline bars (e.g. `2 PM`).
+- `formatWeekday(isoString, timezone)`: Short day names with relative "Today" awareness.
+
+---
+
+## 10. Dashboard Component Architecture
+
+The ATMOS weather dashboard (`src/components/weather/`) is built with React 19 and Tailwind CSS v4 design tokens, adhering to the cinematic, dark-first visual direction:
+
+```
+[ WeatherDashboard ] (Client coordinator, units toggle, SWR fetch)
+  │
+  ├── [ LocationSearch ] (Combobox from M2-T2)
+  │
+  ├── [ WeatherSkeleton ] (Zero-CLS animated skeleton while loading)
+  │
+  ├── [ CurrentConditions ] (Hero card: temperature, high/low, WMO icon, wind/pressure)
+  │
+  ├── [ HourlyForecast ] (24-hour horizontal scroll timeline with precipitation bars)
+  │
+  ├── [ DailyForecast ] (7-day cards with min/max range gradient indicators)
+  │
+  ├── [ WeatherMetrics ] (4-card deep telemetry: Wind Dynamics, Pressure, Moisture, Celestial)
+  │
+  └── Provenance Footer (Data source attribution, timestamp, coordinates)
+```
+
+### Key Components
+
+- **[`WeatherDashboard`](file:///E:/projects/Atmos/src/components/weather/weather-dashboard.tsx)**: Coordinates location selection, unit preference state (`metric` vs `imperial`), asynchronous fetching with `AbortController` cancellation for stale requests, and error boundary recovery.
+- **[`CurrentConditions`](file:///E:/projects/Atmos/src/components/weather/current-conditions.tsx)**: Hero presentation displaying current condition, apparent temperature ("feels like"), daylight-aware icon, UV index severity pill, wind direction with compass degree, and humidity.
+- **[`HourlyForecast`](file:///E:/projects/Atmos/src/components/weather/hourly-forecast.tsx)**: Smooth horizontal scrollable 24-hour projection with condition icons, temperature progression, and rain chance percentages.
+- **[`DailyForecast`](file:///E:/projects/Atmos/src/components/weather/daily-forecast.tsx)**: 7-day outlook with relative temperature range bars visualising the min/max variance against the 7-day global temperature spread.
+- **[`WeatherMetrics`](file:///E:/projects/Atmos/src/components/weather/weather-metrics.tsx)**: Detailed meteorological metrics covering Wind Dynamics & Gusts, Barometric MSL Pressure, Precipitation & Humidity, and Sunrise/Sunset Solar Cycle.
+- **[`WeatherIcon`](file:///E:/projects/Atmos/src/components/weather/weather-icon.tsx)**: Accessible, responsive SVG iconography for all standard WMO weather codes, dynamically adjusting for daytime and nighttime conditions.
+- **[`WeatherSkeleton`](file:///E:/projects/Atmos/src/components/weather/weather-skeleton.tsx)**: Layout-matched placeholder ensuring zero Cumulative Layout Shift (CLS = 0) during network fetches.
+
