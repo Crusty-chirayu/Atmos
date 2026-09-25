@@ -29,3 +29,24 @@ export * from "./cache/cache";
 
 // Service layer orchestrator
 export * from "./service";
+
+// Geocoding capabilities
+export type {
+  GeocodingLocation,
+  GeocodingSearchResult,
+  GeocodingQuery,
+  GeocodingQueryInput,
+  GeocodingProvider,
+  GeocodingProviderCapabilities,
+  GeocodingServiceOptions,
+} from "../geocoding";
+export {
+  GeocodingQuerySchema,
+  GeocodingLocationSchema,
+  formatLocationLabel,
+  GeocodingProviderRegistry,
+  getGeocodingProviderRegistry,
+  OpenMeteoGeocodingAdapter,
+  GeocodingService,
+  getGeocodingService,
+} from "../geocoding";
