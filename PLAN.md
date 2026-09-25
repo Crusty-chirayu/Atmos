@@ -51,6 +51,8 @@ Gate: no implementation assumptions remain undocumented; existing work is preser
 ### M1 — Foundation and design system
 Tasks: establish app shell, route groups, typography, color tokens, spacing, responsive primitives, theme switching, motion utilities, error boundaries, and quality tooling.
 Gate: app builds; light/dark themes work; reduced motion works; keyboard navigation and mobile shell are verified.
+- **M1-T1 (Framework Scaffold)**: ✅ Verified Complete (2026-09-25). Next.js 16.3.6 (App Router), React 19.2.8, TypeScript 5, Tailwind CSS v4 (@tailwindcss/postcss), ESLint 9, Prettier. Dark-first design system tokens, atmospheric layout, loading state, error boundary, 404 handler, and fail-closed env validation configured. All quality gates passed (tsc --noEmit: 0 errors; eslint: 0 errors; next build: exit 0).
+- **Blockers / Next**: None for M1 foundation. Supabase URL/keys and Gemini API key required for later milestones (M4/M6).
 
 ### M2 — Weather provider and location core
 Tasks: typed provider interfaces, Open-Meteo primary adapter, caching, normalized units, geocoding/search, freshness metadata, error and fallback handling.
