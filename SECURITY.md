@@ -18,13 +18,20 @@ Protect account data, API credentials, user location history, AI conversations, 
 - Handle sign-out, expired sessions, account deletion, and revoked push subscriptions.
 
 ## 4. Input and API security
-- Validate and bound all query/body/path inputs.
-- Add rate limits to geocoding, weather proxy, AI, voice, and subscription endpoints.
+- Validate and bound all query/body/path inputs using Zod schemas (`WeatherApiQuerySchema`, `GeocodingQuerySchema`).
+- Add rate limits to geocoding, weather proxy, AI, voice, and subscription endpoints:
+  - Implemented `SlidingWindowRateLimiter` (`src/lib/security/rate-limit.ts`) protecting public endpoints:
+    - `GET /api/weather`: 60 requests/minute per client IP.
+    - `GET /api/weather/geocoding`: 100 requests/minute per client IP.
+  - Safe client IP resolution with `x-forwarded-for`, `x-real-ip`, and `cf-connecting-ip` inspection.
+  - Responses include `X-RateLimit-Limit`, `X-RateLimit-Remaining`, and `X-RateLimit-Reset` headers.
+  - Exceeded quotas return HTTP 429 Too Many Requests with a `Retry-After` header and sanitized error payload.
 - Apply request timeouts, body-size limits, and bounded retries.
 - Use CSRF protections appropriate to the authentication/session mechanism.
 - Set secure headers and an appropriate Content Security Policy, accounting for map tiles and WebGL assets.
 - Restrict CORS to known origins where cross-origin APIs exist.
 - Return sanitized errors without stack traces or provider internals.
+
 
 ## 5. Privacy
 - Explain why location, microphone, and notification permissions are requested.

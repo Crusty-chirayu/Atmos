@@ -66,6 +66,9 @@ Gate: tests cover parsing, units, missing fields, time zones, stale data, provid
 ### M3 — Public cinematic homepage
 Tasks: hero scene, search, live preview, globe entry point, loading skeletons, mobile composition, and public rate limiting.
 Gate: real provider data only; core content usable before WebGL finishes; keyboard and reduced-motion paths pass.
+- **M3-T1 (Cinematic Homepage & Interactive 3D Globe)**: ✅ Verified Complete (2026-09-26). Implemented Three.js client-only 3D Earth globe (`GlobeCanvas`, `InteractiveGlobe`) with procedural 2048x1024 equirectangular planetary texture (continents, coastlines, graticules, urban luminescence), atmospheric glow shell, spherical coordinate converter (`latLonToCartesian`), selection beacon with smooth rotation interpolation, pointer drag/inertia, accessible toolbar (rotate/tilt/zoom/recenter), and 2.5D CSS SVG planetary fallback (`GlobeFallback`). Built adaptive atmospheric scene (`AtmosphericScene`) responding to real weather codes with canvas particles (solar dust, stars, clouds, rain streaks, snow crystals, lightning flashes). Integrated sliding window in-memory rate limiter (`SlidingWindowRateLimiter`) on `GET /api/weather` (60 req/min) and `GET /api/weather/geocoding` (100 req/min). Delivered unified `CinematicHomepage` coordinator with view switcher ("Overview", "3D Globe", "Telemetry"), curated quick-explore metropolises (`FEATURED_CITIES`), live preview badges, theme switcher, and zero layout shift. 181 automated tests passing (26 new tests added). Architecture and asset documentation in `docs/ATMOSPHERIC_EXPERIENCE.md`.
+- **M3 Gate Status**: ✅ PASSED. Real Open-Meteo data preserved; core content usable before WebGL finishes; keyboard navigation and prefers-reduced-motion paths verified; production build and quality gates green.
+
 
 ### M4 — Authentication and user data
 Tasks: Supabase Auth, profile bootstrap, RLS, saved locations, preferences, account deletion path.

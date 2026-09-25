@@ -95,4 +95,32 @@ describe("Weather API Route Handler (GET /api/weather)", () => {
     assert.equal(body.error.code, "INVALID_PARAMETERS");
     assert.ok(body.error.message.includes("cannot exceed 16"));
   });
+
+  it("enforces rate limits and returns 429 when quota is exhausted", async () => {
+    // Generate unique IP to avoid collisions with other test runs
+    const testIp = "198.51.100.99";
+    const headers = { "x-forwarded-for": testIp };
+
+    // Consume all 60 tokens
+    for (let i = 0; i < 60; i++) {
+      const req = new NextRequest(
+        "http://localhost:3000/api/weather?lat=51.5&lon=-0.12",
+        { headers }
+      );
+      const res = await GET(req);
+      assert.equal(res.status, 200);
+    }
+
+    // 61st request should be rate-limited with 429
+    const limitedReq = new NextRequest(
+      "http://localhost:3000/api/weather?lat=51.5&lon=-0.12",
+      { headers }
+    );
+    const limitedRes = await GET(limitedReq);
+    assert.equal(limitedRes.status, 429);
+    assert.ok(limitedRes.headers.get("Retry-After"));
+    assert.equal(limitedRes.headers.get("X-RateLimit-Remaining"), "0");
+    const body = (await limitedRes.json()) as { error: { code: string } };
+    assert.equal(body.error.code, "RATE_LIMITED");
+  });
 });

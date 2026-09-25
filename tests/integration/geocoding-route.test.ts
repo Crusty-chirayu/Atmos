@@ -81,4 +81,31 @@ describe("Geocoding Route Handler (GET /api/weather/geocoding)", () => {
     };
     assert.equal(body.error.code, "INVALID_PARAMETERS");
   });
+
+  it("enforces rate limits and returns 429 when quota is exhausted", async () => {
+    const testIp = "203.0.113.88";
+    const headers = { "x-forwarded-for": testIp };
+
+    // Consume all 100 tokens
+    for (let i = 0; i < 100; i++) {
+      const req = new NextRequest(
+        "http://localhost:3000/api/weather/geocoding?q=Tokyo",
+        { headers }
+      );
+      const res = await GET(req);
+      assert.equal(res.status, 200);
+    }
+
+    // 101st request should be rate-limited with 429
+    const limitedReq = new NextRequest(
+      "http://localhost:3000/api/weather/geocoding?q=Tokyo",
+      { headers }
+    );
+    const limitedRes = await GET(limitedReq);
+    assert.equal(limitedRes.status, 429);
+    assert.ok(limitedRes.headers.get("Retry-After"));
+    assert.equal(limitedRes.headers.get("X-RateLimit-Remaining"), "0");
+    const body = (await limitedRes.json()) as { error: { code: string } };
+    assert.equal(body.error.code, "RATE_LIMITED");
+  });
 });

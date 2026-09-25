@@ -25,3 +25,6 @@ Record material decisions with date, status, rationale, and consequences. Do not
 | D-019 | Adaptive hybrid realistic/stylized weather rendering | Locked |
 | D-020 | Floating AI assistant plus dedicated AI workspace | Locked |
 | D-021 | Mobile-first adaptive PWA | Recommended default, accepted as current blueprint |
+| D-022 | Three.js client-only dynamic loading for 3D globe with procedural vector Earth texture and 2.5D CSS SVG fallback | Locked (M3) |
+| D-023 | In-memory sliding window rate limiting for public endpoints returning 429 and Retry-After headers | Locked (M3) |
+

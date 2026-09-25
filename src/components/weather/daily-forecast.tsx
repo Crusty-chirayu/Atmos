@@ -1,6 +1,7 @@
 import React from "react";
-import { DailyForecast } from "@/lib/weather/domain/weather";
+import type { DailyForecast } from "@/lib/weather/domain/weather";
 import { WeatherIcon } from "./weather-icon";
+
 import {
   formatLocalDate,
   formatWeekday,
@@ -185,3 +186,5 @@ export function DailyForecastComponent({
     </section>
   );
 }
+
+export { DailyForecastComponent as DailyForecast };

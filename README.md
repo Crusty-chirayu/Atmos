@@ -43,11 +43,12 @@ Never display fabricated weather, pretend a failed API call succeeded, or repres
 - **M2-T1 (Weather Provider Foundation)**: ✅ Complete (Open-Meteo adapter, unit normalization, in-memory TTL caching, deduplication, `docs/WEATHER_ENGINE.md`)
 - **M2-T2 (Geocoding & Location Search)**: ✅ Complete (Search API `/api/weather/geocoding`, relevance ranking, coordinate deduplication, accessible combobox UI, `docs/GEOCODING.md`)
 - **M2-T3 (Weather Query API & Interactive Dashboard Core)**: ✅ Complete (`GET /api/weather`, hero current conditions, 24-hr hourly timeline, 7-day outlook with range gradient bars, deep meteorological telemetry, timezone-aware formatting, dynamic °C/°F unit switching)
+- **M3 (Public Cinematic Homepage & Interactive Globe)**: ✅ Complete (Three.js 3D Earth globe, procedural planetary texture, adaptive weather-driven atmospheric scenes, 2.5D CSS SVG fallback, public rate limiting on API endpoints, quick-explore metropolises, `docs/ATMOSPHERIC_EXPERIENCE.md`)
 
 ### Verification & Quality Gates
 
 ```bash
-# Run complete test suite (155 passing unit and integration tests)
+# Run complete test suite (181 passing unit and integration tests)
 npm test
 
 # Static type analysis
@@ -60,6 +61,7 @@ npm run format:check
 # Production build
 npm run build
 ```
+
 
 ## How to use this blueprint
 

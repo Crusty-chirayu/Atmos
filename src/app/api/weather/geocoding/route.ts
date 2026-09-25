@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getGeocodingService } from "@/lib/geocoding/service";
 import { WeatherError } from "@/lib/weather/errors/weather-error";
+import {
+  geocodingRouteLimiter,
+  extractClientIp,
+} from "@/lib/security/rate-limit";
 
 export const dynamic = "force-dynamic";
 
@@ -15,7 +19,34 @@ export const dynamic = "force-dynamic";
  * - country: 2-letter ISO country code filter (optional)
  */
 export async function GET(request: NextRequest): Promise<NextResponse> {
+  // Public route rate limiting
+  const clientIp = extractClientIp(request);
+  const rateLimit = geocodingRouteLimiter.check(clientIp);
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      {
+        error: {
+          code: "RATE_LIMITED",
+          message: "Too many search requests. Please slow down.",
+          retryAfterSeconds: rateLimit.retryAfterSec,
+        },
+      },
+      {
+        status: 429,
+        headers: {
+          "Retry-After": rateLimit.retryAfterSec.toString(),
+          "X-RateLimit-Limit": rateLimit.limit.toString(),
+          "X-RateLimit-Remaining": rateLimit.remaining.toString(),
+          "X-RateLimit-Reset": Math.ceil(
+            rateLimit.resetTimeMs / 1000
+          ).toString(),
+        },
+      }
+    );
+  }
+
   const searchParams = request.nextUrl.searchParams;
+
   const q = searchParams.get("q") || searchParams.get("query");
   const countParam = searchParams.get("count");
   const langParam = searchParams.get("lang") || searchParams.get("language");

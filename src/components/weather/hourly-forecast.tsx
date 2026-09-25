@@ -1,6 +1,7 @@
 import React from "react";
-import { HourlyForecast } from "@/lib/weather/domain/weather";
+import type { HourlyForecast } from "@/lib/weather/domain/weather";
 import { WeatherIcon } from "./weather-icon";
+
 import { formatHourlyTime } from "@/lib/weather/utils/date-format";
 
 export interface HourlyForecastProps {
@@ -146,3 +147,5 @@ export function HourlyForecastComponent({
     </section>
   );
 }
+
+export { HourlyForecastComponent as HourlyForecast };

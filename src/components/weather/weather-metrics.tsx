@@ -350,3 +350,5 @@ export function WeatherMetricsComponent({
     </section>
   );
 }
+
+export { WeatherMetricsComponent as WeatherMetrics };

@@ -3,6 +3,10 @@ import { getWeatherService } from "@/lib/weather/service";
 import { WeatherApiQuerySchema } from "@/lib/weather/domain/schemas";
 import { CanonicalUnits, ImperialUnits } from "@/lib/weather/domain/units";
 import { WeatherError } from "@/lib/weather/errors/weather-error";
+import {
+  weatherRouteLimiter,
+  extractClientIp,
+} from "@/lib/security/rate-limit";
 
 export const dynamic = "force-dynamic";
 
@@ -23,6 +27,32 @@ export const dynamic = "force-dynamic";
  * - bypassCache: "true" | "false" (default: false)
  */
 export async function GET(request: NextRequest): Promise<NextResponse> {
+  // Public route rate limiting
+  const clientIp = extractClientIp(request);
+  const rateLimit = weatherRouteLimiter.check(clientIp);
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      {
+        error: {
+          code: "RATE_LIMITED",
+          message: "Too many weather requests. Please slow down.",
+          retryAfterSeconds: rateLimit.retryAfterSec,
+        },
+      },
+      {
+        status: 429,
+        headers: {
+          "Retry-After": rateLimit.retryAfterSec.toString(),
+          "X-RateLimit-Limit": rateLimit.limit.toString(),
+          "X-RateLimit-Remaining": rateLimit.remaining.toString(),
+          "X-RateLimit-Reset": Math.ceil(
+            rateLimit.resetTimeMs / 1000
+          ).toString(),
+        },
+      }
+    );
+  }
+
   const searchParams = request.nextUrl.searchParams;
 
   const latRaw = searchParams.get("lat") ?? searchParams.get("latitude");
