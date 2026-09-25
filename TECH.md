@@ -7,11 +7,13 @@
 - Open-Meteo as initial primary weather API behind a provider-neutral interface.
 - Google Gemini API called only from trusted server-side code.
 - Motion for React transitions and interactions.
-- Three.js with React Three Fiber for 3D scenes and globe layers.
+- Three.js with React Three Fiber for 3D scenes and globe layers; procedural vector fallback for non-WebGL devices.
 - GSAP for coordinated timelines and scroll-driven sequences where appropriate.
+- 2D Weather Mapping: Slippy tile renderer with Web Mercator projection, CartoDB Dark Matter / Positron tiles, and real-time RainViewer Doppler radar overlays (zero client tokens required).
+- Weather Visualization: Bespoke zero-dependency SVG vector charts (Bézier splines, dual-axis volume/probability, directional vectors, range variances) eliminating heavyweight chart libraries and SSR hydration mismatches.
 - Mapbox and MapLibre behind a map abstraction; do not couple domain logic to either SDK.
 - PWA capabilities using a maintained, compatible implementation selected after framework/version audit.
-- Schema validation at external boundaries (e.g., Zod or equivalent, subject to repository audit).
+- Schema validation at external boundaries (Zod schemas for weather, geocoding, batching, and historical reanalysis).
 - Automated tests: unit/component, integration, end-to-end, accessibility, and security-focused checks.
 
 ## 2. Architectural rules

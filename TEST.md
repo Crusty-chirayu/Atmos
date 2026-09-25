@@ -66,3 +66,18 @@ For each run record:
 - Passed/failed/skipped counts.
 - Failure details and whether environment-related.
 - Follow-up issue and owner.
+
+## 8. M5 Verified Test Evidence Log (2026-09-26)
+- **Commit**: In progress (`feat(M5): weather dashboard and visualization`)
+- **Node & Next.js**: Node 20+, Next.js 16.3.6 (Turbopack), React 19.2.8
+- **Commands Executed**:
+  1. `npm test` — **251 passed**, 0 failed, 80 suites (duration ~3.1s).
+     - Includes 25 new M5 unit & integration tests covering historical query boundaries, batch location schemas, service concurrency, route status codes, and error isolation.
+  2. `npm run typecheck` — **0 errors** (`tsc --noEmit`).
+  3. `npm run lint` — **0 errors, 0 warnings** (`eslint src/`).
+  4. `npm run format:check` — **All matched files use Prettier code style**.
+  5. `npm run build` — **Production build exit 0** (Turbopack compiled routes `/`, `/dashboard`, `/account`, `/login`, `/signup`, `/api/weather/historical`, `/api/weather/batch`, etc.).
+- **Environment Limitations**:
+  - Open-Meteo, RainViewer radar, and CartoDB tile URLs are accessed via HTTP/S without requiring paid API keys.
+  - End-to-end browser tests run in mock mode when live Supabase or private network access is not configured.
+

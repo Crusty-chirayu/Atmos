@@ -17,8 +17,8 @@ Supabase PostgreSQL with Row Level Security stores user-owned records (profiles,
 - Identity: Supabase Auth, session refresh via Next.js 16 `src/proxy.ts`, server session extraction via `getAuthenticatedUser()`, and client-side subscription via `onAuthStateChange`.
 - Profile/preferences: `profiles`, `user_preferences` with optimistic UI updates, live server persistence, and fallback to local state for anonymous visitors.
 - Location: geocoding, canonical coordinates, display name, timezone, and user-scoped `saved_locations` with coordinate deduplication.
-- Weather: current, hourly, daily, historical, air quality and alerts when supported.
-- Visualization: presentation-only rendering driven by normalized weather domain data.
+- Weather: current, hourly, daily, historical reanalysis (ECMWF ERA5 via `/api/weather/historical`), and batch multi-location fetching via `/api/weather/batch` with worker pool concurrency limiting.
+- Visualization: presentation-only rendering driven by normalized weather domain data: responsive vector SVG charts (temperature splines, dual-axis precipitation, wind velocity vectors, barometric pressure), 2D Web Mercator slippy tile maps (CartoDB tiles + live RainViewer radar overlay), and 3D Three.js planetary globe.
 - AI: prompt construction, context assembly, safety and quota enforcement, model adapter, response persistence.
 - Notifications: alert evaluation, deduplication, delivery, subscription management, user preferences.
 - Observability: sanitized logs, metrics, provider latency/errors, quota events.

@@ -13,7 +13,8 @@ Define typed, validated models for:
 - `CurrentWeather`: temperature, feels-like, condition code, humidity, wind, pressure, visibility, precipitation, observation/retrieval timestamps, provider.
 - `HourlyForecast`: timestamp with timezone context, temperature, precipitation probability/amount, wind, condition code, available metrics.
 - `DailyForecast`: local date, min/max, precipitation probability/amount, sunrise/sunset where available, condition code.
-- `HistoricalWeather`: timestamp/date, observed/reanalysis marker, available metrics, source, and data-quality notes.
+- `HistoricalWeather`: timestamp/date, observed/reanalysis marker (ECMWF ERA5), daily min/max, mean temperature, total precipitation, max wind gust, source provenance disclaimer, and data-quality notes. Validated via `HistoricalApiQuerySchema` (1940 to present - 2 days, maximum 90 consecutive days).
+- `BatchWeatherQuery`: array of 1 to 12 target locations validated via `BatchWeatherQuerySchema`, processed through bounded worker pool (`maxConcurrency: 5`) with error isolation per coordinate.
 - `WeatherResponseMeta`: provider, fetchedAt, validAt/period, cache status, stale flag, units, warnings, and coverage limitations.
 
 Use nullable fields for unavailable values. Never substitute zero for missing data.

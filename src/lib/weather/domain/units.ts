@@ -213,3 +213,17 @@ export function formatPrecipitation(
   const symbol = unit === "mm" ? "mm" : "in";
   return `${rounded} ${symbol}`;
 }
+
+export function formatPressure(
+  value: number,
+  unit: PressureUnit = "hpa",
+  precision = 2
+): string {
+  const converted = convertPressure(value, unit);
+  const rounded =
+    unit === "inhg"
+      ? converted.toFixed(precision)
+      : Math.round(converted).toString();
+  const label = unit === "inhg" ? "inHg" : "hPa";
+  return `${rounded} ${label}`;
+}

@@ -11,12 +11,15 @@ Premium, cinematic, immersive, highly responsive, and usable. The interface shou
 - Use a consistent icon family and coherent icon sizing/stroke.
 
 ## 3. Experience hierarchy
-1. Hero: selected location, current conditions, local time, weather scene, primary action.
-2. Essential forecast: temperature range, precipitation probability, wind, humidity, visibility and other available metrics.
-3. Forecast exploration: hourly and daily timeline, charts, details.
-4. Maps: 2D and 3D toggle, supported weather layers, accessible non-map summaries.
-5. AI: floating assistant entry point and dedicated workspace.
-6. Alerts, saved locations, historical weather, and settings.
+1. Hero: selected location, current conditions, local time, weather scene, primary action, astronomical daylight cycle.
+2. Section Navigation: segmented controls for "All", "Conditions", "Telemetry Charts", "2D Radar", "Historical ERA5", and "Multi-City" overviews.
+3. Essential forecast: temperature range, precipitation probability, wind, humidity, visibility and other available metrics.
+4. Forecast exploration: hourly and daily timeline, interactive vector charts (temperature Bézier splines, dual-axis precipitation, wind velocity vectors, barometric pressure).
+5. Maps & Overlays: 2D Web Mercator slippy tile map with live RainViewer Doppler radar overlay and Three.js 3D globe toggle; accessible non-map summaries.
+6. Historical Weather Explorer: ECMWF ERA5 reanalysis interface with statistical cards (mean temp, record high/low, total precipitation, max gust) and provenance disclosures.
+7. Multi-City Overview: live condition cards for saved locations or global metropolises with 1-click jump and bookmark toggles.
+8. AI: floating assistant entry point and dedicated workspace.
+9. Alerts and settings.
 
 Do not force every metric into the first viewport. Use progressive disclosure and purposeful transitions.
 

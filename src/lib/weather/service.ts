@@ -219,11 +219,11 @@ export class WeatherService {
     if (!options.bypassCache) {
       const cached = this.cache.get<HistoricalWeather>(cacheKey);
       if (cached) {
-        return cached.value;
+        return this.applyUnitsToHistorical(cached.value, options.units);
       }
     }
 
-    return this.deduplicator.execute(cacheKey, async () => {
+    const raw = await this.deduplicator.execute(cacheKey, async () => {
       const response = await provider.getHistorical(validated.data, {
         signal: options.signal,
       });
@@ -236,6 +236,95 @@ export class WeatherService {
 
       return response;
     });
+
+    return this.applyUnitsToHistorical(raw, options.units);
+  }
+
+  /**
+   * Batch weather retrieval across multiple locations with bounded concurrency.
+   * Catches errors on individual locations so one failure does not drop the entire batch.
+   */
+  async getBatchWeather(
+    items: Array<{
+      id?: string;
+      name: string;
+      latitude: number;
+      longitude: number;
+      country?: string;
+      countryCode?: string;
+      adminArea?: string;
+      timezone?: string;
+    }>,
+    options: ServiceExecutionOptions & {
+      maxConcurrency?: number;
+    } = {}
+  ): Promise<
+    Array<{
+      id?: string;
+      location: {
+        name: string;
+        latitude: number;
+        longitude: number;
+        country?: string;
+        countryCode?: string;
+        adminArea?: string;
+        timezone?: string;
+      };
+      bundle?: WeatherBundle;
+      error?: string;
+    }>
+  > {
+    const maxConcurrency = Math.min(items.length, options.maxConcurrency ?? 5);
+    const results: Array<{
+      id?: string;
+      location: (typeof items)[number];
+      bundle?: WeatherBundle;
+      error?: string;
+    }> = new Array(items.length);
+
+    let nextIndex = 0;
+
+    const worker = async () => {
+      while (nextIndex < items.length) {
+        const index = nextIndex++;
+        const item = items[index];
+        try {
+          const bundle = await this.getWeatherBundle(
+            {
+              name: item.name,
+              country: item.country,
+              countryCode: item.countryCode,
+              adminArea: item.adminArea,
+            },
+            { latitude: item.latitude, longitude: item.longitude },
+            {
+              timezone: item.timezone,
+              forecastDays: 3, // Lightweight for card overview
+              units: options.units,
+              bypassCache: options.bypassCache,
+              signal: options.signal,
+            }
+          );
+          results[index] = {
+            id: item.id,
+            location: item,
+            bundle,
+          };
+        } catch (err: unknown) {
+          results[index] = {
+            id: item.id,
+            location: item,
+            error:
+              err instanceof Error ? err.message : "Failed to load weather",
+          };
+        }
+      }
+    };
+
+    const workers = Array.from({ length: maxConcurrency }, () => worker());
+    await Promise.all(workers);
+
+    return results;
   }
 
   /**
@@ -467,6 +556,58 @@ export class WeatherService {
         ...data.meta,
         units: targetUnits,
       },
+    };
+  }
+
+  private applyUnitsToHistorical(
+    data: HistoricalWeather,
+    units?: UnitPreferences
+  ): HistoricalWeather {
+    if (!units || this.isCanonical(units)) {
+      return data;
+    }
+
+    return {
+      ...data,
+      dailySummaries: data.dailySummaries.map((day) => ({
+        ...day,
+        temperatureMax: convertTemperature(
+          day.temperatureMax,
+          units.temperature
+        ),
+        temperatureMin: convertTemperature(
+          day.temperatureMin,
+          units.temperature
+        ),
+        temperatureMean:
+          day.temperatureMean !== null && day.temperatureMean !== undefined
+            ? convertTemperature(day.temperatureMean, units.temperature)
+            : null,
+        precipitationSum: convertPrecipitation(
+          day.precipitationSum,
+          units.precipitation
+        ),
+        windSpeedMax:
+          day.windSpeedMax !== null && day.windSpeedMax !== undefined
+            ? convertWindSpeed(day.windSpeedMax, units.windSpeed)
+            : null,
+      })),
+      hourlyEntries: data.hourlyEntries?.map((entry) => ({
+        ...entry,
+        temperature: convertTemperature(entry.temperature, units.temperature),
+        precipitation: convertPrecipitation(
+          entry.precipitation,
+          units.precipitation
+        ),
+        windSpeed:
+          entry.windSpeed !== null && entry.windSpeed !== undefined
+            ? convertWindSpeed(entry.windSpeed, units.windSpeed)
+            : null,
+        pressureMsl:
+          entry.pressureMsl !== null && entry.pressureMsl !== undefined
+            ? convertPressure(entry.pressureMsl, units.pressure)
+            : null,
+      })),
     };
   }
 

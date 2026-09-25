@@ -20,11 +20,13 @@ Protect account data, API credentials, user location history, AI conversations, 
 - Graceful degradation: public weather queries (`/api/weather`, `/api/weather/geocoding`) operate independently and never require authentication or Supabase availability.
 
 ## 4. Input and API security
-- Validate and bound all query/body/path inputs using Zod schemas (`WeatherApiQuerySchema`, `GeocodingQuerySchema`).
-- Add rate limits to geocoding, weather proxy, AI, voice, and subscription endpoints:
+- Validate and bound all query/body/path inputs using Zod schemas (`WeatherApiQuerySchema`, `GeocodingQuerySchema`, `HistoricalApiQuerySchema`, `BatchWeatherQuerySchema`).
+- Add rate limits to geocoding, weather proxy, batch queries, historical reanalysis, AI, voice, and subscription endpoints:
   - Implemented `SlidingWindowRateLimiter` (`src/lib/security/rate-limit.ts`) protecting public endpoints:
     - `GET /api/weather`: 60 requests/minute per client IP.
     - `GET /api/weather/geocoding`: 100 requests/minute per client IP.
+    - `GET /api/weather/historical`: 30 requests/minute per client IP (bounded to max 90 days query window, >= 1940).
+    - `POST /api/weather/batch`: 30 requests/minute per client IP (bounded to 1..12 locations, maxConcurrency: 5).
   - Safe client IP resolution with `x-forwarded-for`, `x-real-ip`, and `cf-connecting-ip` inspection.
   - Responses include `X-RateLimit-Limit`, `X-RateLimit-Remaining`, and `X-RateLimit-Reset` headers.
   - Exceeded quotas return HTTP 429 Too Many Requests with a `Retry-After` header and sanitized error payload.

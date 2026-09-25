@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { HomeNav, HomeViewMode } from "./home-nav";
 
 import { HeroSection } from "./hero-section";
@@ -360,6 +361,24 @@ export function CinematicHomepage() {
               <WeatherSkeleton />
             ) : weatherBundle ? (
               <>
+                <div className="p-4 rounded-2xl glass border border-accent-500/20 bg-accent-500/5 flex flex-wrap items-center justify-between gap-3 shadow-md">
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-xs font-bold text-text-primary">
+                      Looking for advanced meteorological telemetry?
+                    </span>
+                    <span className="text-xs text-text-muted">
+                      Open the complete dashboard for interactive radar maps,
+                      high-resolution charts, and historical ERA5 reanalysis.
+                    </span>
+                  </div>
+                  <Link
+                    href="/dashboard"
+                    className="px-4 py-2 rounded-xl bg-accent-500 text-atmos-950 font-bold text-xs hover:bg-accent-400 transition-colors shadow-sm shrink-0"
+                  >
+                    Open Full Dashboard →
+                  </Link>
+                </div>
+
                 <CurrentConditions
                   bundle={weatherBundle}
                   units={units}

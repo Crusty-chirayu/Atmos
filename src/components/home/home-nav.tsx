@@ -59,8 +59,17 @@ export function HomeNav({
               border: "1px solid rgb(0 212 255 / 0.25)",
             }}
           >
-            v0.3 · M3
+            v0.5 · M5
           </span>
+        </Link>
+
+        {/* Weather Dashboard Quick Link */}
+        <Link
+          href="/dashboard"
+          className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-xl glass text-xs font-semibold text-accent-400 hover:bg-accent-500/10 transition-colors border border-accent-500/20"
+        >
+          <span>Dashboard</span>
+          <span aria-hidden="true">→</span>
         </Link>
 
         {/* Engine status indicator */}

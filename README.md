@@ -45,11 +45,12 @@ Never display fabricated weather, pretend a failed API call succeeded, or repres
 - **M2-T3 (Weather Query API & Interactive Dashboard Core)**: ✅ Complete (`GET /api/weather`, hero current conditions, 24-hr hourly timeline, 7-day outlook with range gradient bars, deep meteorological telemetry, timezone-aware formatting, dynamic °C/°F unit switching)
 - **M3 (Public Cinematic Homepage & Interactive Globe)**: ✅ Complete (Three.js 3D Earth globe, procedural planetary texture, adaptive weather-driven atmospheric scenes, 2.5D CSS SVG fallback, public rate limiting on API endpoints, quick-explore metropolises, `docs/ATMOSPHERIC_EXPERIENCE.md`)
 - **M4 (Authentication & User Data)**: ✅ Complete (Supabase Auth, PostgreSQL schema & migrations, RLS policies, Next.js 16 `src/proxy.ts` session refresh, login/signup/reset flows, saved locations manager, user preferences synchronization, account deletion danger zone, `docs/AUTH_AND_USER_DATA.md`)
+- **M5 (Weather Dashboard & Visualization)**: ✅ Complete (Dedicated `/dashboard` page, bespoke zero-dependency SVG weather charts, 2D slippy map with CartoDB tiles & RainViewer Doppler radar overlay, ECMWF ERA5 historical reanalysis explorer, multi-city overview with concurrency-limited batch API `POST /api/weather/batch`, `docs/WEATHER_DASHBOARD.md`)
 
 ### Verification & Quality Gates
 
 ```bash
-# Run complete test suite (226 passing unit and integration tests across 74 suites)
+# Run complete test suite (251 passing unit and integration tests across 80 suites)
 npm test
 
 # Static type analysis (TypeScript strict mode)

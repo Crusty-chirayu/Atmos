@@ -30,4 +30,7 @@ Record material decisions with date, status, rationale, and consequences. Do not
 | D-024 | `@supabase/ssr` with Next.js 16 `src/proxy.ts` cookie session management, separating browser, server, and administrative tiers | Locked (M4) |
 | D-025 | PostgreSQL Row Level Security on `profiles`, `saved_locations`, and `user_preferences` with `anon` privileges revoked and server-derived identity enforcement | Locked (M4) |
 | D-026 | Non-blocking unconfigured Supabase fallback: missing Supabase credentials gracefully disable only account persistence without blocking anonymous weather exploration | Locked (M4) |
+| D-027 | Zero-dependency bespoke SVG vector weather charts instead of external charting packages (chart.js/recharts), minimizing bundle size, eliminating SSR hydration mismatches, and matching ATMOS design tokens | Locked (M5) |
+| D-028 | 2D Slippy Map with CartoDB Dark Matter / Positron tiles and live RainViewer Doppler precipitation radar layer with dynamic frame lookup and honest provenance notices | Locked (M5) |
+| D-029 | Bounded concurrency worker pool (maxConcurrency: 5) and error isolation for batch weather endpoint (`POST /api/weather/batch`), preventing upstream request bursts and isolating partial location failures | Locked (M5) |
 

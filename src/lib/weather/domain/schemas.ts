@@ -190,3 +190,95 @@ export const WeatherApiQuerySchema = z.object({
 
 export type WeatherApiQuery = z.infer<typeof WeatherApiQuerySchema>;
 export type WeatherApiQueryInput = z.input<typeof WeatherApiQuerySchema>;
+
+/**
+ * Schema for validating incoming HTTP request query parameters to the Historical Weather API route.
+ * Enforces:
+ * - Latitude (-90..90) & Longitude (-180..180)
+ * - Valid YYYY-MM-DD format
+ * - startDate <= endDate
+ * - startDate >= 1940-01-01 (ERA5 archive limit)
+ * - Maximum query duration of 90 days to prevent oversized payloads
+ */
+export const HistoricalApiQuerySchema = z
+  .object({
+    lat: z.preprocess(
+      (val) =>
+        val === null || val === undefined || val === "" ? NaN : Number(val),
+      z
+        .number()
+        .min(-90, "Latitude must be >= -90")
+        .max(90, "Latitude must be <= 90")
+    ),
+    lon: z.preprocess(
+      (val) =>
+        val === null || val === undefined || val === "" ? NaN : Number(val),
+      z
+        .number()
+        .min(-180, "Longitude must be >= -180")
+        .max(180, "Longitude must be <= 180")
+    ),
+    startDate: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/, "startDate must be in YYYY-MM-DD format"),
+    endDate: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/, "endDate must be in YYYY-MM-DD format"),
+    timezone: z.string().max(100).default("auto"),
+    units: z.enum(["metric", "imperial", "canonical"]).default("metric"),
+    includeHourly: z
+      .union([z.boolean(), z.enum(["true", "false"])])
+      .optional()
+      .transform((val) => val === true || val === "true"),
+    bypassCache: z
+      .enum(["true", "false"])
+      .optional()
+      .transform((val) => val === "true"),
+  })
+  .refine((data) => data.startDate >= "1940-01-01", {
+    message: "startDate cannot be earlier than 1940-01-01 (ERA5 archive limit)",
+    path: ["startDate"],
+  })
+  .refine((data) => data.startDate <= data.endDate, {
+    message: "startDate must be before or equal to endDate",
+    path: ["startDate"],
+  })
+  .refine(
+    (data) => {
+      const start = new Date(data.startDate).getTime();
+      const end = new Date(data.endDate).getTime();
+      const diffDays = (end - start) / (1000 * 60 * 60 * 24);
+      return diffDays <= 90;
+    },
+    {
+      message: "Historical date range cannot exceed 90 days per query",
+      path: ["endDate"],
+    }
+  );
+
+export type HistoricalApiQuery = z.infer<typeof HistoricalApiQuerySchema>;
+export type HistoricalApiQueryInput = z.input<typeof HistoricalApiQuerySchema>;
+
+/**
+ * Schema for batch weather queries across multiple saved locations.
+ */
+export const BatchWeatherQuerySchema = z.object({
+  locations: z
+    .array(
+      z.object({
+        id: z.string().optional(),
+        name: z.string().max(200).default("Selected Location"),
+        latitude: z.number().min(-90).max(90),
+        longitude: z.number().min(-180).max(180),
+        country: z.string().optional(),
+        countryCode: z.string().optional(),
+        adminArea: z.string().optional(),
+        timezone: z.string().optional().default("auto"),
+      })
+    )
+    .min(1, "At least one location is required")
+    .max(12, "Maximum 12 locations can be queried in a single batch"),
+  units: z.enum(["metric", "imperial", "canonical"]).default("metric"),
+});
+
+export type BatchWeatherQuery = z.infer<typeof BatchWeatherQuerySchema>;

@@ -79,6 +79,16 @@ Gate: cross-user access tests prove isolation; auth flows and session expiry wor
 ### M5 — Weather dashboard and visualization
 Tasks: current conditions, hourly/daily forecast, historical data, charts, 2D map, 3D globe, weather overlays, adaptive scene renderer.
 Gate: provider provenance, units, timezone, loading/error/stale states, WebGL fallback, and performance budgets verified.
+- **M5-T1 (Weather Dashboard & Visualization)**: ✅ Verified Complete (2026-09-26).
+  - Dedicated `/dashboard` Next.js App Router route with responsive layout, header telemetry, and unit toggling.
+  - Interactive SVG weather charts with zero bundle bloat: 24h Temperature & Apparent Bézier splines, Precipitation Probability/Volume dual-axis chart, Wind Velocity & direction vectors, Barometric Pressure & Humidity chart, and 7-day variance range chart.
+  - Interactive 2D slippy tile weather map (`WeatherMap2D`) supporting CartoDB Dark Matter / OSM tiles, live RainViewer Doppler radar overlay with opacity slider, coordinate inspection, and click-to-sync dashboard location.
+  - Historical weather explorer (`HistoricalExplorer`) powered by ECMWF ERA5 reanalysis (/v1/archive) via dedicated route (`GET /api/weather/historical`), with date boundary validation (1940 to present-2d, max 90d window), summary statistics, and clear provenance labeling.
+  - Multi-city saved locations overview (`SavedLocationsOverview`) with bounded concurrency batch fetching (`POST /api/weather/batch`, maxConcurrency: 5, isolated error handling), 1-click bookmarking/deletion, and anonymous 6-metropolis preview mode.
+  - Added 25 new automated unit and integration tests (251 passing tests across 80 suites).
+  - Turbopack production build verified, 0 TypeScript errors, 0 ESLint warnings, 100% Prettier compliance. Developer documentation in `docs/WEATHER_DASHBOARD.md`.
+- **M5 Gate Status**: ✅ PASSED. Provider provenance, units, timezone, loading/error/stale states, WebGL and 2D map fallbacks, and performance budgets verified.
+- **Recommended Next Milestone**: **M6 — Gemini AI platform** (server-side Gemini adapter, weather-grounded chat, floating assistant, dedicated workspace).
 
 ### M6 — Gemini AI platform
 Tasks: server-side Gemini adapter, weather-grounded chat, floating assistant, dedicated workspace, conversation persistence, quotas, voice integration, trip planning.
