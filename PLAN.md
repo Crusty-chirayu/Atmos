@@ -57,6 +57,8 @@ Gate: app builds; light/dark themes work; reduced motion works; keyboard navigat
 ### M2 — Weather provider and location core
 Tasks: typed provider interfaces, Open-Meteo primary adapter, caching, normalized units, geocoding/search, freshness metadata, error and fallback handling.
 Gate: tests cover parsing, units, missing fields, time zones, stale data, provider errors, and location edge cases.
+- **M2-T1 (Weather Provider Foundation)**: ✅ Verified Complete (2026-09-25). Strongly typed weather domain models, Open-Meteo primary adapter (/v1/forecast, /v1/archive), provider registry and abstraction, canonical unit normalization (Celsius, km/h, mm, hPa) with presentation conversions (Fahrenheit, mph, etc.), in-memory TTL cache with stale-while-revalidate, singleflight request deduplication, structured WeatherError hierarchy with sanitization and bounded retries, and comprehensive automated test suite (67 tests passing across 6 suites). Verified live API smoke test against Open-Meteo. Developer documentation in docs/WEATHER_ENGINE.md.
+- **M2-T2 (Geocoding & Location Search)**: Pending next task in M2.
 
 ### M3 — Public cinematic homepage
 Tasks: hero scene, search, live preview, globe entry point, loading skeletons, mobile composition, and public rate limiting.
