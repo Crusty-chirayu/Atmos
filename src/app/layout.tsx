@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { AuthProvider } from "@/lib/auth/auth-context";
 import { PwaProvider } from "@/components/pwa/pwa-provider";
 import { FloatingAiAssistant } from "@/components/ai/floating-ai-assistant";
+import { resolveAppUrl } from "@/lib/config/env";
 import "./globals.css";
 
 export const viewport: Viewport = {
@@ -31,7 +32,7 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "ATMOS" }],
   creator: "ATMOS",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "https://atmos.app"),
+  metadataBase: resolveAppUrl(process.env.NEXT_PUBLIC_APP_URL, "https://atmos.app"),
   openGraph: {
     type: "website",
     locale: "en_US",

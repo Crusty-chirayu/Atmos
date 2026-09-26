@@ -23,33 +23,83 @@ export function requireServerEnv(name: string): string {
   return val;
 }
 
-function optionalEnv(name: string, fallback = ""): string {
-  return process.env[name] ?? fallback;
+export function optionalEnv(name: string, fallback = ""): string {
+  const val = process.env[name];
+  if (val === undefined || val === null) {
+    return fallback;
+  }
+  const trimmed = val.trim();
+  return trimmed === "" ? fallback : trimmed;
+}
+
+/**
+ * Safely resolves an absolute URL for application metadata and canonical links.
+ * Always returns a valid URL object with http: or https: protocol.
+ * Treats undefined, null, empty string, and whitespace-only as unset.
+ * Rejects relative or non-HTTP(S) URLs and safely falls back without throwing exceptions.
+ */
+export function resolveAppUrl(
+  rawUrl?: string | null,
+  fallback = "https://atmos.app"
+): URL {
+  const candidate = typeof rawUrl === "string" ? rawUrl.trim() : "";
+  if (candidate) {
+    try {
+      const parsed = new URL(candidate);
+      if (parsed.protocol === "http:" || parsed.protocol === "https:") {
+        return parsed;
+      }
+    } catch {
+      // Malformed or relative URL — fall back safely
+    }
+  }
+
+  try {
+    const fallbackParsed = new URL(fallback);
+    if (
+      fallbackParsed.protocol === "http:" ||
+      fallbackParsed.protocol === "https:"
+    ) {
+      return fallbackParsed;
+    }
+  } catch {
+    // If fallback is somehow malformed, return hardcoded default
+  }
+
+  return new URL("https://atmos.app");
 }
 
 // ─── Public (safe in client bundles) ──────────────────────────────────────
 export const publicEnv = {
-  NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
+  NEXT_PUBLIC_SUPABASE_URL: optionalEnv("NEXT_PUBLIC_SUPABASE_URL"),
   NEXT_PUBLIC_SUPABASE_ANON_KEY:
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "",
-  NEXT_PUBLIC_APP_URL:
-    process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000",
-  NEXT_PUBLIC_APP_ENV: (process.env.NEXT_PUBLIC_APP_ENV ?? "development") as
-    "development" | "preview" | "production",
-  NEXT_PUBLIC_VAPID_PUBLIC_KEY: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ?? "",
+    optionalEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY") ||
+    optionalEnv("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY"),
+  NEXT_PUBLIC_APP_URL: optionalEnv(
+    "NEXT_PUBLIC_APP_URL",
+    "http://localhost:3000"
+  ),
+  NEXT_PUBLIC_APP_ENV: optionalEnv(
+    "NEXT_PUBLIC_APP_ENV",
+    "development"
+  ) as "development" | "preview" | "production",
+  NEXT_PUBLIC_VAPID_PUBLIC_KEY: optionalEnv("NEXT_PUBLIC_VAPID_PUBLIC_KEY"),
 } as const;
 
 /**
  * Returns true if public Supabase environment variables are configured with valid non-placeholder values.
  */
 export function isSupabaseConfigured(): boolean {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "";
+  const url = optionalEnv("NEXT_PUBLIC_SUPABASE_URL");
+  const key =
+    optionalEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY") ||
+    optionalEnv("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY");
   return (
     url.length > 0 &&
     key.length > 0 &&
     !url.includes("your-project") &&
-    !key.includes("your-anon-key")
+    !key.includes("your-anon-key") &&
+    !key.includes("your-supabase")
   );
 }
 
@@ -57,11 +107,12 @@ export function isSupabaseConfigured(): boolean {
  * Returns true if server-side Supabase Service Role Key is configured for admin operations.
  */
 export function isSupabaseAdminConfigured(): boolean {
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY ?? "";
+  const key = optionalEnv("SUPABASE_SERVICE_ROLE_KEY");
   return (
     isSupabaseConfigured() &&
     key.length > 0 &&
-    !key.includes("your-service-role-key")
+    !key.includes("your-service-role-key") &&
+    !key.includes("your-supabase-service-role-key")
   );
 }
 
@@ -71,29 +122,28 @@ export function isSupabaseAdminConfigured(): boolean {
 export const serverEnv = {
   /** Safe getter — returns key if set or empty string */
   get SUPABASE_SERVICE_ROLE_KEY() {
-    return process.env.SUPABASE_SERVICE_ROLE_KEY ?? "";
+    return optionalEnv("SUPABASE_SERVICE_ROLE_KEY");
   },
   get optionalServiceRoleKey() {
-    return process.env.SUPABASE_SERVICE_ROLE_KEY ?? "";
+    return optionalEnv("SUPABASE_SERVICE_ROLE_KEY");
   },
   get GEMINI_API_KEY() {
-    return process.env.GEMINI_API_KEY ?? "";
+    return optionalEnv("GEMINI_API_KEY");
   },
   get CRON_SECRET() {
-    return process.env.CRON_SECRET ?? "";
+    return optionalEnv("CRON_SECRET");
   },
   get VAPID_PRIVATE_KEY() {
-    return process.env.VAPID_PRIVATE_KEY ?? "";
+    return optionalEnv("VAPID_PRIVATE_KEY");
   },
   get VAPID_PUBLIC_KEY() {
     return (
-      process.env.VAPID_PUBLIC_KEY ??
-      process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ??
-      ""
+      optionalEnv("VAPID_PUBLIC_KEY") ||
+      optionalEnv("NEXT_PUBLIC_VAPID_PUBLIC_KEY")
     );
   },
   get VAPID_SUBJECT() {
-    return process.env.VAPID_SUBJECT ?? "mailto:admin@atmos.weather";
+    return optionalEnv("VAPID_SUBJECT", "mailto:admin@atmos.weather");
   },
   OPEN_METEO_BASE_URL: optionalEnv(
     "OPEN_METEO_BASE_URL",
