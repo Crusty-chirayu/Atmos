@@ -50,11 +50,12 @@ Never display fabricated weather, pretend a failed API call succeeded, or repres
 - **M7 (Weather Alerts and Notification System)**: ✅ Complete (Threshold-based meteorological alert rules, 6 event categories, geographic coordinate deduplication, in-app notification center drawer with unread count, RFC 8292 Web Push lifecycle, and protected cron evaluator `/api/cron/evaluate-alerts`, `docs/NOTIFICATIONS_AND_ALERTS.md`)
 - **M8 (PWA, Performance, Accessibility & Reliability)**: ✅ Complete (Installable W3C PWA with standalone launcher, Service Worker with privacy-scoped cache boundaries and 30-min weather TTL, offline fallback `/offline`, React 19 `useSyncExternalStore` connectivity detection, a11y focus restoration and keyboard navigation, `docs/PWA_PERFORMANCE_ACCESSIBILITY.md`)
 - **M9 (Release Candidate & Deployment Readiness)**: ✅ Complete (Environment audit and `.env.example`, deployment runbook, database migration audit, 9-journey automated release smoke test suite, GitHub Actions CI workflow, and rollback runbook, `docs/DEPLOYMENT_RUNBOOK.md`, `docs/RELEASE_CHECKLIST.md`)
+- **M10 (Final Integration, Security Audit & Handover)**: ✅ Complete (Full end-to-end integration across Journeys A–G, SSRF/injection/auth boundaries, 307 passing tests across 90 suites, 0 npm audit vulnerabilities, and final release candidate handover report, `docs/ATMOS-M10-FINAL-HANDOVER.md`)
 
 ### Verification & Quality Gates
 
 ```bash
-# Run complete test suite (301 passing unit and integration tests across 89 suites)
+# Run complete test suite (307 passing unit and integration tests across 90 suites)
 npm test
 
 # Static type analysis (TypeScript strict mode)
