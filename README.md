@@ -48,18 +48,31 @@ ATMOS isn't a weather-API wrapper with a chat window bolted on. It's one connect
   Keep this HTML table structure — it renders as a clean 2x2 image grid on GitHub.
 -->
 
+## ATMOS — Inside the Experience
+
 <table>
 <tr>
-<td width="50%" align="center"><em>Weather Dashboard</em><br><sub>screenshot placeholder</sub></td>
-<td width="50%" align="center"><em>Interactive 3D Earth</em><br><sub>screenshot placeholder</sub></td>
+<td width="50%" align="center">
+<strong>Weather Dashboard</strong><br><br>
+<img src="screenshots/dashboard.png" alt="ATMOS Weather Dashboard" width="100%"/>
+</td>
+<td width="50%" align="center">
+<strong>Interactive 3D Earth</strong><br><br>
+<img src="screenshots/globe.png" alt="ATMOS Interactive 3D Earth" width="100%"/>
+</td>
 </tr>
 <tr>
-<td width="50%" align="center"><em>AI Assistant</em><br><sub>screenshot placeholder</sub></td>
-<td width="50%" align="center"><em>Voice Interaction</em><br><sub>screenshot placeholder</sub></td>
+<td width="50%" align="center">
+<strong>AI Weather Assistant</strong><br><br>
+<img src="screenshots/ai-assistant.png" alt="ATMOS AI Weather Assistant" width="100%"/>
+</td>
+<td width="50%" align="center">
+<strong>Voice Interaction</strong><br><br>
+<img src="screenshots/voice.png" alt="ATMOS Voice Interaction" width="100%"/>
+</td>
 </tr>
 </table>
 
-<br>
 
 ## What Makes ATMOS Different
 
