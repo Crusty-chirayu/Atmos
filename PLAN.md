@@ -109,6 +109,16 @@ Gate: grounding, prompt injection, rate limits, provider failures, and fabricate
 ### M7 — Notification system
 Tasks: preference UI, alert rules, scheduled processing, in-app inbox, browser push subscription lifecycle, deduplication, quiet hours, unsubscribe.
 Gate: no duplicate alert storms; user authorization and push permission handled; scheduler idempotency tested.
+- **M7-T1 (Weather Alerts, In-App Notifications & Web Push)**: ✅ Verified Complete (2026-09-26).
+  - Forward-only Supabase migration `supabase/migrations/20260926020000_m7_notifications.sql` with tables `alert_rules`, `notifications`, `push_subscriptions`, check constraints, RLS policies (`auth.uid() = user_id`), and revoked `anon` privileges.
+  - Meteorological alert evaluation engine (`src/lib/notifications/evaluator/alert-evaluator.ts`) covering 6 alert types (`temp_above`, `temp_below`, `high_wind`, `precipitation`, `freeze`, `severe_weather`) with automatic unit conversion and operator evaluation.
+  - Alert evaluation orchestrator (`src/lib/notifications/evaluator/evaluation-orchestrator.ts`) with geographic coordinate grouping to protect Open-Meteo rate limits, hourly dedup keys (`alert:rule_id:YYYY-MM-DDTHH`), and cooldown suppression.
+  - Alert rules management UI (`AlertRulesManager`) in `/account#alerts` and notification drawer (`NotificationCenter`) mounted in main navbar header.
+  - Web Push lifecycle (`push-service.ts`, `PushNotificationToggle`) with VAPID protocol, browser capability inspection, and simulated development preview mode.
+  - Added 16 new automated unit and integration tests (288 passing tests across 87 suites).
+  - Developer documentation in `docs/NOTIFICATIONS_AND_ALERTS.md`.
+- **M7 Gate Status**: ✅ PASSED. Storm suppression, deduplication, user authorization, cooldown enforcement, push lifecycle, and production build verified.
+- **Recommended Next Milestone**: **M8 — PWA, performance, accessibility, and hardening** (manifest, service worker, safe offline cache, responsive QA, bundle optimization).
 
 ### M8 — PWA, performance, accessibility, and hardening
 Tasks: installability, service worker, safe offline cache, responsive QA, bundle optimization, accessibility audit, security review.

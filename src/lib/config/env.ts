@@ -36,6 +36,7 @@ export const publicEnv = {
     process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000",
   NEXT_PUBLIC_APP_ENV: (process.env.NEXT_PUBLIC_APP_ENV ?? "development") as
     "development" | "preview" | "production",
+  NEXT_PUBLIC_VAPID_PUBLIC_KEY: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ?? "",
 } as const;
 
 /**
@@ -78,12 +79,45 @@ export const serverEnv = {
   get GEMINI_API_KEY() {
     return process.env.GEMINI_API_KEY ?? "";
   },
+  get CRON_SECRET() {
+    return process.env.CRON_SECRET ?? "";
+  },
+  get VAPID_PRIVATE_KEY() {
+    return process.env.VAPID_PRIVATE_KEY ?? "";
+  },
+  get VAPID_PUBLIC_KEY() {
+    return (
+      process.env.VAPID_PUBLIC_KEY ??
+      process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ??
+      ""
+    );
+  },
+  get VAPID_SUBJECT() {
+    return process.env.VAPID_SUBJECT ?? "mailto:admin@atmos.weather";
+  },
   OPEN_METEO_BASE_URL: optionalEnv(
     "OPEN_METEO_BASE_URL",
     "https://api.open-meteo.com"
   ),
   MAPBOX_ACCESS_TOKEN: optionalEnv("MAPBOX_ACCESS_TOKEN"),
 } as const;
+
+/**
+ * Returns true if Web Push VAPID keys are configured.
+ */
+export function isVapidConfigured(): boolean {
+  const pub = serverEnv.VAPID_PUBLIC_KEY;
+  const priv = serverEnv.VAPID_PRIVATE_KEY;
+  return pub.length > 10 && priv.length > 10 && !pub.includes("placeholder");
+}
+
+/**
+ * Returns true if CRON_SECRET is configured.
+ */
+export function isCronSecretConfigured(): boolean {
+  const secret = serverEnv.CRON_SECRET;
+  return secret.length > 8 && !secret.includes("placeholder");
+}
 
 /**
  * Convenience re-export merging public env.

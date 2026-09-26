@@ -10,6 +10,8 @@ import type {
   PrecipitationUnit,
   ThemePreference,
 } from "@/lib/auth/types";
+import { AlertRulesManager } from "@/components/notifications/alert-rules-manager";
+import { PushNotificationToggle } from "@/components/notifications/push-toggle";
 
 export default function AccountPage() {
   const router = useRouter();
@@ -428,6 +430,25 @@ export default function AccountPage() {
               </select>
             </div>
           </div>
+        </section>
+
+        {/* Notifications & Weather Alerts */}
+        <section
+          id="alerts"
+          aria-labelledby="alerts-heading"
+          className="p-6 rounded-3xl glass-panel border border-atmos-700/40 shadow-xl space-y-6"
+        >
+          <div className="flex items-center justify-between">
+            <h2
+              id="alerts-heading"
+              className="text-sm font-mono uppercase tracking-wider text-accent-400"
+            >
+              Weather Alerts & Notifications
+            </h2>
+          </div>
+
+          <PushNotificationToggle />
+          <AlertRulesManager />
         </section>
 
         {/* Danger Zone: Account Deletion */}

@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { UserMenu } from "@/components/auth/user-menu";
+import { NotificationCenter } from "@/components/notifications/notification-center";
 
 export type HomeViewMode = "overview" | "globe" | "dashboard";
 
@@ -196,6 +197,9 @@ export function HomeNav({
             </svg>
           )}
         </button>
+
+        {/* Weather Alerts Notification Center */}
+        <NotificationCenter />
 
         {/* User Account Menu */}
         <UserMenu />

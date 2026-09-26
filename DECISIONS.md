@@ -36,3 +36,6 @@ Record material decisions with date, status, rationale, and consequences. Do not
 | D-030 | Server-side Gemini 2.0 REST adapter (`gemini-2.0-flash`) with mandatory meteorological grounding via `WeatherGroundingSnapshot` and anti-hallucination system instructions | Locked (M6) |
 | D-031 | Native Web Speech API integration (`SpeechRecognition` & `SpeechSynthesis`) for zero-dependency hands-free voice I/O, audio narration, and graceful browser capability degradation | Locked (M6) |
 | D-032 | Multi-turn AI conversation persistence in Supabase (`ai_conversations`, `ai_messages`) with strict RLS (`auth.uid() = user_id`) and non-blocking unconfigured preview mode | Locked (M6) |
+| D-033 | Automated meteorological alerting engine evaluating 6 threshold types against Open-Meteo telemetry, using hourly deduplication keys and user-configured suppression cooldowns (default 6h) to prevent notification storms | Locked (M7) |
+| D-034 | Standards-compliant VAPID Web Push protocol and in-app notification center inbox with Supabase Row-Level Security (`auth.uid() = user_id`) and non-blocking unconfigured preview fallback | Locked (M7) |
+
