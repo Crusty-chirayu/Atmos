@@ -81,7 +81,9 @@ export function evaluateAlertRule(
   }
 
   const current = bundle.current;
-  const hourly = bundle.hourly.entries;
+  const hourly = Array.isArray(bundle.hourly)
+    ? bundle.hourly
+    : (bundle.hourly?.entries ?? []);
 
   let triggered = false;
   let observedValue = 0;

@@ -2,8 +2,8 @@
 
 ## Status Overview
 - **Session Started**: 2026-09-26T10:40+05:30
-- **Current Milestone**: M9 — Release Candidate and Deployment Readiness
-- **Last Verified Commit**: `1238746` (`feat(M7): persistent weather alerts, notification center, and web push lifecycle`)
+- **Current Milestone**: M10 — Final Integration, Security Audit, Release Validation & Handover
+- **Last Verified Commit**: `4877e1a` (`feat(M8): PWA installability, service worker offline cache, and accessibility hardening`)
 - **Remote Synchronization**: Synchronized with `origin/main`
 - **Current Blockers**: None
 
@@ -14,9 +14,9 @@
 | Milestone | Title | Status | Tests | Commits | Notes |
 |---|---|---|---|---|---|
 | **M7** | Weather Alerts and Notification System | ✅ Complete | 288 passed (87 suites) | `1238746` (pushed) | Schema, evaluator, notification center, push lifecycle, cron |
-| **M8** | PWA, Performance, Accessibility & Reliability | ✅ Complete | 292 passed (88 suites) | Pending Commit | Manifest, service worker, cache boundaries, a11y, visual QA |
-| **M9** | Release Candidate & Deployment Readiness | 🔄 In Progress | Pending | Pending | Env audit, runbook, migration audit, smoke tests, CI audit, rollback tooling |
-| **M10** | Final Integration, Security Audit & Handover | ⏳ Queued | - | - | E2E journeys, security review, fault injection, final handover report |
+| **M8** | PWA, Performance, Accessibility & Reliability | ✅ Complete | 292 passed (88 suites) | `4877e1a` (pushed) | Manifest, service worker, cache boundaries, a11y, visual QA |
+| **M9** | Release Candidate & Deployment Readiness | ✅ Complete | 301 passed (89 suites) | Pending Commit | Env audit, runbook, migration audit, smoke tests, CI audit, rollback tooling |
+| **M10** | Final Integration, Security Audit & Handover | 🔄 In Progress | Pending | Pending | E2E journeys, security review, fault injection, final handover report |
 
 ---
 
@@ -51,4 +51,14 @@
 - Automated tests passing: **292 tests passing across 88 suites**.
 - Verified `npm run typecheck`, `npm run lint` (0 errors, 0 warnings), `npm run format:check`, and `npm run build` (21 static/dynamic routes compiled).
 - Documented in `docs/PWA_PERFORMANCE_ACCESSIBILITY.md`.
-- Next action: Commit M8, push to `origin/main`, and proceed immediately to M9.
+- Committed and pushed commit `4877e1a` (`feat(M8): PWA installability, service worker offline cache, and accessibility hardening`) to `origin/main`.
+
+### Milestone 9: Release Candidate & Deployment Readiness (2026-09-26 11:21)
+- Completed environment variable audit and updated `.env.example` and `docs/ENVIRONMENT.md`.
+- Prepared comprehensive production deployment runbook (`docs/DEPLOYMENT_RUNBOOK.md`) covering Vercel, Supabase, Google Gemini, Web Push, and Vercel Cron.
+- Audited PostgreSQL database schema and migrations in `docs/DATABASE_MIGRATIONS.md`.
+- Created automated release candidate smoke test suite (`tests/integration/release-smoke.test.ts`) covering 9 critical workflows: PWA assets, routes integrity, geocoding API, weather retrieval, auth route gates, scheduled cron security, AI assistant fallback, alert evaluator determinism, and env helpers.
+- Built GitHub Actions CI pipeline (`.github/workflows/ci.yml`) with least-privilege permissions and full check stages (format, lint, typecheck, test, build).
+- Authored production release checklist and rollback runbook (`docs/RELEASE_CHECKLIST.md`).
+- Automated tests passing: **301 tests passing across 89 suites** (0 failures).
+- Next action: Commit M9, push to `origin/main`, and proceed immediately to M10.

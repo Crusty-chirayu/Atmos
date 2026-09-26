@@ -47,11 +47,14 @@ Never display fabricated weather, pretend a failed API call succeeded, or repres
 - **M4 (Authentication & User Data)**: ✅ Complete (Supabase Auth, PostgreSQL schema & migrations, RLS policies, Next.js 16 `src/proxy.ts` session refresh, login/signup/reset flows, saved locations manager, user preferences synchronization, account deletion danger zone, `docs/AUTH_AND_USER_DATA.md`)
 - **M5 (Weather Dashboard & Visualization)**: ✅ Complete (Dedicated `/dashboard` page, bespoke zero-dependency SVG weather charts, 2D slippy map with CartoDB tiles & RainViewer Doppler radar overlay, ECMWF ERA5 historical reanalysis explorer, multi-city overview with concurrency-limited batch API `POST /api/weather/batch`, `docs/WEATHER_DASHBOARD.md`)
 - **M6 (Gemini AI Platform & Meteorological Grounding)**: ✅ Complete (Server-side Gemini 2.0 REST adapter, meteorological grounding engine, sliding window rate limits, Supabase multi-turn conversation persistence with RLS, full-screen conversational workspace `/ai`, ambient floating assistant, native Web Speech API voice I/O, `docs/GEMINI_AI_PLATFORM.md`)
+- **M7 (Weather Alerts and Notification System)**: ✅ Complete (Threshold-based meteorological alert rules, 6 event categories, geographic coordinate deduplication, in-app notification center drawer with unread count, RFC 8292 Web Push lifecycle, and protected cron evaluator `/api/cron/evaluate-alerts`, `docs/NOTIFICATIONS_AND_ALERTS.md`)
+- **M8 (PWA, Performance, Accessibility & Reliability)**: ✅ Complete (Installable W3C PWA with standalone launcher, Service Worker with privacy-scoped cache boundaries and 30-min weather TTL, offline fallback `/offline`, React 19 `useSyncExternalStore` connectivity detection, a11y focus restoration and keyboard navigation, `docs/PWA_PERFORMANCE_ACCESSIBILITY.md`)
+- **M9 (Release Candidate & Deployment Readiness)**: ✅ Complete (Environment audit and `.env.example`, deployment runbook, database migration audit, 9-journey automated release smoke test suite, GitHub Actions CI workflow, and rollback runbook, `docs/DEPLOYMENT_RUNBOOK.md`, `docs/RELEASE_CHECKLIST.md`)
 
 ### Verification & Quality Gates
 
 ```bash
-# Run complete test suite (272 passing unit and integration tests across 85 suites)
+# Run complete test suite (301 passing unit and integration tests across 89 suites)
 npm test
 
 # Static type analysis (TypeScript strict mode)
@@ -61,7 +64,10 @@ npm run typecheck
 npm run lint
 npm run format:check
 
-# Production build (Turbopack)
+# Release smoke test suite
+npx tsx --test tests/integration/release-smoke.test.ts
+
+# Production build (Next.js 16 Turbopack)
 npm run build
 ```
 

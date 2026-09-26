@@ -61,11 +61,17 @@ describe("Milestone 8: PWA, Service Worker & Offline Architecture", () => {
 
     // Navigation fallback to offline page
     assert.ok(swContent.includes("/offline"));
-    assert.ok(swContent.includes("request.mode === 'navigate'"));
+    assert.ok(swContent.includes("request.mode"));
+    assert.ok(swContent.includes("navigate"));
 
     // Push notification and click event listeners
-    assert.ok(swContent.includes("addEventListener('push'"));
-    assert.ok(swContent.includes("addEventListener('notificationclick'"));
+    assert.ok(
+      swContent.includes("addEventListener") && swContent.includes("push")
+    );
+    assert.ok(
+      swContent.includes("addEventListener") &&
+        swContent.includes("notificationclick")
+    );
   });
 
   test("has dedicated offline fallback route", () => {

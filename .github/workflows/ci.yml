@@ -1,0 +1,59 @@
+name: ATMOS Continuous Integration
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Lint, Test & Build Validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    env:
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+      NEXT_PUBLIC_APP_ENV: preview
+      NEXT_PUBLIC_SUPABASE_URL: https://mock-ci-project.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.ci-anon-key
+      SUPABASE_SERVICE_ROLE_KEY: mock-ci-service-role-key
+      CRON_SECRET: mock-ci-cron-secret-32-chars-long
+      NEXT_PUBLIC_VAPID_PUBLIC_KEY: BKmockCiVapidPublicKeyForTestEnvironment1234567890
+      VAPID_PRIVATE_KEY: mockCiVapidPrivateKeyForTestEnvironment1234567890
+      VAPID_SUBJECT: mailto:ci@atmos.app
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: "npm"
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Verify Code Formatting
+        run: npm run format:check
+
+      - name: Execute ESLint
+        run: npm run lint
+
+      - name: Execute TypeScript Strict Typecheck
+        run: npm run typecheck
+
+      - name: Execute Automated Test Suite (Unit & Integration)
+        run: npm test
+
+      - name: Compile Next.js 16 Production Build
+        run: npm run build
