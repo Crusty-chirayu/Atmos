@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useTransition } from "react";
+import React, { useState, useEffect, useCallback, useTransition } from "react";
 import { useAuth } from "@/lib/auth/auth-context";
 import { LocationSearch } from "../weather/location-search";
 import type {
@@ -65,7 +65,7 @@ export function AlertRulesManager() {
   const [cooldownMinutes, setCooldownMinutes] = useState(360);
   const [formError, setFormError] = useState("");
 
-  const loadRules = async () => {
+  const loadRules = useCallback(async () => {
     if (!user) return;
     try {
       setLoading(true);
@@ -79,10 +79,26 @@ export function AlertRulesManager() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
 
   useEffect(() => {
-    loadRules();
+    let active = true;
+    if (user) {
+      fetch("/api/user/alerts")
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (data && active) {
+            setRules(data.rules ?? []);
+          }
+        })
+        .catch(() => {})
+        .finally(() => {
+          if (active) setLoading(false);
+        });
+    }
+    return () => {
+      active = false;
+    };
   }, [user]);
 
   const handleTypeChange = (type: AlertType) => {

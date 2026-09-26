@@ -4,7 +4,7 @@ import React, { useState, useTransition, useSyncExternalStore } from "react";
 import { useAuth } from "@/lib/auth/auth-context";
 import { publicEnv } from "@/lib/config/env";
 
-function subscribeToCapability(callback: () => void) {
+function subscribeToCapability() {
   return () => {};
 }
 

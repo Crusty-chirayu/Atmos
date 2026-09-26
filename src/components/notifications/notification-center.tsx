@@ -1,6 +1,12 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useTransition } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useTransition,
+} from "react";
 import { useAuth } from "@/lib/auth/auth-context";
 import type { WeatherNotification } from "@/lib/notifications/domain/schemas";
 
@@ -15,7 +21,7 @@ export function NotificationCenter() {
   const triggerRef = useRef<HTMLButtonElement>(null);
 
   // Fetch notifications
-  const fetchNotifications = async () => {
+  const fetchNotifications = useCallback(async () => {
     if (!user) return;
     try {
       setLoading(true);
@@ -30,18 +36,29 @@ export function NotificationCenter() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
 
   useEffect(() => {
-    if (user) {
-      fetchNotifications();
-      // Poll every 60s for new alerts when user is active
-      const interval = setInterval(fetchNotifications, 60000);
-      return () => clearInterval(interval);
-    } else {
-      setNotifications([]);
-      setUnreadCount(0);
-    }
+    if (!user) return;
+    let active = true;
+    const poll = () => {
+      fetch("/api/user/notifications")
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (data && active) {
+            setNotifications(data.notifications ?? []);
+            setUnreadCount(data.unreadCount ?? 0);
+          }
+        })
+        .catch(() => {});
+    };
+    poll();
+    // Poll every 60s for new alerts when user is active
+    const interval = setInterval(poll, 60000);
+    return () => {
+      active = false;
+      clearInterval(interval);
+    };
   }, [user]);
 
   // Handle outside click & escape

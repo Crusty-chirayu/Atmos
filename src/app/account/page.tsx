@@ -12,6 +12,7 @@ import type {
 } from "@/lib/auth/types";
 import { AlertRulesManager } from "@/components/notifications/alert-rules-manager";
 import { PushNotificationToggle } from "@/components/notifications/push-toggle";
+import { PwaInstallButton } from "@/components/pwa/pwa-install-button";
 
 export default function AccountPage() {
   const router = useRouter();
@@ -123,29 +124,32 @@ export default function AccountPage() {
           </p>
         </div>
 
-        <button
-          type="button"
-          onClick={async () => {
-            await signOut();
-            router.push("/");
-          }}
-          className="px-3.5 py-2 rounded-xl glass text-xs font-medium text-text-secondary hover:text-text-primary hover:bg-atmos-700/40 transition-colors flex items-center gap-1.5"
-        >
-          <svg
-            className="w-4 h-4"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
+        <div className="flex items-center gap-2">
+          <PwaInstallButton />
+          <button
+            type="button"
+            onClick={async () => {
+              await signOut();
+              router.push("/");
+            }}
+            className="px-3.5 py-2 rounded-xl glass text-xs font-medium text-text-secondary hover:text-text-primary hover:bg-atmos-700/40 transition-colors flex items-center gap-1.5"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-            />
-          </svg>
-          <span>Sign Out</span>
-        </button>
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+              />
+            </svg>
+            <span>Sign Out</span>
+          </button>
+        </div>
       </div>
 
       <div className="space-y-8">

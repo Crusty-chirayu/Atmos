@@ -7,11 +7,7 @@
 
 import { createServerSupabase } from "@/lib/auth/supabase-server";
 import { createAdminSupabase } from "@/lib/auth/supabase-admin";
-import {
-  isSupabaseConfigured,
-  isVapidConfigured,
-  serverEnv,
-} from "@/lib/config/env";
+import { isSupabaseConfigured, isVapidConfigured } from "@/lib/config/env";
 import type {
   CreatePushSubscriptionInput,
   PushSubscriptionRecord,

@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { AuthProvider } from "@/lib/auth/auth-context";
+import { PwaProvider } from "@/components/pwa/pwa-provider";
 import { FloatingAiAssistant } from "@/components/ai/floating-ai-assistant";
 import "./globals.css";
 
@@ -50,6 +51,11 @@ export const metadata: Metadata = {
     follow: true,
   },
   manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "ATMOS",
+  },
 };
 
 export default function RootLayout({
@@ -94,10 +100,12 @@ export default function RootLayout({
         </a>
 
         <AuthProvider>
-          <main id="main-content" className="flex-1 flex flex-col">
-            {children}
-          </main>
-          <FloatingAiAssistant />
+          <PwaProvider>
+            <main id="main-content" className="flex-1 flex flex-col">
+              {children}
+            </main>
+            <FloatingAiAssistant />
+          </PwaProvider>
         </AuthProvider>
       </body>
     </html>

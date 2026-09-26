@@ -21,7 +21,8 @@ const alertRateLimiter = new SlidingWindowRateLimiter({
   maxRequests: 30,
 });
 
-export async function GET(request: NextRequest) {
+export async function GET(_request?: NextRequest) {
+  void _request;
   const user = await getAuthenticatedUser();
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
   });
 }
 
-export async function PATCH(request: NextRequest) {
+export async function PATCH() {
   const user = await getAuthenticatedUser();
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -47,7 +47,7 @@ export async function PATCH(request: NextRequest) {
   return NextResponse.json({ success });
 }
 
-export async function DELETE(request: NextRequest) {
+export async function DELETE() {
   const user = await getAuthenticatedUser();
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

@@ -299,6 +299,9 @@ export function WeatherMap2D({
                 className="w-full h-full object-cover"
                 loading="lazy"
                 draggable={false}
+                onError={(e) => {
+                  (e.currentTarget as HTMLElement).style.opacity = "0";
+                }}
               />
 
               {/* RainViewer Live Radar Overlay Tile */}
@@ -311,6 +314,9 @@ export function WeatherMap2D({
                   style={{ opacity: radarOpacity }}
                   loading="lazy"
                   draggable={false}
+                  onError={(e) => {
+                    (e.currentTarget as HTMLElement).style.opacity = "0";
+                  }}
                 />
               )}
             </div>
