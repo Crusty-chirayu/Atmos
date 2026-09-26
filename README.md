@@ -1,93 +1,350 @@
-# ATMOS — Engineering Blueprint
+# 🌍 ATMOS
 
-**Purpose:** This repository of specifications is the source of truth for planning, implementing, testing, and operating ATMOS.
+### AI-Powered Weather Intelligence Platform
 
-ATMOS is a global, AI-powered weather platform with a cinematic, adaptive interface; live and historical weather; interactive 2D maps and a 3D globe; Gemini-powered weather intelligence; user accounts; personalized alerts; and an installable, mobile-first PWA.
+*Real-time forecasts. Interactive 3D Earth exploration. Conversational, voice-enabled AI — in one modern web application.*
 
-## Read first
+[![Live Demo](https://img.shields.io/badge/demo-live-FFC928?style=for-the-badge)](https://atmos-zeta-ten.vercel.app)
+[![Repo](https://img.shields.io/badge/GitHub-Crusty--chirayu%2FAtmos-181717?style=for-the-badge&logo=github)](https://github.com/Crusty-chirayu/Atmos)
+[![Made with Next.js](https://img.shields.io/badge/Next.js-16-black?style=for-the-badge&logo=nextdotjs)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Supabase](https://img.shields.io/badge/Supabase-backend-3FCF8E?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com/)
 
-1. `AGENT_RULES.md` — mandatory operating rules for Antigravity and all coding agents.
-2. `PLAN.md` — product scope, milestones, and acceptance gates.
-3. `TECH.md` — technology decisions and implementation constraints.
-4. `ARCHITECTURE.md` — system boundaries and data flow.
-5. `UI_UX.md` — visual and interaction system.
-6. `DATA.md`, `AI.md`, `SECURITY.md`, `TEST.md`, and `DEPLOYMENT.md` — domain requirements.
+**[🌐 Live App](https://atmos-zeta-ten.vercel.app)** · **[📦 Source Code](https://github.com/Crusty-chirayu/Atmos)** · **[👤 Author](https://github.com/Crusty-chirayu)**
 
-## Decision status
+---
 
-The selected direction is authoritative unless explicitly changed by the project owner:
-- Product name: ATMOS.
-- Theme: dark-first, with a complete light theme.
-- Dashboard: cinematic immersive landing experience.
-- Public homepage: cinematic homepage with interactive live weather preview.
-- Global location coverage.
-- Forecasts: up to 16 days where the selected provider supports them; historical weather where available.
-- Units: regional defaults with complete manual overrides.
-- Maps: hybrid Mapbox + MapLibre strategy; provider adapters keep the application replaceable.
-- Animation: Motion + Three.js/React Three Fiber + GSAP.
-- Weather scenes: adaptive hybrid of realistic 3D and stylized effects.
-- AI: Google Gemini, server-side, weather-grounded, provider-swappable.
-- AI UX: floating assistant plus dedicated AI workspace; voice and text.
-- Notifications: configurable in-app and browser push alerts, subject to permission and platform support.
-- Hosting: Vercel + Supabase.
-- Mobile: mobile-first adaptive PWA.
+## Overview
 
-## Non-negotiable product truth
+ATMOS is a full-stack weather intelligence platform that goes beyond the traditional dashboard-and-forecast-card model. It brings together **real-time weather data**, an **interactive 3D Earth globe**, a **context-aware AI assistant**, **voice interaction**, and **personalized locations** into a single, unified experience.
 
-Never display fabricated weather, pretend a failed API call succeeded, or represent a mock as live data. Clearly label demo fixtures, stale/cached results, forecast horizons, and provider limitations. Every visible control must work or be clearly disabled/labeled as coming later.
+Instead of forcing users to bounce between a weather app, a maps app, and a search engine to answer questions like *"what's the weather like where I'm traveling?"*, ATMOS lets them explore the planet on a real 3D globe, ask a question in plain language or by voice, and get an answer that's aware of exactly where they are looking.
 
-## Implementation Status
+> ATMOS is an AI-powered weather intelligence platform that combines real-time weather forecasts, interactive 3D Earth exploration, personalized weather insights, and conversational voice-enabled AI in one modern web application.
 
-- **M0 (Repository & Specification Audit)**: ✅ Complete (`docs/BASELINE_AUDIT.md`)
-- **M1-T1 (Framework Scaffold & Design System)**: ✅ Complete (Next.js 16 App Router, React 19, Tailwind CSS v4, dark-first tokens)
-- **M2-T1 (Weather Provider Foundation)**: ✅ Complete (Open-Meteo adapter, unit normalization, in-memory TTL caching, deduplication, `docs/WEATHER_ENGINE.md`)
-- **M2-T2 (Geocoding & Location Search)**: ✅ Complete (Search API `/api/weather/geocoding`, relevance ranking, coordinate deduplication, accessible combobox UI, `docs/GEOCODING.md`)
-- **M2-T3 (Weather Query API & Interactive Dashboard Core)**: ✅ Complete (`GET /api/weather`, hero current conditions, 24-hr hourly timeline, 7-day outlook with range gradient bars, deep meteorological telemetry, timezone-aware formatting, dynamic °C/°F unit switching)
-- **M3 (Public Cinematic Homepage & Interactive Globe)**: ✅ Complete (Three.js 3D Earth globe, procedural planetary texture, adaptive weather-driven atmospheric scenes, 2.5D CSS SVG fallback, public rate limiting on API endpoints, quick-explore metropolises, `docs/ATMOSPHERIC_EXPERIENCE.md`)
-- **M4 (Authentication & User Data)**: ✅ Complete (Supabase Auth, PostgreSQL schema & migrations, RLS policies, Next.js 16 `src/proxy.ts` session refresh, login/signup/reset flows, saved locations manager, user preferences synchronization, account deletion danger zone, `docs/AUTH_AND_USER_DATA.md`)
-- **M5 (Weather Dashboard & Visualization)**: ✅ Complete (Dedicated `/dashboard` page, bespoke zero-dependency SVG weather charts, 2D slippy map with CartoDB tiles & RainViewer Doppler radar overlay, ECMWF ERA5 historical reanalysis explorer, multi-city overview with concurrency-limited batch API `POST /api/weather/batch`, `docs/WEATHER_DASHBOARD.md`)
-- **M6 (Gemini AI Platform & Meteorological Grounding)**: ✅ Complete (Server-side Gemini 2.0 REST adapter, meteorological grounding engine, sliding window rate limits, Supabase multi-turn conversation persistence with RLS, full-screen conversational workspace `/ai`, ambient floating assistant, native Web Speech API voice I/O, `docs/GEMINI_AI_PLATFORM.md`)
-- **M7 (Weather Alerts and Notification System)**: ✅ Complete (Threshold-based meteorological alert rules, 6 event categories, geographic coordinate deduplication, in-app notification center drawer with unread count, RFC 8292 Web Push lifecycle, and protected cron evaluator `/api/cron/evaluate-alerts`, `docs/NOTIFICATIONS_AND_ALERTS.md`)
-- **M8 (PWA, Performance, Accessibility & Reliability)**: ✅ Complete (Installable W3C PWA with standalone launcher, Service Worker with privacy-scoped cache boundaries and 30-min weather TTL, offline fallback `/offline`, React 19 `useSyncExternalStore` connectivity detection, a11y focus restoration and keyboard navigation, `docs/PWA_PERFORMANCE_ACCESSIBILITY.md`)
-- **M9 (Release Candidate & Deployment Readiness)**: ✅ Complete (Environment audit and `.env.example`, deployment runbook, database migration audit, 9-journey automated release smoke test suite, GitHub Actions CI workflow, and rollback runbook, `docs/DEPLOYMENT_RUNBOOK.md`, `docs/RELEASE_CHECKLIST.md`)
-- **M10 (Final Integration, Security Audit & Handover)**: ✅ Complete (Full end-to-end integration across Journeys A–G, SSRF/injection/auth boundaries, 307 passing tests across 90 suites, 0 npm audit vulnerabilities, and final release candidate handover report, `docs/ATMOS-M10-FINAL-HANDOVER.md`)
+It is not a static weather widget, not a bare API wrapper, and not "just a chatbot" — it's a full-stack product with a real UI, backend services, external data integrations, and AI-driven interaction layered on top.
 
-### Verification & Quality Gates
+---
+
+## The Problem
+
+Conventional weather apps are good at showing numbers on a dashboard, but they fall short the moment a question gets contextual:
+
+- *What's the weather like in a city I've never been to?*
+- *What happens if I just pick a random point on the map?*
+- *What should I expect at my travel destination next week?*
+- *Can I just ask instead of digging through five screens?*
+- *Can I talk to it instead of typing?*
+- *Can it remember the places I care about?*
+
+ATMOS was built to answer all of these inside one connected experience — without giving up the clarity of a proper weather app.
+
+---
+
+## Key Features
+
+| | Feature | Summary |
+|---|---|---|
+| ☀️ | **Real-Time Weather** | Live conditions and forecasts powered by Open-Meteo |
+| 📊 | **Weather Dashboard** | Clean, unified view synced with the globe and AI assistant |
+| 🌐 | **Interactive 3D Earth** | A real-texture globe you can rotate and click to pick any coordinate on the planet |
+| 🤖 | **AI Weather Assistant** | Natural-language, context-aware assistant via OpenRouter (Llama 3.3 70B) |
+| 🎙️ | **Voice Input** | Ask questions out loud using browser speech recognition |
+| 🔊 | **AI Voice Output** | Assistant responses read back via browser speech synthesis |
+| 🔐 | **Accounts & Auth** | Supabase-powered authentication and personalized sessions |
+| 📍 | **Saved Locations** | Quick access to the places that matter to you |
+| 🔔 | **Weather Alerts** | Notification functionality to help you stay ahead of conditions |
+
+---
+
+## Screenshots
+
+> 📸 *Screenshots coming soon.* This section is a placeholder — drop real UI captures here (dashboard, globe interaction, AI assistant panel) once available.
+
+```
+docs/
+└── screenshots/
+    ├── dashboard.png
+    ├── globe.png
+    └── assistant.png
+```
+
+---
+
+## Technology Stack
+
+| Category | Technology | Purpose |
+|---|---|---|
+| Frontend framework | **Next.js 16** | Main web application framework |
+| Language | **TypeScript** | Typed application development |
+| UI | **React** | Component-based interface |
+| Application layer | **Next.js full-stack architecture** | App logic and server-side functionality |
+| Auth & backend | **Supabase** | Authentication and backend infrastructure |
+| AI gateway | **OpenRouter** | AI model access and integration |
+| AI model | **Meta Llama 3.3 70B Instruct** | Conversational model powering the assistant |
+| Weather data | **Open-Meteo** | Live weather and forecast data |
+| 3D visualization | **Three.js** | Interactive 3D Earth rendering |
+| 3D + React | **React Three Fiber** | React bindings for the Three.js globe |
+| Animation | **GSAP** | Interactive animation and motion |
+| Radar | **RainViewer** | Precipitation and radar visualization |
+| Historical data | **ERA5** | Historical / reanalysis weather data |
+| Hosting | **Vercel** | Deployment and hosting |
+
+---
+
+## Architecture
+
+The diagram below is a **high-level conceptual overview** — not a verified source-code dependency graph.
+
+```mermaid
+flowchart TD
+    U[User / Browser]
+
+    subgraph APP[ATMOS Web Application]
+        UI[Next.js 16 + React UI]
+        DASH[Weather Dashboard]
+        GLOBE[Interactive 3D Earth]
+        CHAT[AI Weather Assistant]
+        VOICE[Voice Input / Output]
+        CONTEXT[Location Context & Intent Handling]
+    end
+
+    subgraph SERVICES[External Services]
+        OM[Open-Meteo Weather API]
+        OR[OpenRouter AI Gateway]
+        SUP[Supabase]
+        RV[RainViewer]
+        ERA[ERA5 Weather Data]
+    end
+
+    V[Vercel Deployment]
+
+    U --> UI
+    UI --> DASH
+    UI --> GLOBE
+    UI --> CHAT
+    UI --> VOICE
+
+    GLOBE --> CONTEXT
+    DASH --> CONTEXT
+    CHAT --> CONTEXT
+
+    CONTEXT --> OM
+    CONTEXT --> OR
+
+    UI --> SUP
+    DASH --> RV
+    DASH --> ERA
+
+    V -. Hosts .-> UI
+```
+
+---
+
+## How ATMOS Works
+
+ATMOS ties geographic exploration, weather retrieval, and conversational AI into a single connected loop:
+
+1. **Location selection** — the user picks a location via the dashboard or by interacting directly with the 3D globe.
+2. **Coordinate resolution** — globe clicks are translated into real geographic coordinates using **Three.js raycasting** against the Earth sphere, so any point on the planet is selectable, not just a fixed list of cities.
+3. **Weather retrieval** — the resolved coordinates are used to fetch live conditions from **Open-Meteo**.
+4. **Interface sync** — the selected location propagates across the dashboard, globe, and AI assistant, so the whole app stays contextually aligned.
+5. **Contextual AI assistance** — when a user asks a question, the assistant uses that shared location context (via **OpenRouter**) to give a relevant, grounded answer rather than treating the conversation as generic chat.
+
+This is an integrated full-stack web application with external service integrations — not a distributed microservices system.
+
+---
+
+## Feature Deep Dive
+
+### 🌐 Interactive 3D Earth Globe
+Built with Three.js and React Three Fiber, the globe renders a real Earth texture and supports raycasting-based coordinate selection — click anywhere on the planet and get weather for that exact point. It is a geographic and weather exploration interface, not a satellite-tracking or live-imagery service.
+
+### 🤖 AI Weather Assistant
+Powered by `meta-llama/llama-3.3-70b-instruct` through OpenRouter. It handles natural-language weather questions, destination queries, general knowledge, follow-ups, and intent routing — using a dynamic location-context provider shared with the dashboard and globe.
+
+**Flow:** `User question → Intent & context handling → OpenRouter (Llama 3.3 70B) → Generated response → UI`
+
+The AI layer handles conversation and context; actual weather data always comes from Open-Meteo.
+
+### 🎙️ Voice Input & 🔊 Voice Output
+Speech recognition and speech synthesis run entirely in-browser, with permission and error handling built in. Voice selection favors natural-sounding voices where the browser provides them. Availability and quality depend on the user's browser, OS, and permissions.
+
+### 🔐 Accounts & Personalization
+Supabase handles authentication and backend infrastructure. Saved locations let users keep frequently checked places close at hand, feeding into the same shared location context used by the dashboard, globe, and assistant.
+
+### 🔔 Alerts
+Weather-alert functionality is part of the broader feature set, intended to help users stay informed of relevant conditions. Delivery channels and thresholds depend on deployment-specific configuration.
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (a version compatible with Next.js 16)
+- npm (or the package manager matching the repo's lockfile — pnpm/yarn also supported if that's what's committed)
+- A Supabase project (auth + backend)
+- An OpenRouter API key (AI functionality)
+- Access to the relevant weather data services
+
+### Clone the repository
 
 ```bash
-# Run complete test suite (307 passing unit and integration tests across 90 suites)
-npm test
+git clone https://github.com/Crusty-chirayu/Atmos.git
+cd Atmos
+```
 
-# Static type analysis (TypeScript strict mode)
-npm run typecheck
+### Install dependencies
 
-# Code formatting and linting (zero warnings)
-npm run lint
-npm run format:check
+```bash
+npm install
+```
 
-# Release smoke test suite
-npx tsx --test tests/integration/release-smoke.test.ts
+> Use the package manager that matches the repo's committed lockfile.
 
-# Production build (Next.js 16 Turbopack)
+### Configure environment variables
+
+Create a local env file based on the project's `.env.example` (if present) and the app's actual configuration. **Never guess or hardcode secrets.**
+
+| Configuration | Purpose |
+|---|---|
+| Supabase project URL | Connects the app to Supabase |
+| Supabase publishable / anon key | Client-side Supabase integration |
+| Supabase service-role key *(if required)* | Privileged server-side operations — **server-side only** |
+| OpenRouter API key | Server-side AI model access |
+| Application URL *(if required)* | Deployment/app URL configuration |
+| VAPID / notification config *(if required)* | Browser push notifications |
+
+### Run the dev server
+
+```bash
+npm run dev
+```
+
+App will typically be available at `http://localhost:3000` — confirm the exact command/port against `package.json`.
+
+### Production build
+
+```bash
 npm run build
+npm run start
 ```
 
-### Local Database Migrations (Supabase)
+---
 
-To apply database migrations to a local or linked Supabase project:
+## Security & Configuration
 
-```bash
-# If using local Supabase CLI (requires Docker Desktop):
-supabase start
-supabase db reset
+- Never commit `.env.local` or any file containing secrets.
+- Never expose the Supabase **service-role** key to the browser.
+- Keep the OpenRouter API key server-side only.
+- Use scoped public credentials only where the service explicitly supports it.
+- Configure production environment variables separately in Vercel.
+- Rotate any credential that is ever accidentally exposed.
+- Follow Supabase's recommended access controls and row-level security practices.
 
-# Or link and push to a remote development project:
-supabase link --project-ref <your-project-ref>
-supabase db push
-```
+Weather and AI functionality depend on third-party provider availability, quotas, and rate limits — plan accordingly.
 
+---
 
-## How to use this blueprint
+## Deployment & Validation
 
-Antigravity should read the entire specification set before making architectural changes. Implement in milestone order. Keep `PLAN.md` and the decision log updated as work progresses. Do not mark a milestone complete until its acceptance criteria and tests pass.
+ATMOS is deployed on **Vercel**:
 
+🔗 **[atmos-zeta-ten.vercel.app](https://atmos-zeta-ten.vercel.app)**
+
+At the latest reported development milestone, the following were shipped:
+
+- AI location-context integration
+- Globe ↔ dashboard synchronization
+- Arbitrary coordinate-based weather selection
+- AI intent routing and contextual handling
+- OpenRouter integration
+- Markdown rendering for AI responses
+- Browser speech recognition & synthesis, with permission/error handling
+- UI and globe interaction refinements
+
+The development workflow reported the following results:
+
+| Validation | Reported Result |
+|---|---|
+| Vitest unit tests | 343 passed |
+| Test suites | 98 |
+| TypeScript type checking | Passed |
+| Lint | Passed |
+| Production build | Passed |
+
+These are developer-reported results from the local workflow, not an independent third-party audit.
+
+---
+
+## Known Limitations & Dependencies
+
+ATMOS relies on several external services, so its behavior is naturally tied to their availability:
+
+- Weather data depends on the Open-Meteo upstream provider.
+- AI responses depend on OpenRouter and the configured model's availability, quotas, and billing.
+- Supabase features depend on the configured project's limits and settings.
+- Voice features depend on browser speech-API support and user-granted permissions.
+- Globe rendering depends on the client device's graphics capability.
+- Notification features may require additional production-specific configuration.
+
+These are normal operational dependencies of the architecture, not confirmed active issues.
+
+---
+
+## Engineering Highlights
+
+ATMOS was built as a full-stack software engineering project spanning several disciplines:
+
+- **Full-stack development** — Next.js + TypeScript with backend services, auth, external APIs, and production deployment.
+- **AI integration** — conversational AI via OpenRouter with real application context, not an isolated chatbot.
+- **Geographic computing** — mapping 3D pointer interaction to real-world coordinates via raycasting.
+- **Interactive visualization** — Three.js + React Three Fiber for a genuinely explorable Earth.
+- **Browser APIs** — native speech recognition and synthesis for voice-driven UX.
+- **Service integration** — weather, AI, auth, and hosting infrastructure working as one system.
+- **Production discipline** — concept → implementation → testing → iteration → deployment.
+
+---
+
+## Future Improvements
+
+Potential directions — not yet implemented:
+
+- [ ] Additional weather visualization options
+- [ ] More configurable weather alerts
+- [ ] Deeper AI weather conversation capabilities
+- [ ] Expanded personalization & saved-location features
+- [ ] Improved mobile/responsive interactions
+- [ ] Additional weather data source integrations
+- [ ] Expanded documentation & developer onboarding
+- [ ] More automated, production-grade testing
+
+---
+
+## Contributing
+
+Contributions are welcome:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/your-feature`)
+3. Make and test your changes
+4. Open a pull request with a clear description
+
+---
+
+## License
+
+Check the repository for its `LICENSE` file to determine the applicable licensing terms.
+
+---
+
+## Author
+
+**Chirayu Babu Jaysawal**
+
+- GitHub: [@Crusty-chirayu](https://github.com/Crusty-chirayu)
+
+---
+
+<p align="center">Built with ☕, curiosity, and a genuine interest in weather + AI.</p>
