@@ -253,8 +253,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
 
         // Check if email confirmation is required
+        const isEmailConfirmed = Boolean(
+          data.user?.email_confirmed_at || data.user?.confirmed_at
+        );
         const needsVerification =
-          !data.session && Boolean(data.user && !data.user.confirmed_at);
+          !data.session && Boolean(data.user && !isEmailConfirmed);
 
         if (data.user && data.session) {
           setUser(data.user);

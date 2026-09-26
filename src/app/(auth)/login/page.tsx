@@ -49,36 +49,30 @@ function LoginForm() {
   };
 
   return (
-    <div className="w-full max-w-md p-6 sm:p-8 rounded-3xl glass-panel relative overflow-hidden shadow-2xl border border-atmos-700/30">
-      {/* Atmosphere Glow */}
-      <div
-        aria-hidden="true"
-        className="absolute -top-24 -right-24 w-56 h-56 rounded-full pointer-events-none opacity-20 blur-3xl"
-        style={{
-          background: "radial-gradient(circle, #00d4ff 0%, transparent 70%)",
-        }}
-      />
-
+    <div className="w-full max-w-md p-6 sm:p-8 rounded-lg bg-white relative overflow-hidden shadow-xs border border-[#E5E7EB]">
       {/* Header */}
       <div className="text-center mb-6">
         <Link
           href="/"
-          className="inline-block font-display font-black text-3xl tracking-tight text-gradient mb-2"
+          className="inline-flex items-center gap-2 mb-3 focus:outline-none"
         >
-          ATMOS
+          <span className="w-3 h-3 rounded-full bg-[#FFC928]" />
+          <span className="font-bold text-2xl tracking-tight text-[#222222]">
+            ATMOS
+          </span>
         </Link>
-        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-text-primary">
-          Welcome back
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[#222222]">
+          Sign in to your account
         </h1>
-        <p className="text-xs sm:text-sm text-text-secondary mt-1">
-          Sign in to access your saved planetary locations and preferences
+        <p className="text-xs sm:text-sm text-[#6B7280] mt-1">
+          Access your saved locations and custom preferences
         </p>
       </div>
 
       {!isConfigured && (
         <div
           role="status"
-          className="mb-6 p-3.5 rounded-2xl glass border border-warning-500/30 text-warning-300 text-xs flex items-start gap-2.5"
+          className="mb-5 p-3.5 rounded-md bg-[#FFFBEB] border border-[#FDE68A] text-[#92400E] text-xs flex items-start gap-2.5"
         >
           <svg
             className="w-4 h-4 shrink-0 mt-0.5"
@@ -95,10 +89,8 @@ function LoginForm() {
           </svg>
           <div>
             <p className="font-semibold">Local Environment Notice</p>
-            <p className="mt-0.5 text-text-secondary text-[11px] leading-relaxed">
-              Supabase Auth is unconfigured. Real authentication requires valid{" "}
-              <code>NEXT_PUBLIC_SUPABASE_URL</code> credentials. Anonymous
-              weather exploration remains fully functional.
+            <p className="mt-0.5 text-[#B45309] text-xs leading-relaxed">
+              Supabase Auth is unconfigured in this environment. Anonymous weather exploration remains fully operational.
             </p>
           </div>
         </div>
@@ -107,7 +99,7 @@ function LoginForm() {
       {errorMessage && (
         <div
           role="alert"
-          className="mb-5 p-3 rounded-2xl bg-error-500/10 border border-error-500/30 text-error-400 text-xs flex items-center gap-2 animate-in fade-in duration-150"
+          className="mb-5 p-3 rounded-md bg-[#FFF5F5] border border-[#FED7D7] text-[#D94841] text-xs flex items-center gap-2"
         >
           <svg
             className="w-4 h-4 shrink-0"
@@ -130,7 +122,7 @@ function LoginForm() {
         <div>
           <label
             htmlFor="login-email"
-            className="block text-xs font-mono text-text-secondary mb-1.5"
+            className="block text-xs font-semibold text-[#222222] mb-1.5"
           >
             Email address
           </label>
@@ -142,7 +134,7 @@ function LoginForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="you@domain.com"
-            className="w-full px-3.5 py-2.5 rounded-xl glass border border-atmos-700/40 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-accent-500 transition-all"
+            className="w-full px-3.5 py-2.5 rounded-md bg-white border border-[#E5E7EB] text-sm text-[#222222] placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#FFC928] focus:ring-1 focus:ring-[#FFC928] transition-colors"
           />
         </div>
 
@@ -150,13 +142,13 @@ function LoginForm() {
           <div className="flex items-center justify-between mb-1.5">
             <label
               htmlFor="login-password"
-              className="block text-xs font-mono text-text-secondary"
+              className="block text-xs font-semibold text-[#222222]"
             >
               Password
             </label>
             <Link
               href="/forgot-password"
-              className="text-xs text-accent-400 hover:text-accent-300 transition-colors"
+              className="text-xs text-[#6B7280] hover:text-[#222222] transition-colors"
             >
               Forgot password?
             </Link>
@@ -170,13 +162,13 @@ function LoginForm() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="w-full px-3.5 py-2.5 pr-10 rounded-xl glass border border-atmos-700/40 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-accent-500 transition-all"
+              className="w-full px-3.5 py-2.5 pr-10 rounded-md bg-white border border-[#E5E7EB] text-sm text-[#222222] placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#FFC928] focus:ring-1 focus:ring-[#FFC928] transition-colors"
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
               aria-label={showPassword ? "Hide password" : "Show password"}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-secondary"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-[#6B7280]"
             >
               {showPassword ? (
                 <svg
@@ -219,7 +211,7 @@ function LoginForm() {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full mt-2 py-3 px-4 rounded-xl bg-accent-500 hover:bg-accent-400 text-atmos-950 font-bold text-sm tracking-tight shadow-md transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+          className="w-full mt-2 py-2.5 px-4 rounded-md bg-[#FFC928] hover:bg-[#F2B900] text-[#222222] font-bold text-sm shadow-xs transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
         >
           {isSubmitting ? (
             <>
@@ -234,7 +226,7 @@ function LoginForm() {
                   cy="12"
                   r="10"
                   stroke="currentColor"
-                  strokeWidth="4"
+                  strokeWidth={4}
                 />
                 <path
                   className="opacity-75"
@@ -242,7 +234,7 @@ function LoginForm() {
                   d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                 />
               </svg>
-              <span>Authenticating...</span>
+              <span>Signing in...</span>
             </>
           ) : (
             <span>Sign In</span>
@@ -251,11 +243,11 @@ function LoginForm() {
       </form>
 
       {/* Footer Links */}
-      <div className="mt-6 pt-5 border-t border-atmos-700/20 text-center text-xs text-text-secondary">
+      <div className="mt-6 pt-5 border-t border-[#E5E7EB] text-center text-xs text-[#6B7280]">
         Don&apos;t have an account?{" "}
         <Link
           href={`/signup${nextTarget !== "/" ? `?next=${encodeURIComponent(nextTarget)}` : ""}`}
-          className="text-accent-400 font-semibold hover:text-accent-300 transition-colors"
+          className="text-[#222222] font-semibold hover:underline"
         >
           Create an account
         </Link>
@@ -264,9 +256,9 @@ function LoginForm() {
       <div className="mt-3 text-center">
         <Link
           href="/"
-          className="text-[11px] font-mono text-text-muted hover:text-text-secondary transition-colors"
+          className="text-xs text-[#6B7280] hover:text-[#222222] transition-colors"
         >
-          ← Return to public weather observation
+          ← Return to weather home
         </Link>
       </div>
     </div>
@@ -275,10 +267,10 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <div className="min-h-dvh flex items-center justify-center p-4 relative z-10">
+    <div className="min-h-screen bg-white flex items-center justify-center p-4">
       <Suspense
         fallback={
-          <div className="w-full max-w-md p-8 rounded-3xl glass-panel animate-pulse h-96" />
+          <div className="w-full max-w-md p-8 rounded-lg bg-[#F7F7F7] border border-[#E5E7EB] animate-pulse h-96" />
         }
       >
         <LoginForm />

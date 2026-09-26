@@ -13,14 +13,11 @@ export interface LocationSearchProps {
 
 /**
  * Reusable, accessible location search combobox component for ATMOS.
- * - WCAG compliant combobox pattern with keyboard navigation.
- * - Live announcements for screen readers.
- * - Disambiguates duplicate city names via administrative areas and country codes.
- * - Dark-first glassmorphic styling respecting theme tokens and reduced motion.
+ * Clean, bright consumer search with high contrast and keyboard navigation.
  */
 export function LocationSearch({
   onSelectLocation,
-  placeholder = "Search global cities, regions, or coordinates...",
+  placeholder = "Search city or location...",
   className = "",
   autoFocus = false,
 }: LocationSearchProps) {
@@ -114,11 +111,10 @@ export function LocationSearch({
         {/* Search Icon */}
         <div
           aria-hidden="true"
-          className="absolute left-4 pointer-events-none flex items-center justify-center"
-          style={{ color: "var(--text-muted)" }}
+          className="absolute left-3.5 pointer-events-none flex items-center justify-center text-[#6B7280]"
         >
           <svg
-            className="w-5 h-5"
+            className="w-4 h-4"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -160,17 +156,7 @@ export function LocationSearch({
             if (results.length > 0) setIsOpen(true);
           }}
           onKeyDown={handleKeyDown}
-          className="w-full pl-12 pr-12 py-3.5 rounded-2xl text-base transition-all duration-200 outline-none"
-          style={{
-            background: "var(--surface-overlay)",
-            border: isOpen
-              ? "1px solid var(--color-accent-500)"
-              : "1px solid var(--border-default)",
-            color: "var(--text-primary)",
-            boxShadow: isOpen
-              ? "0 0 0 2px rgb(0 212 255 / 0.15), var(--shadow-md)"
-              : "var(--shadow-sm)",
-          }}
+          className="w-full pl-10 pr-10 py-2.5 rounded-md text-sm bg-white border border-[#E5E7EB] text-[#222222] placeholder:text-[#9CA3AF] shadow-xs focus:outline-none focus:border-[#FFC928] focus:ring-1 focus:ring-[#FFC928] transition-colors"
         />
 
         {/* Right Action: Loading Indicator or Clear Button */}
@@ -178,11 +164,7 @@ export function LocationSearch({
           {isSearching && (
             <div
               aria-label="Searching locations"
-              className="w-4 h-4 rounded-full border-2 border-t-transparent animate-spin"
-              style={{
-                borderColor: "var(--color-accent-500)",
-                borderTopColor: "transparent",
-              }}
+              className="w-4 h-4 rounded-full border-2 border-[#FFC928] border-t-transparent animate-spin"
             />
           )}
 
@@ -191,13 +173,10 @@ export function LocationSearch({
               type="button"
               onClick={clear}
               aria-label="Clear search input"
-              className="p-1 rounded-full text-xs hover:opacity-80 transition-opacity focus:outline-none"
-              style={{
-                color: "var(--text-muted)",
-              }}
+              className="p-1 rounded-full text-xs text-[#9CA3AF] hover:text-[#222222] transition-colors focus:outline-none"
             >
               <svg
-                className="w-4 h-4"
+                className="w-3.5 h-3.5"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -233,20 +212,11 @@ export function LocationSearch({
           id={listboxId}
           role="listbox"
           aria-label="Location suggestions"
-          className="absolute z-50 left-0 right-0 mt-2 py-2 rounded-2xl glass overflow-hidden shadow-2xl transition-all"
-          style={{
-            maxHeight: "360px",
-            overflowY: "auto",
-            border: "1px solid var(--border-default)",
-            background: "var(--surface-glass)",
-          }}
+          className="absolute z-50 left-0 right-0 mt-1 py-1 rounded-md bg-white border border-[#E5E7EB] overflow-hidden shadow-md max-h-80 overflow-y-auto"
         >
           {/* Error Message */}
           {error && (
-            <div
-              className="px-4 py-3 text-sm flex items-center gap-2"
-              style={{ color: "var(--color-danger-400)" }}
-            >
+            <div className="px-4 py-3 text-xs flex items-center gap-2 text-[#D94841]">
               <svg
                 className="w-4 h-4 shrink-0"
                 fill="none"
@@ -269,13 +239,10 @@ export function LocationSearch({
             !isSearching &&
             results.length === 0 &&
             query.trim().length >= 2 && (
-              <div
-                className="px-4 py-6 text-center text-sm"
-                style={{ color: "var(--text-muted)" }}
-              >
-                <p className="font-medium">No locations found</p>
-                <p className="text-xs mt-1">
-                  Check spelling or search for a larger nearby city.
+              <div className="px-4 py-5 text-center text-xs text-[#6B7280]">
+                <p className="font-semibold text-[#222222]">No locations found</p>
+                <p className="mt-0.5">
+                  Check spelling or search for a nearby city.
                 </p>
               </div>
             )}
@@ -291,62 +258,34 @@ export function LocationSearch({
                 aria-selected={isSelected}
                 onClick={() => selectLocation(loc)}
                 onMouseEnter={() => setActiveIndex(idx)}
-                className="px-4 py-2.5 cursor-pointer flex items-center justify-between transition-colors duration-150"
-                style={{
-                  background: isSelected
-                    ? "rgb(0 212 255 / 0.12)"
-                    : "transparent",
-                  borderLeft: isSelected
-                    ? "3px solid var(--color-accent-500)"
-                    : "3px solid transparent",
-                }}
+                className={`px-4 py-2 cursor-pointer flex items-center justify-between transition-colors ${
+                  isSelected
+                    ? "bg-[#FFF9E6] border-l-3 border-[#FFC928]"
+                    : "hover:bg-[#F7F7F7] border-l-3 border-transparent"
+                }`}
               >
                 <div className="flex flex-col text-left overflow-hidden mr-3">
                   <div className="flex items-center gap-2">
-                    <span
-                      className="font-medium text-sm truncate"
-                      style={{ color: "var(--text-primary)" }}
-                    >
+                    <span className="font-semibold text-sm text-[#222222] truncate">
                       {loc.name}
                     </span>
                     {loc.countryCode && (
-                      <span
-                        className="px-1.5 py-0.5 rounded text-[11px] font-mono tracking-wider"
-                        style={{
-                          background: "var(--surface-overlay)",
-                          color: "var(--text-secondary)",
-                          border: "1px solid var(--border-subtle)",
-                        }}
-                      >
+                      <span className="px-1.5 py-0.2 rounded text-xs bg-[#F7F7F7] text-[#6B7280] border border-[#E5E7EB]">
                         {loc.countryCode}
                       </span>
                     )}
                   </div>
-                  <span
-                    className="text-xs truncate mt-0.5"
-                    style={{ color: "var(--text-muted)" }}
-                  >
+                  <span className="text-xs text-[#6B7280] truncate mt-0.5">
                     {[loc.adminArea, loc.country].filter(Boolean).join(", ") ||
                       `${loc.latitude.toFixed(2)}°, ${loc.longitude.toFixed(2)}°`}
                   </span>
                 </div>
 
-                {/* Right side metadata: Elevation / Timezone */}
-                <div
-                  className="flex flex-col items-end shrink-0 text-[11px]"
-                  style={{ color: "var(--text-muted)" }}
-                >
+                {/* Right side metadata */}
+                <div className="flex flex-col items-end shrink-0 text-xs text-[#9CA3AF]">
                   {loc.timezone && (
-                    <span className="font-mono text-[10px] opacity-80">
+                    <span className="text-xs">
                       {loc.timezone.split("/").pop()?.replace(/_/g, " ")}
-                    </span>
-                  )}
-                  {loc.population && loc.population > 0 && (
-                    <span className="text-[10px]">
-                      {loc.population / 1000 >= 1000
-                        ? `${(loc.population / 1000000).toFixed(1)}M`
-                        : `${Math.round(loc.population / 1000)}k`}{" "}
-                      pop
                     </span>
                   )}
                 </div>

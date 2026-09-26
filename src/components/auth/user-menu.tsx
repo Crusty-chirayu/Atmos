@@ -37,7 +37,7 @@ export function UserMenu() {
   if (isLoading) {
     return (
       <div
-        className="w-8 h-8 rounded-xl glass animate-pulse"
+        className="w-8 h-8 rounded-md bg-[#F7F7F7] border border-[#E5E7EB] animate-pulse"
         aria-hidden="true"
       />
     );
@@ -47,11 +47,10 @@ export function UserMenu() {
     return (
       <Link
         href="/login"
-        className="px-3 py-1.5 rounded-xl glass text-xs font-medium hover:bg-atmos-700/40 transition-colors flex items-center gap-1.5"
-        style={{ color: "var(--text-secondary)" }}
+        className="px-3 py-1.5 rounded-md bg-white hover:bg-[#F7F7F7] border border-[#E5E7EB] text-xs font-semibold text-[#222222] transition-colors flex items-center gap-1.5 shadow-xs"
       >
         <svg
-          className="w-3.5 h-3.5"
+          className="w-3.5 h-3.5 text-[#6B7280]"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -84,32 +83,21 @@ export function UserMenu() {
         aria-expanded={isOpen}
         aria-haspopup="true"
         aria-label={`User menu for ${displayName}`}
-        className="flex items-center gap-2 p-1.5 rounded-xl glass hover:bg-atmos-700/40 transition-colors focus:outline-none focus:ring-2 focus:ring-accent-500"
+        className="flex items-center gap-2 px-2.5 py-1.5 rounded-md bg-white hover:bg-[#F7F7F7] border border-[#E5E7EB] transition-colors focus:outline-none focus:ring-1 focus:ring-[#FFC928] shadow-xs"
       >
-        <div
-          className="w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-bold tracking-wider"
-          style={{
-            background:
-              "linear-gradient(135deg, var(--color-accent-500), var(--color-accent-700))",
-            color: "var(--color-atmos-950)",
-          }}
-        >
+        <div className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold bg-[#FFF9E6] border border-[#FFC928] text-[#222222]">
           {initials}
         </div>
-        <span
-          className="hidden sm:inline-block text-xs font-medium max-w-[100px] truncate"
-          style={{ color: "var(--text-primary)" }}
-        >
+        <span className="hidden sm:inline-block text-xs font-medium text-[#222222] max-w-[100px] truncate">
           {displayName}
         </span>
         <svg
-          className={`w-3 h-3 transition-transform ${isOpen ? "rotate-180" : ""}`}
+          className={`w-3 h-3 text-[#6B7280] transition-transform ${isOpen ? "rotate-180" : ""}`}
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
           strokeWidth={2}
           aria-hidden="true"
-          style={{ color: "var(--text-muted)" }}
         >
           <path
             strokeLinecap="round"
@@ -123,25 +111,14 @@ export function UserMenu() {
         <div
           role="menu"
           aria-orientation="vertical"
-          className="absolute right-0 mt-2 w-56 rounded-2xl glass-panel p-2 shadow-2xl z-50 animate-in fade-in zoom-in-95 duration-100"
-          style={{
-            background: "var(--color-surface-overlay)",
-            border: "1px solid var(--border-primary)",
-            backdropFilter: "blur(20px)",
-          }}
+          className="absolute right-0 mt-1.5 w-56 rounded-md bg-white p-1.5 shadow-md z-50 border border-[#E5E7EB]"
         >
           {/* User Info Header */}
-          <div className="px-3 py-2 border-b border-atmos-700/30">
-            <p
-              className="text-xs font-semibold truncate"
-              style={{ color: "var(--text-primary)" }}
-            >
+          <div className="px-3 py-2 border-b border-[#E5E7EB]">
+            <p className="text-xs font-bold text-[#222222] truncate">
               {displayName}
             </p>
-            <p
-              className="text-[11px] font-mono truncate"
-              style={{ color: "var(--text-muted)" }}
-            >
+            <p className="text-xs text-[#6B7280] truncate">
               {user.email}
             </p>
           </div>
@@ -152,12 +129,11 @@ export function UserMenu() {
               href="/account"
               role="menuitem"
               onClick={() => setIsOpen(false)}
-              className="flex items-center justify-between px-3 py-2 rounded-xl text-xs hover:bg-atmos-700/30 transition-colors"
-              style={{ color: "var(--text-primary)" }}
+              className="flex items-center justify-between px-3 py-1.5 rounded-md text-xs text-[#222222] hover:bg-[#F7F7F7] transition-colors"
             >
               <span className="flex items-center gap-2">
                 <svg
-                  className="w-4 h-4 text-accent-400"
+                  className="w-4 h-4 text-[#6B7280]"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -169,7 +145,7 @@ export function UserMenu() {
                     d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                   />
                 </svg>
-                Account & Preferences
+                Account &amp; Settings
               </span>
             </Link>
 
@@ -177,12 +153,11 @@ export function UserMenu() {
               href="/account#saved-locations"
               role="menuitem"
               onClick={() => setIsOpen(false)}
-              className="flex items-center justify-between px-3 py-2 rounded-xl text-xs hover:bg-atmos-700/30 transition-colors"
-              style={{ color: "var(--text-primary)" }}
+              className="flex items-center justify-between px-3 py-1.5 rounded-md text-xs text-[#222222] hover:bg-[#F7F7F7] transition-colors"
             >
               <span className="flex items-center gap-2">
                 <svg
-                  className="w-4 h-4 text-accent-400"
+                  className="w-4 h-4 text-[#6B7280]"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -197,20 +172,14 @@ export function UserMenu() {
                 Saved Locations
               </span>
               {savedLocations.length > 0 && (
-                <span
-                  className="px-1.5 py-0.5 rounded-full text-[10px] font-mono font-bold"
-                  style={{
-                    background: "rgb(0 212 255 / 0.15)",
-                    color: "var(--color-accent-400)",
-                  }}
-                >
+                <span className="px-1.5 py-0.2 rounded text-xs font-semibold bg-[#F7F7F7] text-[#222222] border border-[#E5E7EB]">
                   {savedLocations.length}
                 </span>
               )}
             </Link>
           </div>
 
-          <div className="border-t border-atmos-700/30 pt-1">
+          <div className="border-t border-[#E5E7EB] pt-1">
             <button
               type="button"
               role="menuitem"
@@ -218,7 +187,7 @@ export function UserMenu() {
                 setIsOpen(false);
                 await signOut();
               }}
-              className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-error-400 hover:bg-error-500/10 transition-colors text-left"
+              className="w-full flex items-center gap-2 px-3 py-1.5 rounded-md text-xs text-[#D94841] hover:bg-[#FFF5F5] transition-colors text-left"
             >
               <svg
                 className="w-4 h-4"

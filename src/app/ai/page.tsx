@@ -10,10 +10,7 @@ export const metadata: Metadata = {
 
 export default function AiPage() {
   return (
-    <main className="min-h-screen relative overflow-hidden bg-background text-foreground">
-      {/* Background radial gradient */}
-      <div className="fixed inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_top_right,rgba(34,211,238,0.06),transparent_50%),radial-gradient(ellipse_at_bottom_left,rgba(99,102,241,0.06),transparent_50%)]" />
-
+    <main className="min-h-screen relative overflow-hidden bg-white text-[#222222]">
       {/* Global Navigation */}
       <HomeNav />
 

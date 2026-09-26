@@ -62,10 +62,10 @@ function SignupForm() {
 
   if (verificationPending) {
     return (
-      <div className="w-full max-w-md p-6 sm:p-8 rounded-3xl glass-panel relative overflow-hidden shadow-2xl border border-atmos-700/30 text-center">
-        <div className="w-12 h-12 rounded-2xl bg-accent-500/10 border border-accent-500/30 text-accent-400 mx-auto flex items-center justify-center mb-4">
+      <div className="w-full max-w-md p-6 sm:p-8 rounded-lg bg-white relative overflow-hidden shadow-xs border border-[#E5E7EB] text-center">
+        <div className="w-12 h-12 rounded-full bg-[#FFF9E6] border border-[#FFC928] text-[#222222] mx-auto flex items-center justify-center mb-4">
           <svg
-            className="w-6 h-6"
+            className="w-6 h-6 text-[#FFC928]"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -78,17 +78,16 @@ function SignupForm() {
             />
           </svg>
         </div>
-        <h2 className="text-xl font-bold tracking-tight text-text-primary mb-2">
+        <h2 className="text-xl font-bold tracking-tight text-[#222222] mb-2">
           Verify your email
         </h2>
-        <p className="text-xs sm:text-sm text-text-secondary leading-relaxed mb-6">
+        <p className="text-xs sm:text-sm text-[#6B7280] leading-relaxed mb-6">
           We&apos;ve sent a confirmation link to{" "}
-          <strong className="text-text-primary">{email}</strong>. Please check
-          your inbox and click the link to activate your ATMOS account.
+          <strong className="text-[#222222]">{email}</strong>. Please check your inbox and click the link to activate your ATMOS account.
         </p>
         <Link
           href="/login"
-          className="inline-block py-2.5 px-6 rounded-xl bg-accent-500 text-atmos-950 font-bold text-xs hover:bg-accent-400 transition-colors"
+          className="inline-block py-2.5 px-6 rounded-md bg-[#FFC928] hover:bg-[#F2B900] text-[#222222] font-bold text-xs transition-colors shadow-xs"
         >
           Proceed to Sign In
         </Link>
@@ -97,36 +96,30 @@ function SignupForm() {
   }
 
   return (
-    <div className="w-full max-w-md p-6 sm:p-8 rounded-3xl glass-panel relative overflow-hidden shadow-2xl border border-atmos-700/30">
-      {/* Atmosphere Glow */}
-      <div
-        aria-hidden="true"
-        className="absolute -top-24 -right-24 w-56 h-56 rounded-full pointer-events-none opacity-20 blur-3xl"
-        style={{
-          background: "radial-gradient(circle, #00d4ff 0%, transparent 70%)",
-        }}
-      />
-
+    <div className="w-full max-w-md p-6 sm:p-8 rounded-lg bg-white relative overflow-hidden shadow-xs border border-[#E5E7EB]">
       {/* Header */}
       <div className="text-center mb-6">
         <Link
           href="/"
-          className="inline-block font-display font-black text-3xl tracking-tight text-gradient mb-2"
+          className="inline-flex items-center gap-2 mb-3 focus:outline-none"
         >
-          ATMOS
+          <span className="w-3 h-3 rounded-full bg-[#FFC928]" />
+          <span className="font-bold text-2xl tracking-tight text-[#222222]">
+            ATMOS
+          </span>
         </Link>
-        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-text-primary">
-          Create an account
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[#222222]">
+          Create your account
         </h1>
-        <p className="text-xs sm:text-sm text-text-secondary mt-1">
-          Save your favourite planetary coordinates and custom display settings
+        <p className="text-xs sm:text-sm text-[#6B7280] mt-1">
+          Save favorite locations and configure personalized weather alerts
         </p>
       </div>
 
       {!isConfigured && (
         <div
           role="status"
-          className="mb-6 p-3.5 rounded-2xl glass border border-warning-500/30 text-warning-300 text-xs flex items-start gap-2.5"
+          className="mb-5 p-3.5 rounded-md bg-[#FFFBEB] border border-[#FDE68A] text-[#92400E] text-xs flex items-start gap-2.5"
         >
           <svg
             className="w-4 h-4 shrink-0 mt-0.5"
@@ -143,10 +136,8 @@ function SignupForm() {
           </svg>
           <div>
             <p className="font-semibold">Local Environment Notice</p>
-            <p className="mt-0.5 text-text-secondary text-[11px] leading-relaxed">
-              Supabase Auth is unconfigured. Full account creation requires
-              configured Supabase environment keys. Anonymous browsing is
-              available without an account.
+            <p className="mt-0.5 text-[#B45309] text-xs leading-relaxed">
+              Supabase Auth is unconfigured in this environment. Anonymous weather exploration remains fully operational.
             </p>
           </div>
         </div>
@@ -155,7 +146,7 @@ function SignupForm() {
       {errorMessage && (
         <div
           role="alert"
-          className="mb-5 p-3 rounded-2xl bg-error-500/10 border border-error-500/30 text-error-400 text-xs flex items-center gap-2 animate-in fade-in duration-150"
+          className="mb-5 p-3 rounded-md bg-[#FFF5F5] border border-[#FED7D7] text-[#D94841] text-xs flex items-center gap-2"
         >
           <svg
             className="w-4 h-4 shrink-0"
@@ -178,24 +169,25 @@ function SignupForm() {
         <div>
           <label
             htmlFor="signup-name"
-            className="block text-xs font-mono text-text-secondary mb-1.5"
+            className="block text-xs font-semibold text-[#222222] mb-1.5"
           >
-            Display name (optional)
+            Name (optional)
           </label>
           <input
             id="signup-name"
             type="text"
+            autoComplete="name"
             value={displayName}
             onChange={(e) => setDisplayName(e.target.value)}
-            placeholder="Ada Lovelace"
-            className="w-full px-3.5 py-2.5 rounded-xl glass border border-atmos-700/40 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-accent-500 transition-all"
+            placeholder="Alex Weather"
+            className="w-full px-3.5 py-2.5 rounded-md bg-white border border-[#E5E7EB] text-sm text-[#222222] placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#FFC928] focus:ring-1 focus:ring-[#FFC928] transition-colors"
           />
         </div>
 
         <div>
           <label
             htmlFor="signup-email"
-            className="block text-xs font-mono text-text-secondary mb-1.5"
+            className="block text-xs font-semibold text-[#222222] mb-1.5"
           >
             Email address
           </label>
@@ -207,16 +199,16 @@ function SignupForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="you@domain.com"
-            className="w-full px-3.5 py-2.5 rounded-xl glass border border-atmos-700/40 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-accent-500 transition-all"
+            className="w-full px-3.5 py-2.5 rounded-md bg-white border border-[#E5E7EB] text-sm text-[#222222] placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#FFC928] focus:ring-1 focus:ring-[#FFC928] transition-colors"
           />
         </div>
 
         <div>
           <label
             htmlFor="signup-password"
-            className="block text-xs font-mono text-text-secondary mb-1.5"
+            className="block text-xs font-semibold text-[#222222] mb-1.5"
           >
-            Password
+            Password (min. 8 characters)
           </label>
           <div className="relative">
             <input
@@ -226,14 +218,14 @@ function SignupForm() {
               autoComplete="new-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Min. 8 chars, 1 uppercase, 1 number"
-              className="w-full px-3.5 py-2.5 pr-10 rounded-xl glass border border-atmos-700/40 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-accent-500 transition-all"
+              placeholder="••••••••"
+              className="w-full px-3.5 py-2.5 pr-10 rounded-md bg-white border border-[#E5E7EB] text-sm text-[#222222] placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#FFC928] focus:ring-1 focus:ring-[#FFC928] transition-colors"
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
               aria-label={showPassword ? "Hide password" : "Show password"}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-secondary"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-[#6B7280]"
             >
               {showPassword ? (
                 <svg
@@ -271,16 +263,12 @@ function SignupForm() {
               )}
             </button>
           </div>
-          <p className="mt-1 text-[11px] text-text-muted">
-            Must contain at least 8 characters, one capital letter, and one
-            number.
-          </p>
         </div>
 
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full mt-2 py-3 px-4 rounded-xl bg-accent-500 hover:bg-accent-400 text-atmos-950 font-bold text-sm tracking-tight shadow-md transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+          className="w-full mt-2 py-2.5 px-4 rounded-md bg-[#FFC928] hover:bg-[#F2B900] text-[#222222] font-bold text-sm shadow-xs transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
         >
           {isSubmitting ? (
             <>
@@ -295,7 +283,7 @@ function SignupForm() {
                   cy="12"
                   r="10"
                   stroke="currentColor"
-                  strokeWidth="4"
+                  strokeWidth={4}
                 />
                 <path
                   className="opacity-75"
@@ -303,7 +291,7 @@ function SignupForm() {
                   d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                 />
               </svg>
-              <span>Creating Account...</span>
+              <span>Creating account...</span>
             </>
           ) : (
             <span>Create Account</span>
@@ -312,11 +300,11 @@ function SignupForm() {
       </form>
 
       {/* Footer Links */}
-      <div className="mt-6 pt-5 border-t border-atmos-700/20 text-center text-xs text-text-secondary">
+      <div className="mt-6 pt-5 border-t border-[#E5E7EB] text-center text-xs text-[#6B7280]">
         Already have an account?{" "}
         <Link
           href={`/login${nextTarget !== "/account" ? `?next=${encodeURIComponent(nextTarget)}` : ""}`}
-          className="text-accent-400 font-semibold hover:text-accent-300 transition-colors"
+          className="text-[#222222] font-semibold hover:underline"
         >
           Sign in
         </Link>
@@ -325,9 +313,9 @@ function SignupForm() {
       <div className="mt-3 text-center">
         <Link
           href="/"
-          className="text-[11px] font-mono text-text-muted hover:text-text-secondary transition-colors"
+          className="text-xs text-[#6B7280] hover:text-[#222222] transition-colors"
         >
-          ← Return to public weather observation
+          ← Return to weather home
         </Link>
       </div>
     </div>
@@ -336,10 +324,10 @@ function SignupForm() {
 
 export default function SignupPage() {
   return (
-    <div className="min-h-dvh flex items-center justify-center p-4 relative z-10">
+    <div className="min-h-screen bg-white flex items-center justify-center p-4">
       <Suspense
         fallback={
-          <div className="w-full max-w-md p-8 rounded-3xl glass-panel animate-pulse h-96" />
+          <div className="w-full max-w-md p-8 rounded-lg bg-[#F7F7F7] border border-[#E5E7EB] animate-pulse h-96" />
         }
       >
         <SignupForm />

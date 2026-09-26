@@ -5,7 +5,7 @@ import { useEffect } from "react";
 /**
  * ATMOS root error boundary.
  * Catches unexpected runtime errors in the root layout tree.
- * Per AGENT_RULES §4: every route must have a designed error state.
+ * Clean, bright consumer error state.
  */
 export default function GlobalError({
   error,
@@ -15,12 +15,11 @@ export default function GlobalError({
   reset: () => void;
 }) {
   useEffect(() => {
-    // TODO (M8): pipe to structured observability/error reporting
     console.error("[ATMOS] Unhandled error:", error.digest ?? error.message);
   }, [error]);
 
   return (
-    <html lang="en" data-theme="dark">
+    <html lang="en">
       <body
         style={{
           margin: 0,
@@ -28,14 +27,14 @@ export default function GlobalError({
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "#04060d",
-          color: "#eef4fb",
-          fontFamily: "system-ui, sans-serif",
+          background: "#FFFFFF",
+          color: "#222222",
+          fontFamily: "Inter, system-ui, -apple-system, sans-serif",
           textAlign: "center",
           padding: "2rem",
         }}
       >
-        <div style={{ maxWidth: 480 }}>
+        <div style={{ maxWidth: 460 }}>
           <p
             aria-hidden="true"
             style={{ fontSize: "3rem", marginBottom: "1rem" }}
@@ -46,25 +45,28 @@ export default function GlobalError({
             style={{
               fontSize: "1.5rem",
               fontWeight: 700,
-              marginBottom: "0.75rem",
+              marginBottom: "0.5rem",
+              color: "#222222",
+              letterSpacing: "-0.01em",
             }}
           >
             Something went wrong
           </h1>
           <p
             style={{
-              color: "#8aace0",
+              color: "#6B7280",
+              fontSize: "0.9375rem",
               marginBottom: "1.5rem",
               lineHeight: 1.6,
             }}
           >
-            ATMOS encountered an unexpected error. Your data is safe.
+            ATMOS encountered an unexpected error loading weather data. Please try refreshing.
           </p>
           {error.digest && (
             <p
               style={{
                 fontSize: "0.75rem",
-                color: "#5a7eb5",
+                color: "#9CA3AF",
                 marginBottom: "1.5rem",
                 fontFamily: "monospace",
               }}
@@ -76,14 +78,17 @@ export default function GlobalError({
             onClick={reset}
             style={{
               padding: "0.625rem 1.5rem",
-              background: "#00d4ff",
-              color: "#04060d",
-              border: "none",
-              borderRadius: "0.5rem",
+              background: "#FFC928",
+              color: "#222222",
+              border: "1px solid #E5E7EB",
+              borderRadius: "6px",
               fontWeight: 600,
               cursor: "pointer",
-              fontSize: "0.9rem",
+              fontSize: "0.875rem",
+              transition: "background-color 0.15s ease",
             }}
+            onMouseOver={(e) => (e.currentTarget.style.background = "#F2B900")}
+            onMouseOut={(e) => (e.currentTarget.style.background = "#FFC928")}
           >
             Try again
           </button>

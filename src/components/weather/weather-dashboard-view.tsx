@@ -15,11 +15,14 @@ import { WeatherMap2D } from "@/components/maps/weather-map-2d";
 import { HistoricalExplorer } from "./historical-explorer";
 import { SavedLocationsOverview } from "./saved-locations-overview";
 import { UserMenu } from "@/components/auth/user-menu";
+import { NotificationCenter } from "@/components/notifications/notification-center";
 import {
   formatLocalTime,
   formatLocalDate,
 } from "@/lib/weather/utils/date-format";
 import { useAuth } from "@/lib/auth/auth-context";
+import { DeveloperFooter } from "@/components/common/developer-credit";
+import { useCurrentLocation } from "@/lib/location/location-context";
 
 const DEFAULT_INITIAL_LOCATION: GeocodingLocation = {
   id: "open-meteo:2643743",
@@ -48,8 +51,9 @@ export function WeatherDashboardView({
   initialUnits = "metric",
 }: WeatherDashboardViewProps) {
   const { preferences, updatePreferences } = useAuth();
-  const [selectedLocation, setSelectedLocation] =
-    useState<GeocodingLocation>(initialLocation);
+  const { activeLocation, setActiveLocation } = useCurrentLocation();
+  const selectedLocation = activeLocation || initialLocation;
+
   const [userUnitOverride, setUserUnitOverride] = useState<
     "metric" | "imperial" | null
   >(null);
@@ -67,26 +71,6 @@ export function WeatherDashboardView({
   const [error, setError] = useState<string | null>(null);
   const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null);
   const [refreshCount, setRefreshCount] = useState<number>(0);
-
-  const [currentTheme, setCurrentTheme] = useState<"dark" | "light">(() => {
-    if (typeof document !== "undefined") {
-      return document.documentElement.getAttribute("data-theme") === "light"
-        ? "light"
-        : "dark";
-    }
-    return "dark";
-  });
-
-  const toggleTheme = () => {
-    const nextTheme = currentTheme === "dark" ? "light" : "dark";
-    setCurrentTheme(nextTheme);
-    document.documentElement.setAttribute("data-theme", nextTheme);
-    try {
-      localStorage.setItem("atmos-theme", nextTheme);
-    } catch {
-      // Ignored
-    }
-  };
 
   const handleToggleUnits = () => {
     const nextUnits = units === "metric" ? "imperial" : "metric";
@@ -174,9 +158,9 @@ export function WeatherDashboardView({
   // Handle map coordinate click
   const handleMapSelect = useCallback(
     (coords: { latitude: number; longitude: number }) => {
-      setSelectedLocation((prev) => ({
-        ...prev,
+      const newLoc: GeocodingLocation = {
         id: `custom:${coords.latitude.toFixed(4)},${coords.longitude.toFixed(4)}`,
+        providerId: "map-click",
         name: `Lat ${coords.latitude.toFixed(2)}°, Lon ${coords.longitude.toFixed(2)}°`,
         latitude: coords.latitude,
         longitude: coords.longitude,
@@ -184,18 +168,19 @@ export function WeatherDashboardView({
         countryCode: undefined,
         adminArea: undefined,
         formattedAddress: `${coords.latitude.toFixed(4)}, ${coords.longitude.toFixed(4)}`,
-      }));
+      };
+      setActiveLocation(newLoc);
     },
-    []
+    [setActiveLocation]
   );
 
   const nowIso = new Date().toISOString();
   const locationTz = selectedLocation.timezone || "UTC";
 
   return (
-    <div className="min-h-screen bg-atmos-950 text-text-primary flex flex-col antialiased selection:bg-accent-500/20 selection:text-accent-400">
+    <div className="min-h-screen bg-white text-[#222222] flex flex-col antialiased">
       {/* Top Application Header */}
-      <header className="sticky top-0 z-30 w-full glass border-b border-atmos-700/20 px-4 sm:px-8 py-3 backdrop-blur-xl">
+      <header className="sticky top-0 z-30 w-full bg-white border-b border-[#E5E7EB] px-4 sm:px-8 py-3">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
           {/* Brand & Route Links */}
           <div className="flex items-center gap-4">
@@ -204,39 +189,48 @@ export function WeatherDashboardView({
               className="flex items-center gap-2 group focus:outline-none"
               aria-label="ATMOS Homepage"
             >
-              <span className="font-display font-black text-2xl tracking-tight text-gradient">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#FFC928]" />
+              <span className="font-bold text-xl sm:text-2xl tracking-tight text-[#222222]">
                 ATMOS
               </span>
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-accent-500/10 text-accent-400 border border-accent-500/20">
+              <span className="px-2 py-0.5 rounded text-xs font-semibold bg-[#F7F7F7] text-[#6B7280] border border-[#E5E7EB]">
                 Dashboard
               </span>
             </Link>
 
-            <nav className="hidden md:flex items-center gap-2 text-xs font-medium text-text-secondary">
+            <nav className="hidden md:flex items-center gap-1 text-sm font-medium text-[#6B7280]">
               <Link
                 href="/"
-                className="px-2.5 py-1 rounded-lg hover:text-text-primary hover:bg-atmos-800/40 transition-colors"
+                className="px-2.5 py-1 rounded-md hover:text-[#222222] hover:bg-[#F7F7F7] transition-colors"
               >
-                Planetary View
+                Globe View
               </Link>
-              <span className="text-atmos-700">/</span>
-              <span className="text-text-primary font-semibold">
-                Weather Intelligence
-              </span>
+              <Link
+                href="/ai"
+                className="px-2.5 py-1 rounded-md hover:text-[#222222] hover:bg-[#F7F7F7] transition-colors"
+              >
+                AI Assistant
+              </Link>
+              <Link
+                href="/about"
+                className="px-2.5 py-1 rounded-md hover:text-[#222222] hover:bg-[#F7F7F7] transition-colors"
+              >
+                About
+              </Link>
             </nav>
           </div>
 
           {/* Location Search Bar in Header */}
           <div className="flex-1 max-w-md min-w-[240px]">
             <LocationSearch
-              onSelectLocation={(loc: GeocodingLocation) =>
-                setSelectedLocation(loc)
-              }
-              placeholder="Search city, region, or coordinates..."
+              onSelectLocation={(loc: GeocodingLocation) => {
+                setActiveLocation(loc);
+              }}
+              placeholder="Search city, state, or country..."
             />
           </div>
 
-          {/* Action Utilities (Units, Theme, UserMenu, Refresh) */}
+          {/* Action Utilities (Units, Refresh, Notifications, UserMenu) */}
           <div className="flex items-center gap-2 sm:gap-3">
             {/* Refresh Button */}
             <button
@@ -245,10 +239,10 @@ export function WeatherDashboardView({
               disabled={isLoading}
               aria-label="Refresh weather data"
               title="Refresh forecast data"
-              className="p-2 rounded-xl glass text-xs text-text-secondary hover:text-text-primary hover:bg-atmos-700/40 transition-colors"
+              className="p-1.5 rounded-md bg-[#F7F7F7] hover:bg-[#E5E7EB] border border-[#E5E7EB] text-xs text-[#222222] transition-colors"
             >
               <svg
-                className={`w-4 h-4 ${isLoading ? "animate-spin text-accent-400" : ""}`}
+                className={`w-4 h-4 ${isLoading ? "animate-spin text-[#FFC928]" : ""}`}
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -268,48 +262,13 @@ export function WeatherDashboardView({
               onClick={handleToggleUnits}
               aria-label={`Switch units to ${units === "metric" ? "Imperial (°F)" : "Metric (°C)"}`}
               title="Toggle Metric / Imperial"
-              className="px-2.5 py-1.5 rounded-xl glass text-xs font-mono font-medium hover:bg-atmos-700/40 transition-colors text-text-secondary hover:text-text-primary"
+              className="px-2.5 py-1.5 rounded-md bg-[#F7F7F7] hover:bg-[#E5E7EB] border border-[#E5E7EB] text-xs font-semibold text-[#222222] transition-colors"
             >
-              {units === "metric" ? "°C · km/h" : "°F · mph"}
+              {units === "metric" ? "°C" : "°F"}
             </button>
 
-            {/* Dark/Light Theme Switcher */}
-            <button
-              type="button"
-              onClick={toggleTheme}
-              aria-label={`Switch to ${currentTheme === "dark" ? "light" : "dark"} theme`}
-              className="p-2 rounded-xl glass text-xs hover:bg-atmos-700/40 transition-colors text-text-secondary hover:text-text-primary"
-            >
-              {currentTheme === "dark" ? (
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-                  />
-                </svg>
-              )}
-            </button>
+            {/* Weather Alerts Notification Center */}
+            <NotificationCenter />
 
             {/* Authenticated User Menu */}
             <UserMenu />
@@ -322,16 +281,16 @@ export function WeatherDashboardView({
         {/* Selected Location Banner & Local Time */}
         <section
           aria-label="Location and time header"
-          className="flex flex-wrap items-end justify-between gap-4 pb-2 border-b border-atmos-700/20"
+          className="flex flex-wrap items-end justify-between gap-4 pb-3 border-b border-[#E5E7EB]"
         >
           <div>
             <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-accent-400 animate-pulse" />
-              <h1 className="text-2xl sm:text-3xl font-display font-extrabold text-text-primary tracking-tight">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#FFC928]" />
+              <h1 className="text-2xl sm:text-3xl font-bold text-[#222222] tracking-tight">
                 {selectedLocation.name}
               </h1>
               {selectedLocation.country && (
-                <span className="text-sm font-medium text-text-muted">
+                <span className="text-sm font-medium text-[#6B7280]">
                   ·{" "}
                   {selectedLocation.adminArea
                     ? `${selectedLocation.adminArea}, `
@@ -341,10 +300,10 @@ export function WeatherDashboardView({
               )}
             </div>
 
-            <div className="flex items-center gap-3 text-xs font-mono text-text-muted mt-1">
+            <div className="flex items-center gap-3 text-xs text-[#6B7280] mt-1">
               <span>{formatLocalDate(nowIso, locationTz, "long")}</span>
               <span>·</span>
-              <span className="text-text-secondary font-semibold">
+              <span className="font-semibold text-[#222222]">
                 {formatLocalTime(nowIso, locationTz)} ({locationTz})
               </span>
               {lastRefreshed && (
@@ -359,19 +318,19 @@ export function WeatherDashboardView({
             </div>
           </div>
 
-          {/* Section Navigation Pills */}
+          {/* Section Navigation Tabs */}
           <div
             role="tablist"
             aria-label="Dashboard sections"
-            className="p-1 rounded-2xl glass flex items-center gap-1 overflow-x-auto max-w-full"
+            className="p-0.5 rounded-md bg-[#F7F7F7] border border-[#E5E7EB] flex items-center gap-0.5 overflow-x-auto max-w-full"
           >
             {[
               { id: "all", label: "Full Dashboard" },
               { id: "overview", label: "Conditions" },
-              { id: "charts", label: "Telemetry Charts" },
-              { id: "map", label: "2D Radar" },
+              { id: "charts", label: "Charts" },
+              { id: "map", label: "Radar & Map" },
               { id: "historical", label: "Historical ERA5" },
-              { id: "locations", label: "Multi-City" },
+              { id: "locations", label: "Saved Cities" },
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -379,10 +338,10 @@ export function WeatherDashboardView({
                 role="tab"
                 aria-selected={activeSection === tab.id}
                 onClick={() => setActiveSection(tab.id as DashboardSection)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all ${
+                className={`px-3 py-1 rounded text-xs font-medium whitespace-nowrap transition-all ${
                   activeSection === tab.id
-                    ? "bg-accent-500 text-atmos-950 font-bold shadow-md"
-                    : "text-text-secondary hover:text-text-primary hover:bg-atmos-700/30"
+                    ? "bg-[#FFC928] text-[#222222] font-semibold shadow-xs"
+                    : "text-[#6B7280] hover:text-[#222222]"
                 }`}
               >
                 {tab.label}
@@ -393,15 +352,15 @@ export function WeatherDashboardView({
 
         {/* Error Notification */}
         {error && (
-          <div className="p-4 rounded-2xl border border-rose-500/40 bg-rose-500/10 text-rose-300 text-xs flex items-center justify-between gap-4 animate-in fade-in">
+          <div className="p-3.5 rounded-md border border-[#FED7D7] bg-[#FFF5F5] text-[#D94841] text-xs flex items-center justify-between gap-4">
             <div className="flex items-center gap-2">
-              <span className="font-bold">Forecast Notice:</span>
+              <span className="font-bold">Notice:</span>
               <span>{error}</span>
             </div>
             <button
               type="button"
               onClick={() => setRefreshCount((c) => c + 1)}
-              className="px-3 py-1.5 rounded-xl bg-rose-500 text-white font-bold text-xs hover:bg-rose-400 transition-colors shrink-0 shadow-sm"
+              className="px-3 py-1.5 rounded-md bg-[#D94841] text-white font-semibold text-xs hover:bg-[#C62828] transition-colors shrink-0 shadow-xs"
             >
               Retry
             </button>
@@ -413,8 +372,8 @@ export function WeatherDashboardView({
 
         {/* Active Weather Content */}
         {weatherBundle && (
-          <div className="space-y-8">
-            {/* Section 1: Overview & Hero Conditions */}
+          <div className="space-y-6">
+            {/* Section 1: Overview & Conditions */}
             {(activeSection === "all" || activeSection === "overview") && (
               <section
                 id="section-overview"
@@ -453,7 +412,7 @@ export function WeatherDashboardView({
               <section
                 id="section-charts"
                 aria-label="Interactive weather charts"
-                className="glass rounded-3xl p-5 sm:p-7 border border-atmos-700/30"
+                className="rounded-lg bg-white border border-[#E5E7EB] shadow-xs p-5 sm:p-7"
               >
                 <WeatherChartsContainer
                   hourly={weatherBundle.hourly}
@@ -469,7 +428,7 @@ export function WeatherDashboardView({
               <section
                 id="section-map"
                 aria-label="Interactive weather map"
-                className="glass rounded-3xl p-5 sm:p-7 border border-atmos-700/30"
+                className="rounded-lg bg-white border border-[#E5E7EB] shadow-xs p-5 sm:p-7"
               >
                 <WeatherMap2D
                   location={selectedLocation}
@@ -486,7 +445,7 @@ export function WeatherDashboardView({
               <section
                 id="section-historical"
                 aria-label="Historical reanalysis explorer"
-                className="glass rounded-3xl p-5 sm:p-7 border border-atmos-700/30"
+                className="rounded-lg bg-white border border-[#E5E7EB] shadow-xs p-5 sm:p-7"
               >
                 <HistoricalExplorer
                   latitude={selectedLocation.latitude}
@@ -503,11 +462,13 @@ export function WeatherDashboardView({
               <section
                 id="section-locations"
                 aria-label="Saved locations overview"
-                className="glass rounded-3xl p-5 sm:p-7 border border-atmos-700/30"
+                className="rounded-lg bg-white border border-[#E5E7EB] shadow-xs p-5 sm:p-7"
               >
                 <SavedLocationsOverview
                   currentLocation={selectedLocation}
-                  onSelectLocation={(loc) => setSelectedLocation(loc)}
+                  onSelectLocation={(loc) => {
+                    setActiveLocation(loc);
+                  }}
                   units={units}
                 />
               </section>
@@ -517,24 +478,37 @@ export function WeatherDashboardView({
       </main>
 
       {/* Footer */}
-      <footer className="w-full border-t border-atmos-700/20 py-6 px-4 text-center text-xs font-mono text-text-muted">
+      <footer className="w-full border-t border-[#E5E7EB] py-6 px-4 text-center text-xs text-[#626B78] space-y-3">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
-          <span>ATMOS · Premium Global Weather Intelligence</span>
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-[#FFC928]" />
+            <span className="font-semibold text-[#222222]">ATMOS</span>
+            <span>· Clean Weather Intelligence</span>
+          </div>
           <div className="flex items-center gap-4">
             <Link
               href="/"
-              className="hover:text-text-primary transition-colors"
+              className="hover:text-[#222222] transition-colors"
             >
-              Planetary Globe
+              Globe
+            </Link>
+            <Link
+              href="/ai"
+              className="hover:text-[#222222] transition-colors"
+            >
+              AI Assistant
             </Link>
             <Link
               href="/account"
-              className="hover:text-text-primary transition-colors"
+              className="hover:text-[#222222] transition-colors"
             >
-              Account Settings
+              Account
             </Link>
             <span>Open-Meteo & ECMWF ERA5</span>
           </div>
+        </div>
+        <div className="pt-2 border-t border-[#E5E7EB]/60">
+          <DeveloperFooter />
         </div>
       </footer>
     </div>

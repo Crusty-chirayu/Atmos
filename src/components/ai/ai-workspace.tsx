@@ -3,9 +3,11 @@
 import React, { useState, useEffect, useRef, useTransition } from "react";
 import Link from "next/link";
 import { VoiceInputButton, VoicePlayerButton } from "./voice-controls";
+import { MarkdownMessage } from "./markdown-message";
 import { LocationSearch } from "../weather/location-search";
 import { GeocodingLocation } from "@/lib/geocoding/domain/types";
 import { useAuth } from "@/lib/auth/auth-context";
+import { useCurrentLocation } from "@/lib/location/location-context";
 
 interface Message {
   id: string;
@@ -25,23 +27,17 @@ interface ConversationItem {
 
 export function AiWorkspace() {
   const { user } = useAuth();
+  const { activeLocation, setActiveLocation } = useCurrentLocation();
   const [mode, setMode] = useState<"general" | "planning" | "comparison">(
     "general"
   );
 
-  // Selected location
-  const [selectedLocation, setSelectedLocation] = useState<GeocodingLocation>({
-    id: "default-london",
-    providerId: "open-meteo:2643743",
-    formattedAddress: "London, England, United Kingdom",
-    name: "London",
-    latitude: 51.5074,
-    longitude: -0.1278,
-    country: "United Kingdom",
-    countryCode: "GB",
-    adminArea: "England",
-    timezone: "Europe/London",
-  });
+  // Selected location bound directly to global active location
+  const selectedLocation = activeLocation;
+
+  const handleSelectLocation = (loc: GeocodingLocation) => {
+    setActiveLocation(loc);
+  };
 
   // Secondary location for comparison
   const [comparisonLocation, setComparisonLocation] =
@@ -69,6 +65,10 @@ export function AiWorkspace() {
   >(undefined);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
+  const [errorState, setErrorState] = useState<{
+    message: string;
+    query: string;
+  } | null>(null);
   const [isPending, startTransition] = useTransition();
 
   // Load user conversations if authenticated
@@ -92,6 +92,7 @@ export function AiWorkspace() {
 
   const loadConversationHistory = async (convId: string) => {
     setActiveConversationId(convId);
+    setErrorState(null);
     try {
       const res = await fetch(`/api/ai/conversations/${convId}`);
       if (res.ok) {
@@ -128,6 +129,7 @@ export function AiWorkspace() {
     setActiveConversationId(undefined);
     setMessages([]);
     setInput("");
+    setErrorState(null);
   };
 
   const handleDeleteConversation = async (
@@ -154,6 +156,7 @@ export function AiWorkspace() {
     const query = (textToSend ?? input).trim();
     if (!query || isPending) return;
 
+    setErrorState(null);
     msgCounterRef.current += 1;
     const userMessage: Message = {
       id: `usr-${msgCounterRef.current}`,
@@ -203,12 +206,21 @@ export function AiWorkspace() {
           }),
         });
 
-        const data = await res.json();
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok || data.error || !data.reply) {
+          const errorMsg =
+            data.error ||
+            `Weather Intelligence service temporarily unavailable (Status ${res.status}).`;
+          setErrorState({ message: errorMsg, query });
+          return;
+        }
+
         msgCounterRef.current += 1;
         const assistantMessage: Message = {
           id: `ast-${msgCounterRef.current}`,
           role: "assistant",
-          content: data.reply ?? data.error ?? "No response received.",
+          content: data.reply,
           grounded: data.grounded,
           model: data.model,
           time: new Date().toLocaleTimeString([], {
@@ -222,68 +234,44 @@ export function AiWorkspace() {
           setActiveConversationId(data.conversationId);
         }
       } catch {
-        msgCounterRef.current += 1;
-        setMessages((prev) => [
-          ...prev,
-          {
-            id: `ast-err-${msgCounterRef.current}`,
-            role: "assistant",
-            content:
-              "Network error communicating with ATMOS AI. Please check your connection.",
-            grounded: false,
-            time: new Date().toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit",
-            }),
-          },
-        ]);
+        setErrorState({
+          message:
+            "Network error communicating with ATMOS AI. Please check your connection.",
+          query,
+        });
       }
     });
   };
 
   return (
-    <div className="min-h-screen pt-24 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto flex flex-col">
+    <div className="min-h-screen pt-20 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto flex flex-col bg-white text-[#222222]">
       {/* Top Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-4 border-b border-[#E5E7EB]">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent-primary/10 border border-accent-primary/20 text-accent-primary text-xs font-mono mb-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-accent-primary animate-pulse" />
-            ATMOS AI Workspace · Gemini Intelligence
+          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded bg-[#FFF9E6] border border-[#FFC928] text-[#222222] text-xs font-medium mb-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#FFC928]" />
+            Weather AI Assistant
           </div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#222222]">
             Weather Intelligence & Planning
           </h1>
-          <p className="mt-1 text-sm text-foreground-muted max-w-2xl">
-            Conversational analysis grounded in live Open-Meteo telemetry and
-            ECMWF reanalysis physics models.
+          <p className="mt-1 text-xs sm:text-sm text-[#6B7280] max-w-2xl">
+            Conversational weather insights grounded in real-time Open-Meteo forecasts.
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <Link
             href="/dashboard"
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-surface-border/60 bg-surface-elevated/40 hover:bg-surface-elevated text-xs font-medium text-foreground transition-all"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-md border border-[#E5E7EB] bg-white hover:bg-[#F7F7F7] text-xs font-semibold text-[#222222] transition-colors shadow-xs"
           >
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"
-              />
-            </svg>
             Dashboard
           </Link>
           <Link
             href="/"
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-surface-border/60 bg-surface-elevated/40 hover:bg-surface-elevated text-xs font-medium text-foreground transition-all"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-md border border-[#E5E7EB] bg-white hover:bg-[#F7F7F7] text-xs font-semibold text-[#222222] transition-colors shadow-xs"
           >
-            Homepage
+            Home
           </Link>
         </div>
       </div>
@@ -291,28 +279,28 @@ export function AiWorkspace() {
       {/* Main Grid: Sidebar + Chat Canvas */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 flex-1 items-start">
         {/* Left Column: Mode Selector, Location, and Saved Threads */}
-        <div className="lg:col-span-1 space-y-5">
+        <div className="lg:col-span-1 space-y-4">
           {/* Mode Selector */}
-          <div className="p-4 rounded-2xl bg-surface/70 backdrop-blur-xl border border-surface-border/60 space-y-3">
-            <h3 className="text-xs font-semibold text-foreground tracking-wide uppercase">
-              Intelligence Mode
+          <div className="p-4 rounded-lg bg-white border border-[#E5E7EB] shadow-xs space-y-3">
+            <h3 className="text-xs font-bold text-[#6B7280] tracking-wide uppercase">
+              Mode
             </h3>
             <div className="grid grid-cols-1 gap-1.5">
               {[
                 {
                   id: "general",
-                  label: "Grounded Q&A",
-                  desc: "Real-time conditions & forecasts",
+                  label: "Weather Q&A",
+                  desc: "Current conditions & outlook",
                 },
                 {
                   id: "planning",
                   label: "Trip Planner",
-                  desc: "Itinerary, gear & timing",
+                  desc: "Itinerary, timing & clothing",
                 },
                 {
                   id: "comparison",
                   label: "City Compare",
-                  desc: "Side-by-side weather telemetry",
+                  desc: "Side-by-side weather comparisons",
                 },
               ].map((m) => (
                 <button
@@ -321,41 +309,39 @@ export function AiWorkspace() {
                   onClick={() =>
                     setMode(m.id as "general" | "planning" | "comparison")
                   }
-                  className={`flex flex-col text-left px-3.5 py-2.5 rounded-xl border text-xs transition-all ${
+                  className={`flex flex-col text-left px-3 py-2 rounded-md border text-xs transition-all ${
                     mode === m.id
-                      ? "bg-accent-primary/15 border-accent-primary/40 text-accent-primary font-medium"
-                      : "bg-surface-elevated/30 border-surface-border/40 text-foreground-muted hover:text-foreground hover:bg-surface-elevated/60"
+                      ? "bg-[#FFF9E6] border-[#FFC928] text-[#222222] font-semibold"
+                      : "bg-[#F7F7F7] border-[#E5E7EB] text-[#6B7280] hover:text-[#222222] hover:bg-[#E5E7EB]"
                   }`}
                 >
-                  <span className="font-semibold">{m.label}</span>
-                  <span className="text-[11px] opacity-75">{m.desc}</span>
+                  <span className="font-semibold text-[#222222]">{m.label}</span>
+                  <span className="text-xs text-[#6B7280]">{m.desc}</span>
                 </button>
               ))}
             </div>
           </div>
 
           {/* Location Grounding Setup */}
-          <div className="p-4 rounded-2xl bg-surface/70 backdrop-blur-xl border border-surface-border/60 space-y-3">
+          <div className="p-4 rounded-lg bg-white border border-[#E5E7EB] shadow-xs space-y-3">
             <div className="flex items-center justify-between">
-              <h3 className="text-xs font-semibold text-foreground tracking-wide uppercase">
-                Active Grounding Target
+              <h3 className="text-xs font-bold text-[#6B7280] tracking-wide uppercase">
+                Location
               </h3>
-              <span className="text-[10px] font-mono text-emerald-400 flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+              <span className="text-xs text-emerald-600 font-medium flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                 Live
               </span>
             </div>
 
             <LocationSearch
-              onSelectLocation={(loc: GeocodingLocation) =>
-                setSelectedLocation(loc)
-              }
+              onSelectLocation={handleSelectLocation}
               placeholder={`Change ${selectedLocation.name}...`}
             />
 
             {mode === "comparison" && (
-              <div className="pt-2 border-t border-surface-border/40 space-y-2">
-                <h4 className="text-[11px] font-semibold text-foreground-muted">
+              <div className="pt-2 border-t border-[#E5E7EB] space-y-2">
+                <h4 className="text-xs font-medium text-[#6B7280]">
                   Comparison City
                 </h4>
                 <LocationSearch
@@ -368,44 +354,44 @@ export function AiWorkspace() {
             )}
 
             {mode === "planning" && (
-              <div className="pt-2 border-t border-surface-border/40 space-y-2.5 text-xs">
+              <div className="pt-2 border-t border-[#E5E7EB] space-y-2.5 text-xs">
                 <div>
-                  <label className="text-[11px] font-semibold text-foreground-muted block mb-1">
+                  <label className="text-xs font-medium text-[#6B7280] block mb-1">
                     Activity Focus
                   </label>
                   <select
                     value={tripActivity}
                     onChange={(e) => setTripActivity(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-surface-elevated/60 border border-surface-border/50 text-foreground text-xs focus:outline-none focus:border-accent-primary"
+                    className="w-full px-3 py-2 rounded-md bg-white border border-[#E5E7EB] text-[#222222] text-xs focus:outline-none focus:border-[#FFC928]"
                   >
                     <option value="Sightseeing & Walking">
-                      Sightseeing & Urban Walking
+                      Sightseeing & Walking
                     </option>
                     <option value="Hiking & Outdoor Trail">
-                      Hiking & Mountain Trails
+                      Hiking & Outdoor Trails
                     </option>
                     <option value="Beach & Watersports">
-                      Beach & Water Activities
+                      Beach & Watersports
                     </option>
                     <option value="Skiing & Winter Sports">
                       Skiing & Winter Sports
                     </option>
                     <option value="Flight & Long Road Travel">
-                      Flight & Commute Travel
+                      Road & Flight Travel
                     </option>
                   </select>
                 </div>
                 <div>
-                  <label className="text-[11px] font-semibold text-foreground-muted block mb-1">
-                    Duration Horizon
+                  <label className="text-xs font-medium text-[#6B7280] block mb-1">
+                    Duration
                   </label>
                   <select
                     value={tripDays}
                     onChange={(e) => setTripDays(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-surface-elevated/60 border border-surface-border/50 text-foreground text-xs focus:outline-none focus:border-accent-primary"
+                    className="w-full px-3 py-2 rounded-md bg-white border border-[#E5E7EB] text-[#222222] text-xs focus:outline-none focus:border-[#FFC928]"
                   >
-                    <option value="1 Day">1 Day (Hourly breakdown)</option>
-                    <option value="3 Days">3 Days (Weekend trip)</option>
+                    <option value="1 Day">1 Day</option>
+                    <option value="3 Days">3 Days (Weekend)</option>
                     <option value="7 Days">7 Days (Full week)</option>
                   </select>
                 </div>
@@ -414,15 +400,15 @@ export function AiWorkspace() {
           </div>
 
           {/* Saved Conversations Sidebar */}
-          <div className="p-4 rounded-2xl bg-surface/70 backdrop-blur-xl border border-surface-border/60 space-y-3">
+          <div className="p-4 rounded-lg bg-white border border-[#E5E7EB] shadow-xs space-y-3">
             <div className="flex items-center justify-between">
-              <h3 className="text-xs font-semibold text-foreground tracking-wide uppercase">
+              <h3 className="text-xs font-bold text-[#6B7280] tracking-wide uppercase">
                 Saved Sessions
               </h3>
               <button
                 type="button"
                 onClick={handleStartNewChat}
-                className="text-[11px] text-accent-primary hover:underline font-mono"
+                className="text-xs text-[#222222] font-semibold hover:underline"
               >
                 + New Chat
               </button>
@@ -430,8 +416,8 @@ export function AiWorkspace() {
 
             {user ? (
               conversations.length === 0 ? (
-                <p className="text-xs text-foreground-muted/60 italic py-2">
-                  No saved conversations yet. Questions are saved automatically.
+                <p className="text-xs text-[#6B7280] italic py-2">
+                  No saved conversations yet.
                 </p>
               ) : (
                 <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1">
@@ -439,15 +425,15 @@ export function AiWorkspace() {
                     <div
                       key={c.id}
                       onClick={() => loadConversationHistory(c.id)}
-                      className={`group flex items-center justify-between px-3 py-2 rounded-xl border text-xs cursor-pointer transition-all ${
+                      className={`group flex items-center justify-between px-3 py-2 rounded-md border text-xs cursor-pointer transition-all ${
                         activeConversationId === c.id
-                          ? "bg-accent-primary/10 border-accent-primary/40 text-foreground"
-                          : "bg-surface-elevated/30 border-surface-border/40 text-foreground-muted hover:text-foreground hover:bg-surface-elevated/60"
+                          ? "bg-[#FFF9E6] border-[#FFC928] text-[#222222] font-semibold"
+                          : "bg-[#F7F7F7] border-[#E5E7EB] text-[#6B7280] hover:text-[#222222] hover:bg-[#E5E7EB]"
                       }`}
                     >
                       <div className="truncate flex-1 pr-2">
                         <p className="truncate font-medium">{c.title}</p>
-                        <p className="text-[10px] text-foreground-muted/60 font-mono">
+                        <p className="text-xs text-[#6B7280]">
                           {c.locationName ?? "Global"}
                         </p>
                       </div>
@@ -455,7 +441,7 @@ export function AiWorkspace() {
                         type="button"
                         onClick={(e) => handleDeleteConversation(c.id, e)}
                         title="Delete thread"
-                        className="opacity-0 group-hover:opacity-100 p-1 text-foreground-muted hover:text-rose-400 transition-opacity"
+                        className="opacity-0 group-hover:opacity-100 p-1 text-[#6B7280] hover:text-[#D94841] transition-opacity"
                       >
                         <svg
                           className="w-3.5 h-3.5"
@@ -476,27 +462,27 @@ export function AiWorkspace() {
                 </div>
               )
             ) : (
-              <div className="p-3 rounded-xl bg-surface-elevated/40 border border-surface-border/40 text-xs text-foreground-muted">
+              <div className="p-3 rounded-md bg-[#F7F7F7] border border-[#E5E7EB] text-xs text-[#6B7280]">
                 <Link
                   href="/login"
-                  className="text-accent-primary font-medium hover:underline"
+                  className="text-[#222222] font-semibold hover:underline"
                 >
                   Sign in
                 </Link>{" "}
-                to save your AI weather conversations and trip itineraries.
+                to save conversations and itineraries.
               </div>
             )}
           </div>
         </div>
 
         {/* Right Column: Chat History and Interaction Area */}
-        <div className="lg:col-span-3 flex flex-col h-[700px] rounded-3xl bg-surface/80 backdrop-blur-2xl border border-surface-border/70 overflow-hidden shadow-2xl">
+        <div className="lg:col-span-3 flex flex-col h-[700px] rounded-lg bg-white border border-[#E5E7EB] overflow-hidden shadow-xs">
           {/* Canvas Header */}
-          <div className="px-6 py-4 border-b border-surface-border/40 bg-surface-elevated/40 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-9 h-9 rounded-2xl bg-accent-primary/20 text-accent-primary border border-accent-primary/30">
+          <div className="px-5 py-3 border-b border-[#E5E7EB] bg-[#F7F7F7] flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <div className="flex items-center justify-center w-7 h-7 rounded bg-[#FFF9E6] text-[#222222] border border-[#FFC928]">
                 <svg
-                  className="w-5 h-5"
+                  className="w-4 h-4 text-[#FFC928]"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="2"
@@ -510,15 +496,15 @@ export function AiWorkspace() {
                 </svg>
               </div>
               <div>
-                <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
+                <h2 className="text-xs font-bold text-[#222222] flex items-center gap-2">
                   {mode === "planning"
                     ? `Trip Planning: ${selectedLocation.name}`
                     : mode === "comparison"
                       ? `Comparing ${selectedLocation.name} vs. ${comparisonLocation.name}`
-                      : `Atmospheric Intelligence: ${selectedLocation.name}`}
+                      : `Weather Assistant: ${selectedLocation.name}`}
                 </h2>
-                <p className="text-[11px] text-foreground-muted">
-                  Ground-truth data from Open-Meteo · Model: Gemini 2.0 Flash
+                <p className="text-xs text-[#6B7280]">
+                  Grounded in live Open-Meteo forecasts
                 </p>
               </div>
             </div>
@@ -526,22 +512,22 @@ export function AiWorkspace() {
             <button
               type="button"
               onClick={handleStartNewChat}
-              className="text-xs px-3 py-1.5 rounded-xl border border-surface-border/50 bg-surface-elevated/50 hover:bg-surface-elevated text-foreground-muted hover:text-foreground transition-all"
+              className="text-xs px-2.5 py-1 rounded-md border border-[#E5E7EB] bg-white hover:bg-[#F7F7F7] text-[#6B7280] hover:text-[#222222] transition-colors"
             >
-              Reset Session
+              Reset Chat
             </button>
           </div>
 
           {/* Messages Area */}
-          <div className="flex-1 p-6 overflow-y-auto space-y-5 text-sm scrollbar-thin scrollbar-thumb-surface-border">
+          <div className="flex-1 p-5 overflow-y-auto space-y-4 text-xs">
             {messages.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-center max-w-md mx-auto space-y-4">
-                <div className="w-14 h-14 rounded-3xl bg-accent-primary/10 text-accent-primary border border-accent-primary/20 flex items-center justify-center">
+                <div className="w-12 h-12 rounded-full bg-[#FFF9E6] border border-[#FFC928] flex items-center justify-center">
                   <svg
-                    className="w-7 h-7"
+                    className="w-6 h-6 text-[#FFC928]"
                     fill="none"
                     stroke="currentColor"
-                    strokeWidth="1.5"
+                    strokeWidth="2"
                     viewBox="0 0 24 24"
                   >
                     <path
@@ -552,47 +538,46 @@ export function AiWorkspace() {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="text-base font-semibold text-foreground">
+                  <h3 className="text-base font-bold text-[#222222]">
                     {mode === "planning"
-                      ? "Plan your trip with verified meteorological foresight"
+                      ? "Plan your trip with weather foresight"
                       : mode === "comparison"
-                        ? "Compare climate, wind, and rain risk side-by-side"
-                        : `Ask about current weather or trends in ${selectedLocation.name}`}
+                        ? "Compare climate and rain risk side-by-side"
+                        : `Ask about weather in ${selectedLocation.name}`}
                   </h3>
-                  <p className="mt-1 text-xs text-foreground-muted">
-                    ATMOS AI synthesizes hourly resolution data, barometric
-                    trends, and forecast uncertainty into actionable guidance.
+                  <p className="mt-1 text-xs text-[#6B7280]">
+                    Get quick answers on rain timing, wind conditions, and packing recommendations.
                   </p>
                 </div>
 
                 {/* Preset Suggestions */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 w-full pt-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 w-full pt-1">
                   {(mode === "planning"
                     ? [
-                        "What is the best day for outdoor activities?",
-                        "What rain protection and layers are needed?",
-                        "Will evening temperatures drop significantly?",
-                        "Is high wind or adverse weather expected?",
+                        "Best day for outdoor sightseeing?",
+                        "What clothing & layers to pack?",
+                        "Will temperatures drop at night?",
+                        "Is rain expected during my trip?",
                       ]
                     : mode === "comparison"
                       ? [
                           "Which city has milder weekend weather?",
-                          "Compare precipitation probabilities this week",
-                          "Which destination is better for outdoor walking?",
-                          "How do evening temperatures compare?",
+                          "Compare rain probabilities this week",
+                          "Which city is better for walking outdoors?",
+                          "How do temperatures compare?",
                         ]
-                      : [
-                          "Will it rain in the next 12 hours?",
-                          "Explain the barometric pressure trend",
-                          "How does humidity affect comfort today?",
-                          "Summary of the 7-day outlook",
-                        ]
+                    : [
+                        "Will it rain in the next 12 hours?",
+                        "What is the temperature trend today?",
+                        "How humid will it be this afternoon?",
+                        "Summary of the 7-day outlook",
+                      ]
                   ).map((prompt) => (
                     <button
                       key={prompt}
                       type="button"
                       onClick={() => handleSendMessage(prompt)}
-                      className="p-3 text-left rounded-2xl bg-surface-elevated/40 hover:bg-surface-elevated/90 border border-surface-border/50 text-xs text-foreground-muted hover:text-foreground transition-all hover:scale-101"
+                      className="p-2.5 text-left rounded-md bg-white hover:bg-[#F7F7F7] border border-[#E5E7EB] text-xs text-[#222222] hover:border-[#FFC928] shadow-xs transition-colors"
                     >
                       {prompt}
                     </button>
@@ -608,21 +593,25 @@ export function AiWorkspace() {
                   }`}
                 >
                   <div
-                    className={`max-w-[80%] rounded-2xl px-5 py-4 text-xs leading-relaxed ${
+                    className={`max-w-[80%] rounded-md px-4 py-2.5 text-xs leading-relaxed ${
                       msg.role === "user"
-                        ? "bg-accent-primary text-slate-950 font-medium rounded-tr-sm"
-                        : "bg-surface-elevated/90 text-foreground border border-surface-border/60 rounded-tl-sm shadow-md"
+                        ? "bg-[#FFC928] text-[#222222] font-semibold shadow-xs"
+                        : "bg-[#F7F7F7] text-[#222222] border border-[#E5E7EB] shadow-xs"
                     }`}
                   >
-                    <div className="whitespace-pre-wrap">{msg.content}</div>
+                    {msg.role === "user" ? (
+                      <div className="whitespace-pre-wrap">{msg.content}</div>
+                    ) : (
+                      <MarkdownMessage content={msg.content} />
+                    )}
 
                     {msg.role === "assistant" && (
-                      <div className="mt-3 pt-2.5 border-t border-surface-border/40 flex items-center justify-between text-[11px] text-foreground-muted">
-                        <div className="flex items-center gap-2 font-mono">
+                      <div className="mt-2.5 pt-2 border-t border-[#E5E7EB] flex items-center justify-between text-xs text-[#6B7280]">
+                        <div className="flex items-center gap-2">
                           {msg.grounded && (
-                            <span className="flex items-center gap-1 text-emerald-400">
-                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                              Grounded in Open-Meteo
+                            <span className="flex items-center gap-1 text-emerald-600 font-medium">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                              Open-Meteo verified
                             </span>
                           )}
                         </div>
@@ -630,7 +619,7 @@ export function AiWorkspace() {
                       </div>
                     )}
                   </div>
-                  <span className="text-[10px] text-foreground-muted/60 mt-1 px-1 font-mono">
+                  <span className="text-xs text-[#9CA3AF] mt-0.5 px-1 tabular-nums">
                     {msg.time}
                   </span>
                 </div>
@@ -639,24 +628,54 @@ export function AiWorkspace() {
 
             {isPending && (
               <div className="flex items-start gap-2">
-                <div className="bg-surface-elevated/90 border border-surface-border/60 rounded-2xl rounded-tl-sm px-5 py-4 text-xs text-foreground-muted flex items-center gap-3">
-                  <span className="w-2.5 h-2.5 rounded-full bg-accent-primary animate-pulse" />
-                  <span className="w-2.5 h-2.5 rounded-full bg-accent-primary animate-pulse delay-100" />
-                  <span className="w-2.5 h-2.5 rounded-full bg-accent-primary animate-pulse delay-200" />
-                  <span>Synthesizing grounded meteorological insights...</span>
+                <div className="bg-[#F7F7F7] border border-[#E5E7EB] rounded-md px-4 py-2.5 text-xs text-[#6B7280] flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-[#FFC928] animate-pulse" />
+                  <span>Checking weather forecast...</span>
                 </div>
               </div>
             )}
           </div>
 
           {/* Query Bar */}
-          <div className="p-4 border-t border-surface-border/40 bg-surface-elevated/40">
+          <div className="p-3 border-t border-[#E5E7EB] bg-[#F7F7F7]">
+            {errorState && (
+              <div className="mb-2.5 p-2.5 rounded-md bg-[#FFF5F5] border border-[#FED7D7] flex items-center justify-between gap-3 text-xs text-[#D94841]">
+                <div className="flex items-center gap-2">
+                  <svg
+                    className="w-4 h-4 shrink-0 text-[#D94841]"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                    />
+                  </svg>
+                  <span>{errorState.message}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const q = errorState.query;
+                    setErrorState(null);
+                    setMessages((prev) => prev.slice(0, -1));
+                    handleSendMessage(q);
+                  }}
+                  className="px-2.5 py-1 rounded bg-[#D94841] text-white font-semibold text-xs hover:bg-[#C62828] transition-colors shrink-0 shadow-xs"
+                >
+                  Retry
+                </button>
+              </div>
+            )}
             <form
               onSubmit={(e) => {
                 e.preventDefault();
                 handleSendMessage();
               }}
-              className="flex items-center gap-3"
+              className="flex items-center gap-2"
             >
               <VoiceInputButton
                 onTranscript={(text) => handleSendMessage(text)}
@@ -668,20 +687,20 @@ export function AiWorkspace() {
                 onChange={(e) => setInput(e.target.value)}
                 placeholder={
                   mode === "planning"
-                    ? `Ask about travel conditions or timing in ${selectedLocation.name}...`
+                    ? `Ask about travel timing or clothing for ${selectedLocation.name}...`
                     : mode === "comparison"
                       ? `Ask about differences between ${selectedLocation.name} & ${comparisonLocation.name}...`
-                      : `Ask about current weather, wind, rain in ${selectedLocation.name}...`
+                      : `Ask about temperature, rain, or wind in ${selectedLocation.name}...`
                 }
                 disabled={isPending}
-                className="flex-1 px-4 py-3 rounded-2xl bg-surface/80 border border-surface-border/60 text-foreground text-xs placeholder:text-foreground-muted/60 focus:outline-none focus:border-accent-primary transition-colors disabled:opacity-50"
+                className="flex-1 px-3.5 py-2.5 rounded-md bg-white border border-[#E5E7EB] text-[#222222] text-xs placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#FFC928] focus:ring-1 focus:ring-[#FFC928] transition-colors disabled:opacity-50"
               />
               <button
                 type="submit"
                 disabled={!input.trim() || isPending}
-                className="px-5 py-3 rounded-2xl bg-accent-primary text-slate-950 font-bold text-xs hover:brightness-110 active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5"
+                className="px-4 py-2.5 rounded-md bg-[#FFC928] hover:bg-[#F2B900] text-[#222222] font-bold text-xs shadow-xs transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5"
               >
-                <span>Ask AI</span>
+                <span>Ask</span>
                 <svg
                   className="w-3.5 h-3.5"
                   fill="none"

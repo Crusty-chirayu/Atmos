@@ -87,6 +87,29 @@ export function PwaProvider({ children }: { children: React.ReactNode }) {
   const isInstalled = isMediaStandalone || manualInstalled;
 
   useEffect(() => {
+    // In local development, prevent service worker from intercepting and caching fast-changing Turbopack chunks
+    const isLocalDev =
+      process.env.NODE_ENV === "development" ||
+      (typeof window !== "undefined" &&
+        (window.location.hostname === "localhost" ||
+          window.location.hostname === "127.0.0.1"));
+
+    if (isLocalDev && "serviceWorker" in navigator) {
+      navigator.serviceWorker.getRegistrations().then((registrations) => {
+        for (const reg of registrations) {
+          reg.unregister();
+        }
+      });
+      if ("caches" in window) {
+        caches.keys().then((keys) => {
+          for (const key of keys) {
+            caches.delete(key);
+          }
+        });
+      }
+      return;
+    }
+
     // 1. Service Worker registration
     if ("serviceWorker" in navigator && typeof window !== "undefined") {
       navigator.serviceWorker

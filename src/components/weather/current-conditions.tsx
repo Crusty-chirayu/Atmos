@@ -18,12 +18,12 @@ function getUvDescriptor(uv?: number | null): {
   colorClass: string;
 } {
   if (uv === null || uv === undefined)
-    return { label: "--", colorClass: "text-atmos-300" };
-  if (uv <= 2) return { label: "Low", colorClass: "text-success-400" };
-  if (uv <= 5) return { label: "Moderate", colorClass: "text-gold-400" };
-  if (uv <= 7) return { label: "High", colorClass: "text-warning-400" };
-  if (uv <= 10) return { label: "Very High", colorClass: "text-danger-400" };
-  return { label: "Extreme", colorClass: "text-danger-500 font-bold" };
+    return { label: "--", colorClass: "text-[#6B7280]" };
+  if (uv <= 2) return { label: "Low", colorClass: "text-[#10B981]" };
+  if (uv <= 5) return { label: "Moderate", colorClass: "text-[#F59E0B]" };
+  if (uv <= 7) return { label: "High", colorClass: "text-[#F97316]" };
+  if (uv <= 10) return { label: "Very High", colorClass: "text-[#D94841]" };
+  return { label: "Extreme", colorClass: "text-[#D94841] font-bold" };
 }
 
 /**
@@ -54,7 +54,7 @@ function getCompassDirection(deg?: number | null): string {
 }
 
 /**
- * Hero component displaying current weather conditions with full provenance and metric details.
+ * Clean consumer current weather conditions component.
  */
 export function CurrentConditions({
   bundle,
@@ -81,63 +81,26 @@ export function CurrentConditions({
   return (
     <section
       aria-label={`Current weather conditions for ${location.name}`}
-      className="glass rounded-3xl p-6 sm:p-8 transition-all duration-300 relative overflow-hidden"
-      style={{
-        background: "var(--surface-overlay)",
-        border: "1px solid var(--border-default)",
-        boxShadow: "var(--shadow-lg)",
-      }}
+      className="rounded-lg bg-white p-5 sm:p-6 border border-[#E5E7EB] shadow-xs"
     >
-      {/* Background radial atmosphere glow */}
-      <div
-        aria-hidden="true"
-        className="absolute -right-20 -top-20 w-80 h-80 rounded-full pointer-events-none opacity-20 blur-3xl"
-        style={{
-          background:
-            current.conditionCategory === "clear"
-              ? "radial-gradient(circle, #f5c842 0%, transparent 70%)"
-              : current.conditionCategory === "thunderstorm"
-                ? "radial-gradient(circle, #ff4d4d 0%, transparent 70%)"
-                : "radial-gradient(circle, #00d4ff 0%, transparent 70%)",
-        }}
-      />
-
-      <div className="relative z-10 flex flex-col lg:flex-row justify-between gap-8">
+      <div className="flex flex-col lg:flex-row justify-between gap-6">
         {/* Left Column: Location, Local Time, Temperature, Condition */}
-        <div className="flex flex-col justify-between space-y-5 max-w-lg">
+        <div className="flex flex-col justify-between space-y-4 max-w-lg">
           <div>
-            {/* Header: Location & Badges */}
-            <div className="flex flex-wrap items-center gap-2 mb-1.5">
-              <span
-                className="px-2 py-0.5 rounded-full text-xs font-mono tracking-wider uppercase font-semibold"
-                style={{
-                  background: "rgb(0 212 255 / 0.12)",
-                  color: "var(--color-accent-400)",
-                  border: "1px solid rgb(0 212 255 / 0.2)",
-                }}
-              >
-                Live Weather
+            {/* Header: Location & Status Pills */}
+            <div className="flex flex-wrap items-center gap-2 mb-2">
+              <span className="px-2 py-0.5 rounded text-xs font-medium bg-[#FFF9E6] text-[#222222] border border-[#FFC928]">
+                Current Weather
               </span>
               {location.countryCode && (
-                <span
-                  className="px-2 py-0.5 rounded text-xs font-mono"
-                  style={{
-                    background: "var(--surface-raised)",
-                    color: "var(--text-secondary)",
-                    border: "1px solid var(--border-subtle)",
-                  }}
-                >
+                <span className="px-2 py-0.5 rounded text-xs font-medium bg-[#F7F7F7] text-[#6B7280] border border-[#E5E7EB]">
                   {location.countryCode}
                 </span>
               )}
               {meta.isCached && (
                 <span
-                  title="Cached response with fresh background revalidation"
-                  className="text-[11px] px-2 py-0.5 rounded font-mono"
-                  style={{
-                    color: "var(--text-muted)",
-                    background: "var(--surface-raised)",
-                  }}
+                  title="Cached response"
+                  className="text-xs px-2 py-0.5 rounded bg-[#F7F7F7] text-[#6B7280] border border-[#E5E7EB]"
                 >
                   Cached
                 </span>
@@ -154,44 +117,41 @@ export function CurrentConditions({
               />
             </div>
 
-            <h1
-              className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight font-display"
-              style={{ color: "var(--text-primary)" }}
-            >
+            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#222222]">
               {location.name}
             </h1>
 
-            <p className="text-sm mt-1" style={{ color: "var(--text-muted)" }}>
-              {[location.adminArea, location.country]
-                .filter(Boolean)
-                .join(", ")}
-              {" · "}
-              <span className="font-mono text-xs">
-                Local time {localTimeString} (
-                {meta.timezone.split("/").pop()?.replace(/_/g, " ")})
+            <p className="text-sm text-[#6B7280] mt-1 flex flex-wrap items-center gap-1.5">
+              {[location.adminArea, location.country].filter(Boolean).length > 0 && (
+                <>
+                  <span>
+                    {[location.adminArea, location.country]
+                      .filter(Boolean)
+                      .join(", ")}
+                  </span>
+                  <span>·</span>
+                </>
+              )}
+              <span className="font-mono text-xs text-[#737D8A]">
+                {Math.abs(location.latitude).toFixed(2)}°{location.latitude >= 0 ? "N" : "S"},{" "}
+                {Math.abs(location.longitude).toFixed(2)}°{location.longitude >= 0 ? "E" : "W"}
               </span>
+              <span>·</span>
+              <span>Local time {localTimeString}</span>
             </p>
           </div>
 
           {/* Primary Temperature & Weather Icon */}
           <div className="flex items-center gap-6 py-1">
             <div className="flex items-start">
-              <span
-                className="font-display font-extrabold tracking-tighter"
-                style={{
-                  fontSize: "clamp(3.5rem, 8vw, 6rem)",
-                  lineHeight: 1,
-                  color: "var(--text-primary)",
-                }}
-              >
+              <span className="font-bold text-6xl sm:text-7xl tracking-tight text-[#222222] tabular-nums">
                 {Math.round(current.temperature)}
               </span>
               <button
                 type="button"
                 onClick={onToggleUnits}
                 title={`Current units: ${units}. Click to toggle.`}
-                className="text-xl sm:text-2xl font-bold ml-1 hover:opacity-80 transition-opacity focus:outline-none"
-                style={{ color: "var(--color-accent-400)" }}
+                className="text-2xl font-bold ml-1 text-[#FFC928] hover:text-[#F2B900] transition-colors focus:outline-none"
               >
                 {tempUnit}
               </button>
@@ -201,50 +161,35 @@ export function CurrentConditions({
               <WeatherIcon
                 category={current.conditionCategory}
                 isDay={current.isDay}
-                size={64}
+                size={56}
               />
-              <span
-                className="text-sm sm:text-base font-medium capitalize mt-1.5 text-center"
-                style={{ color: "var(--text-primary)" }}
-              >
+              <span className="text-sm sm:text-base font-medium capitalize mt-1 text-[#222222] text-center">
                 {current.conditionText}
               </span>
             </div>
           </div>
 
           {/* High / Low & Apparent Temp Sub-bar */}
-          <div
-            className="flex flex-wrap items-center gap-4 text-xs sm:text-sm pt-2"
-            style={{ color: "var(--text-secondary)" }}
-          >
+          <div className="flex flex-wrap items-center gap-4 text-xs sm:text-sm text-[#6B7280] pt-1">
             <div>
               <span>Feels like </span>
-              <span
-                className="font-semibold"
-                style={{ color: "var(--text-primary)" }}
-              >
+              <span className="font-bold text-[#222222] tabular-nums">
                 {Math.round(current.apparentTemperature)}
                 {tempUnit}
               </span>
             </div>
             {todayForecast && (
               <>
-                <span style={{ color: "var(--border-strong)" }}>•</span>
+                <span className="text-[#E5E7EB]">•</span>
                 <div>
                   <span>High </span>
-                  <span
-                    className="font-semibold"
-                    style={{ color: "var(--text-primary)" }}
-                  >
+                  <span className="font-bold text-[#222222] tabular-nums">
                     {Math.round(todayForecast.temperatureMax)}
                     {tempUnit}
                   </span>
                   <span className="mx-1">/</span>
                   <span>Low </span>
-                  <span
-                    className="font-semibold"
-                    style={{ color: "var(--text-primary)" }}
-                  >
+                  <span className="font-bold text-[#222222] tabular-nums">
                     {Math.round(todayForecast.temperatureMin)}
                     {tempUnit}
                   </span>
@@ -254,37 +199,18 @@ export function CurrentConditions({
           </div>
         </div>
 
-        {/* Right Column: Environmental Telemetry Metrics Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 self-center w-full lg:w-auto">
+        {/* Right Column: Environmental Weather Metrics Grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 self-center w-full lg:w-auto">
           {/* Wind */}
-          <div
-            className="p-3.5 rounded-2xl flex flex-col justify-between"
-            style={{
-              background: "var(--surface-raised)",
-              border: "1px solid var(--border-subtle)",
-            }}
-          >
-            <span
-              className="text-xs uppercase font-mono"
-              style={{ color: "var(--text-muted)" }}
-            >
-              Wind
-            </span>
+          <div className="p-3 rounded-md flex flex-col justify-between bg-[#F7F7F7] border border-[#E5E7EB]">
+            <span className="text-xs text-[#6B7280] font-medium">Wind</span>
             <div className="my-1">
-              <span
-                className="text-lg font-bold"
-                style={{ color: "var(--text-primary)" }}
-              >
+              <span className="text-lg font-bold text-[#222222] tabular-nums">
                 {Math.round(current.windSpeed)}
               </span>{" "}
-              <span className="text-xs" style={{ color: "var(--text-muted)" }}>
-                {speedUnit}
-              </span>
+              <span className="text-xs text-[#6B7280]">{speedUnit}</span>
             </div>
-            <div
-              className="text-[11px] flex items-center gap-1"
-              style={{ color: "var(--text-secondary)" }}
-            >
+            <div className="text-xs flex items-center gap-1 text-[#6B7280]">
               <span
                 className="inline-block transform"
                 style={{ transform: `rotate(${current.windDirection}deg)` }}
@@ -299,131 +225,56 @@ export function CurrentConditions({
           </div>
 
           {/* Humidity */}
-          <div
-            className="p-3.5 rounded-2xl flex flex-col justify-between"
-            style={{
-              background: "var(--surface-raised)",
-              border: "1px solid var(--border-subtle)",
-            }}
-          >
-            <span
-              className="text-xs uppercase font-mono"
-              style={{ color: "var(--text-muted)" }}
-            >
-              Humidity
-            </span>
+          <div className="p-3 rounded-md flex flex-col justify-between bg-[#F7F7F7] border border-[#E5E7EB]">
+            <span className="text-xs text-[#6B7280] font-medium">Humidity</span>
             <div className="my-1">
-              <span
-                className="text-lg font-bold"
-                style={{ color: "var(--text-primary)" }}
-              >
+              <span className="text-lg font-bold text-[#222222] tabular-nums">
                 {Math.round(current.relativeHumidity)}
               </span>{" "}
-              <span className="text-xs" style={{ color: "var(--text-muted)" }}>
-                %
-              </span>
+              <span className="text-xs text-[#6B7280]">%</span>
             </div>
-            <span
-              className="text-[11px]"
-              style={{ color: "var(--text-secondary)" }}
-            >
+            <span className="text-xs text-[#6B7280]">
               Cloud cover {current.cloudCover}%
             </span>
           </div>
 
           {/* UV Index */}
-          <div
-            className="p-3.5 rounded-2xl flex flex-col justify-between"
-            style={{
-              background: "var(--surface-raised)",
-              border: "1px solid var(--border-subtle)",
-            }}
-          >
-            <span
-              className="text-xs uppercase font-mono"
-              style={{ color: "var(--text-muted)" }}
-            >
-              UV Index
-            </span>
+          <div className="p-3 rounded-md flex flex-col justify-between bg-[#F7F7F7] border border-[#E5E7EB]">
+            <span className="text-xs text-[#6B7280] font-medium">UV Index</span>
             <div className="my-1">
-              <span
-                className="text-lg font-bold"
-                style={{ color: "var(--text-primary)" }}
-              >
+              <span className="text-lg font-bold text-[#222222] tabular-nums">
                 {current.uvIndex !== null && current.uvIndex !== undefined
                   ? current.uvIndex
                   : (todayForecast?.uvIndexMax ?? "--")}
               </span>
             </div>
-            <span
-              className={`text-[11px] font-medium ${uvDescriptor.colorClass}`}
-            >
+            <span className={`text-xs font-semibold ${uvDescriptor.colorClass}`}>
               {uvDescriptor.label}
             </span>
           </div>
 
           {/* Atmospheric Pressure */}
-          <div
-            className="p-3.5 rounded-2xl flex flex-col justify-between"
-            style={{
-              background: "var(--surface-raised)",
-              border: "1px solid var(--border-subtle)",
-            }}
-          >
-            <span
-              className="text-xs uppercase font-mono"
-              style={{ color: "var(--text-muted)" }}
-            >
-              Pressure
-            </span>
+          <div className="p-3 rounded-md flex flex-col justify-between bg-[#F7F7F7] border border-[#E5E7EB]">
+            <span className="text-xs text-[#6B7280] font-medium">Pressure</span>
             <div className="my-1">
-              <span
-                className="text-lg font-bold"
-                style={{ color: "var(--text-primary)" }}
-              >
+              <span className="text-lg font-bold text-[#222222] tabular-nums">
                 {Math.round(current.pressureMsl)}
               </span>{" "}
-              <span className="text-xs" style={{ color: "var(--text-muted)" }}>
-                {pressUnit}
-              </span>
+              <span className="text-xs text-[#6B7280]">{pressUnit}</span>
             </div>
-            <span
-              className="text-[11px]"
-              style={{ color: "var(--text-secondary)" }}
-            >
-              Mean sea level
-            </span>
+            <span className="text-xs text-[#6B7280]">Barometric</span>
           </div>
 
           {/* Precipitation */}
-          <div
-            className="p-3.5 rounded-2xl flex flex-col justify-between"
-            style={{
-              background: "var(--surface-raised)",
-              border: "1px solid var(--border-subtle)",
-            }}
-          >
-            <span
-              className="text-xs uppercase font-mono"
-              style={{ color: "var(--text-muted)" }}
-            >
-              Precipitation
-            </span>
+          <div className="p-3 rounded-md flex flex-col justify-between bg-[#F7F7F7] border border-[#E5E7EB]">
+            <span className="text-xs text-[#6B7280] font-medium">Rain / Precip</span>
             <div className="my-1">
-              <span
-                className="text-lg font-bold"
-                style={{ color: "var(--text-primary)" }}
-              >
+              <span className="text-lg font-bold text-[#222222] tabular-nums">
                 {current.precipitation}
               </span>{" "}
-              <span className="text-xs" style={{ color: "var(--text-muted)" }}>
-                {precipUnit}
-              </span>
+              <span className="text-xs text-[#6B7280]">{precipUnit}</span>
             </div>
-            <span
-              className="text-[11px]"
-              style={{ color: "var(--text-secondary)" }}
-            >
+            <span className="text-xs text-[#4A90E2] font-medium">
               {todayForecast?.precipitationProbabilityMax !== undefined &&
               todayForecast?.precipitationProbabilityMax !== null
                 ? `${todayForecast.precipitationProbabilityMax}% chance`
@@ -432,27 +283,13 @@ export function CurrentConditions({
           </div>
 
           {/* Sun Cycle */}
-          <div
-            className="p-3.5 rounded-2xl flex flex-col justify-between"
-            style={{
-              background: "var(--surface-raised)",
-              border: "1px solid var(--border-subtle)",
-            }}
-          >
-            <span
-              className="text-xs uppercase font-mono"
-              style={{ color: "var(--text-muted)" }}
-            >
-              Sun Cycle
-            </span>
+          <div className="p-3 rounded-md flex flex-col justify-between bg-[#F7F7F7] border border-[#E5E7EB]">
+            <span className="text-xs text-[#6B7280] font-medium">Sun Cycle</span>
             <div className="my-1 text-xs space-y-0.5">
               {todayForecast?.sunrise ? (
                 <div>
-                  <span style={{ color: "var(--text-muted)" }}>Rise: </span>
-                  <span
-                    className="font-mono font-medium"
-                    style={{ color: "var(--text-primary)" }}
-                  >
+                  <span className="text-[#6B7280]">Rise: </span>
+                  <span className="font-semibold text-[#222222] tabular-nums">
                     {formatLocalTime(todayForecast.sunrise, meta.timezone, {
                       hour12: true,
                     })}
@@ -461,11 +298,8 @@ export function CurrentConditions({
               ) : null}
               {todayForecast?.sunset ? (
                 <div>
-                  <span style={{ color: "var(--text-muted)" }}>Set: </span>
-                  <span
-                    className="font-mono font-medium"
-                    style={{ color: "var(--text-primary)" }}
-                  >
+                  <span className="text-[#6B7280]">Set: </span>
+                  <span className="font-semibold text-[#222222] tabular-nums">
                     {formatLocalTime(todayForecast.sunset, meta.timezone, {
                       hour12: true,
                     })}
@@ -473,11 +307,8 @@ export function CurrentConditions({
                 </div>
               ) : null}
             </div>
-            <span
-              className="text-[11px]"
-              style={{ color: "var(--text-secondary)" }}
-            >
-              {current.isDay ? "Daylight active" : "Nighttime"}
+            <span className="text-xs text-[#6B7280]">
+              {current.isDay ? "Daylight" : "Night"}
             </span>
           </div>
         </div>

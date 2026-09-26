@@ -236,15 +236,15 @@ export function SavedLocationsOverview({
   return (
     <div className="w-full flex flex-col gap-4">
       {/* Header and Quick Add */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-atmos-700/30 pb-3">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#E5E7EB] pb-3">
         <div>
-          <h3 className="text-base sm:text-lg font-display font-bold text-text-primary">
-            {user ? "Saved Locations Overview" : "Global Quick Explore"}
+          <h3 className="text-base sm:text-lg font-bold text-[#222222]">
+            {user ? "Saved Locations Overview" : "Explore Featured Cities"}
           </h3>
-          <p className="text-xs text-text-muted">
+          <p className="text-xs text-[#6B7280]">
             {user
-              ? "Live conditions for your bookmarked planetary locations"
-              : "Explore live conditions across featured metropolises"}
+              ? "Live conditions for your bookmarked locations"
+              : "Explore live conditions across major global cities"}
           </p>
         </div>
 
@@ -253,7 +253,7 @@ export function SavedLocationsOverview({
             type="button"
             onClick={handleSaveCurrent}
             disabled={isSavingCurrent}
-            className="px-3 py-1.5 rounded-xl bg-accent-500/20 text-accent-400 border border-accent-500/40 text-xs font-semibold hover:bg-accent-500/30 transition-all flex items-center gap-1.5 shadow-sm"
+            className="px-3.5 py-1.5 rounded-md bg-[#FFC928] hover:bg-[#F2B900] text-[#222222] text-xs font-semibold transition-colors flex items-center gap-1.5 shadow-xs"
           >
             <span>+ Bookmark {currentLocation.name}</span>
           </button>
@@ -261,7 +261,7 @@ export function SavedLocationsOverview({
       </div>
 
       {actionError && (
-        <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs">
+        <div className="p-3 rounded-md bg-[#FFF5F5] border border-[#FED7D7] text-[#D94841] text-xs">
           {actionError}
         </div>
       )}
@@ -293,28 +293,28 @@ export function SavedLocationsOverview({
                     formattedAddress: `${loc.name}${loc.country ? `, ${loc.country}` : ""}`,
                   })
                 }
-                className={`p-4 rounded-2xl flex items-center justify-between gap-3 transition-all cursor-pointer ${
+                className={`p-4 rounded-lg flex items-center justify-between gap-3 transition-colors cursor-pointer shadow-xs ${
                   isSelected
-                    ? "glass border-accent-400/60 shadow-lg ring-1 ring-accent-400/40"
-                    : "glass hover:bg-atmos-800/50"
+                    ? "bg-[#FFF9E6] border border-[#FFC928]"
+                    : "bg-white border border-[#E5E7EB] hover:bg-[#F7F7F7]"
                 }`}
               >
                 <div className="flex flex-col gap-0.5 min-w-0">
                   <div className="flex items-center gap-1.5">
-                    <span className="font-semibold text-sm text-text-primary truncate">
+                    <span className="font-semibold text-sm text-[#222222] truncate">
                       {loc.name}
                     </span>
                     {loc.label && (
-                      <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-accent-500/10 text-accent-400 border border-accent-500/20">
+                      <span className="text-xs px-1.5 py-0.5 rounded bg-[#FFFBEB] text-[#92400E] border border-[#FDE68A]">
                         {loc.label}
                       </span>
                     )}
                   </div>
-                  <span className="text-xs text-text-muted truncate">
+                  <span className="text-xs text-[#6B7280] truncate">
                     {loc.country || loc.admin_area || "Earth"}
                   </span>
                   {loc.timezone && (
-                    <span className="text-[10px] font-mono text-text-muted">
+                    <span className="text-xs text-[#6B7280] tabular-nums">
                       {formatLocalTime(new Date().toISOString(), loc.timezone)}
                     </span>
                   )}
@@ -331,16 +331,16 @@ export function SavedLocationsOverview({
                         className="w-7 h-7"
                       />
                       <div className="flex flex-col">
-                        <span className="text-base font-bold font-mono text-text-primary">
+                        <span className="text-base font-bold tabular-nums text-[#222222]">
                           {formatTemperature(current.temperature, tempUnit)}
                         </span>
-                        <span className="text-[10px] text-text-muted truncate max-w-[80px]">
+                        <span className="text-xs text-[#6B7280] truncate max-w-[80px]">
                           {current.conditionText}
                         </span>
                       </div>
                     </div>
                   ) : (
-                    <span className="text-xs font-mono text-text-muted animate-pulse">
+                    <span className="text-xs text-[#6B7280] animate-pulse">
                       Loading...
                     </span>
                   )}
@@ -350,7 +350,7 @@ export function SavedLocationsOverview({
                     onClick={(e) => handleRemove(e, loc.id)}
                     aria-label={`Remove ${loc.name} from saved`}
                     title="Remove from saved"
-                    className="p-1.5 text-text-muted hover:text-rose-400 rounded-lg hover:bg-rose-500/10 transition-colors"
+                    className="p-1.5 text-[#9CA3AF] hover:text-[#D94841] rounded-md hover:bg-[#FFF5F5] transition-colors"
                   >
                     ✕
                   </button>
@@ -363,16 +363,16 @@ export function SavedLocationsOverview({
 
       {/* Authenticated Empty State */}
       {user && savedLocations.length === 0 && !isLoadingLocations && (
-        <div className="p-8 rounded-3xl glass border border-dashed border-atmos-700/50 flex flex-col items-center justify-center text-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-accent-500/10 text-accent-400 flex items-center justify-center text-xl">
+        <div className="p-8 rounded-lg bg-[#F7F7F7] border border-dashed border-[#E5E7EB] flex flex-col items-center justify-center text-center gap-3">
+          <div className="w-12 h-12 rounded-full bg-white border border-[#E5E7EB] flex items-center justify-center text-xl">
             📍
           </div>
           <div>
-            <h4 className="text-sm font-semibold text-text-primary">
+            <h4 className="text-sm font-semibold text-[#222222]">
               No Saved Locations Yet
             </h4>
-            <p className="text-xs text-text-muted mt-1 max-w-sm">
-              Bookmark cities you monitor frequently to view instant telemetry
+            <p className="text-xs text-[#6B7280] mt-1 max-w-sm">
+              Bookmark cities you monitor frequently to view instant weather
               cards and switch between them seamlessly.
             </p>
           </div>
@@ -380,7 +380,7 @@ export function SavedLocationsOverview({
             type="button"
             onClick={handleSaveCurrent}
             disabled={isSavingCurrent}
-            className="px-4 py-2 rounded-xl bg-accent-500 text-atmos-950 font-bold text-xs hover:bg-accent-400 transition-colors shadow-sm"
+            className="px-4 py-2 rounded-md bg-[#FFC928] hover:bg-[#F2B900] text-[#222222] font-semibold text-xs transition-colors shadow-xs"
           >
             Bookmark Current Location ({currentLocation.name})
           </button>
@@ -412,17 +412,17 @@ export function SavedLocationsOverview({
                       formattedAddress: `${city.name}, ${city.country}`,
                     })
                   }
-                  className={`p-4 rounded-2xl flex items-center justify-between gap-3 transition-all cursor-pointer ${
+                  className={`p-4 rounded-lg flex items-center justify-between gap-3 transition-colors cursor-pointer shadow-xs ${
                     isSelected
-                      ? "glass border-accent-400/60 shadow-lg ring-1 ring-accent-400/40"
-                      : "glass hover:bg-atmos-800/50"
+                      ? "bg-[#FFF9E6] border border-[#FFC928]"
+                      : "bg-white border border-[#E5E7EB] hover:bg-[#F7F7F7]"
                   }`}
                 >
                   <div className="flex flex-col gap-0.5 min-w-0">
-                    <span className="font-semibold text-sm text-text-primary truncate">
+                    <span className="font-semibold text-sm text-[#222222] truncate">
                       {city.name}
                     </span>
-                    <span className="text-xs text-text-muted truncate">
+                    <span className="text-xs text-[#6B7280] truncate">
                       {city.country}
                     </span>
                   </div>
@@ -439,16 +439,16 @@ export function SavedLocationsOverview({
                           className="w-7 h-7"
                         />
                         <div className="flex flex-col">
-                          <span className="text-base font-bold font-mono text-text-primary">
+                          <span className="text-base font-bold tabular-nums text-[#222222]">
                             {formatTemperature(current.temperature, tempUnit)}
                           </span>
-                          <span className="text-[10px] text-text-muted truncate max-w-[80px]">
+                          <span className="text-xs text-[#6B7280] truncate max-w-[80px]">
                             {current.conditionText}
                           </span>
                         </div>
                       </>
                     ) : (
-                      <span className="text-xs font-mono text-text-muted animate-pulse">
+                      <span className="text-xs text-[#6B7280] animate-pulse">
                         Loading...
                       </span>
                     )}
@@ -459,26 +459,26 @@ export function SavedLocationsOverview({
           </div>
 
           {/* Anonymous Sign-in Invitation Banner */}
-          <div className="p-4 rounded-2xl glass border border-accent-500/20 bg-accent-500/5 flex flex-wrap items-center justify-between gap-3">
+          <div className="p-4 rounded-lg bg-[#F7F7F7] border border-[#E5E7EB] flex flex-wrap items-center justify-between gap-3">
             <div>
-              <span className="text-xs font-semibold text-text-primary block">
+              <span className="text-xs font-semibold text-[#222222] block">
                 Want to save custom locations?
               </span>
-              <span className="text-xs text-text-muted">
+              <span className="text-xs text-[#6B7280]">
                 Create a free ATMOS account to save your favorite cities and
-                synchronize display units across sessions.
+                synchronize display units across devices.
               </span>
             </div>
             <div className="flex items-center gap-2">
               <Link
                 href="/login"
-                className="px-3 py-1.5 rounded-xl bg-accent-500 text-atmos-950 font-bold text-xs hover:bg-accent-400 transition-colors shadow-sm"
+                className="px-3.5 py-1.5 rounded-md bg-[#FFC928] hover:bg-[#F2B900] text-[#222222] font-semibold text-xs transition-colors shadow-xs"
               >
                 Sign In
               </Link>
               <Link
                 href="/signup"
-                className="px-3 py-1.5 rounded-xl glass text-xs text-text-primary hover:bg-atmos-700/40 transition-colors"
+                className="px-3.5 py-1.5 rounded-md bg-white hover:bg-[#E5E7EB] border border-[#E5E7EB] text-xs font-medium text-[#222222] transition-colors"
               >
                 Create Account
               </Link>

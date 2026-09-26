@@ -70,30 +70,47 @@ export function resolveAppUrl(
 }
 
 // ─── Public (safe in client bundles) ──────────────────────────────────────
+// NOTE: Client variables MUST use direct property access (e.g. process.env.NEXT_PUBLIC_*)
+// so that Next.js bundlers (Turbopack / Webpack) can statically inline them into browser bundles.
+const rawSupabaseUrl =
+  typeof process.env.NEXT_PUBLIC_SUPABASE_URL === "string"
+    ? process.env.NEXT_PUBLIC_SUPABASE_URL.trim()
+    : "";
+const rawSupabaseAnonKey =
+  typeof process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY === "string"
+    ? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY.trim()
+    : typeof process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY === "string"
+    ? process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY.trim()
+    : "";
+const rawAppUrl =
+  typeof process.env.NEXT_PUBLIC_APP_URL === "string" &&
+  process.env.NEXT_PUBLIC_APP_URL.trim() !== ""
+    ? process.env.NEXT_PUBLIC_APP_URL.trim()
+    : "http://localhost:3000";
+const rawAppEnv =
+  typeof process.env.NEXT_PUBLIC_APP_ENV === "string" &&
+  process.env.NEXT_PUBLIC_APP_ENV.trim() !== ""
+    ? (process.env.NEXT_PUBLIC_APP_ENV.trim() as "development" | "preview" | "production")
+    : "development";
+const rawVapidKey =
+  typeof process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY === "string"
+    ? process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY.trim()
+    : "";
+
 export const publicEnv = {
-  NEXT_PUBLIC_SUPABASE_URL: optionalEnv("NEXT_PUBLIC_SUPABASE_URL"),
-  NEXT_PUBLIC_SUPABASE_ANON_KEY:
-    optionalEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY") ||
-    optionalEnv("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY"),
-  NEXT_PUBLIC_APP_URL: optionalEnv(
-    "NEXT_PUBLIC_APP_URL",
-    "http://localhost:3000"
-  ),
-  NEXT_PUBLIC_APP_ENV: optionalEnv(
-    "NEXT_PUBLIC_APP_ENV",
-    "development"
-  ) as "development" | "preview" | "production",
-  NEXT_PUBLIC_VAPID_PUBLIC_KEY: optionalEnv("NEXT_PUBLIC_VAPID_PUBLIC_KEY"),
+  NEXT_PUBLIC_SUPABASE_URL: rawSupabaseUrl,
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: rawSupabaseAnonKey,
+  NEXT_PUBLIC_APP_URL: rawAppUrl,
+  NEXT_PUBLIC_APP_ENV: rawAppEnv,
+  NEXT_PUBLIC_VAPID_PUBLIC_KEY: rawVapidKey,
 } as const;
 
 /**
  * Returns true if public Supabase environment variables are configured with valid non-placeholder values.
  */
 export function isSupabaseConfigured(): boolean {
-  const url = optionalEnv("NEXT_PUBLIC_SUPABASE_URL");
-  const key =
-    optionalEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY") ||
-    optionalEnv("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY");
+  const url = publicEnv.NEXT_PUBLIC_SUPABASE_URL;
+  const key = publicEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   return (
     url.length > 0 &&
     key.length > 0 &&
@@ -126,6 +143,12 @@ export const serverEnv = {
   },
   get optionalServiceRoleKey() {
     return optionalEnv("SUPABASE_SERVICE_ROLE_KEY");
+  },
+  get OPENROUTER_API_KEY() {
+    return optionalEnv("OPENROUTER_API_KEY");
+  },
+  get OPENROUTER_MODEL() {
+    return optionalEnv("OPENROUTER_MODEL", "meta-llama/llama-3.3-70b-instruct");
   },
   get GEMINI_API_KEY() {
     return optionalEnv("GEMINI_API_KEY");

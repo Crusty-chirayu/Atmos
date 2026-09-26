@@ -10,6 +10,7 @@ export interface GlobeFallbackProps {
     name?: string;
   };
   onSelectCity?: (city: FeaturedCity) => void;
+  onSelectCoordinates?: (coords: { latitude: number; longitude: number }) => void;
   className?: string;
   reason?: string;
 }
@@ -17,6 +18,7 @@ export interface GlobeFallbackProps {
 export function GlobeFallback({
   selectedLocation,
   onSelectCity,
+  onSelectCoordinates,
   className = "",
   reason,
 }: GlobeFallbackProps) {
@@ -24,22 +26,31 @@ export function GlobeFallback({
     <div
       className={`relative w-full h-full min-h-[340px] flex flex-col items-center justify-center p-6 text-center select-none overflow-hidden ${className}`}
       role="region"
-      aria-label={`Interactive 2.5D Weather Planet displaying ${selectedLocation.name || "selected coordinates"}`}
+      aria-label={`Weather globe representation for ${selectedLocation.name || "selected coordinates"}`}
     >
-      {/* Planetary Outer Aura */}
+      {/* Clean Planetary Sphere */}
       <div
-        className="relative w-64 h-64 sm:w-72 sm:h-72 rounded-full flex items-center justify-center transition-all duration-700"
+        className="relative w-64 h-64 sm:w-72 sm:h-72 rounded-full flex items-center justify-center transition-all shadow-md cursor-pointer"
         style={{
           background:
-            "radial-gradient(circle at 35% 35%, #0e1e38 0%, #081224 60%, #040814 100%)",
-          boxShadow:
-            "inset -16px -16px 40px rgba(0,0,0,0.8), inset 8px 8px 24px rgba(0, 212, 255, 0.25), 0 0 48px rgba(0, 212, 255, 0.15)",
-          border: "1px solid rgba(0, 212, 255, 0.2)",
+            "radial-gradient(circle at 35% 35%, #5B9FEA 0%, #3B7DC8 60%, #235A9E 100%)",
+          border: "2px solid #E5E7EB",
+        }}
+        onClick={(e) => {
+          if (!onSelectCoordinates) return;
+          const rect = e.currentTarget.getBoundingClientRect();
+          const relX = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+          const relY = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
+          if (relX * relX + relY * relY <= 1) {
+            const lat = Number((relY * 90).toFixed(4));
+            const lon = Number((relX * 180).toFixed(4));
+            onSelectCoordinates({ latitude: lat, longitude: lon });
+          }
         }}
       >
-        {/* Graticule Grid Overlay */}
+        {/* Graticule Grid Lines */}
         <svg
-          className="absolute inset-0 w-full h-full opacity-30 pointer-events-none"
+          className="absolute inset-0 w-full h-full opacity-35 pointer-events-none"
           viewBox="0 0 100 100"
         >
           {/* Latitude lines */}
@@ -49,8 +60,8 @@ export function GlobeFallback({
             rx="46"
             ry="46"
             fill="none"
-            stroke="#00d4ff"
-            strokeWidth="0.5"
+            stroke="#FFFFFF"
+            strokeWidth="0.6"
           />
           <ellipse
             cx="50"
@@ -58,7 +69,7 @@ export function GlobeFallback({
             rx="46"
             ry="32"
             fill="none"
-            stroke="#00d4ff"
+            stroke="#FFFFFF"
             strokeWidth="0.4"
           />
           <ellipse
@@ -67,7 +78,7 @@ export function GlobeFallback({
             rx="46"
             ry="16"
             fill="none"
-            stroke="#00d4ff"
+            stroke="#FFFFFF"
             strokeWidth="0.4"
           />
           <line
@@ -75,8 +86,8 @@ export function GlobeFallback({
             y1="50"
             x2="96"
             y2="50"
-            stroke="#00d4ff"
-            strokeWidth="0.7"
+            stroke="#FFFFFF"
+            strokeWidth="0.6"
             strokeDasharray="2,2"
           />
           {/* Longitude lines */}
@@ -86,7 +97,7 @@ export function GlobeFallback({
             rx="16"
             ry="46"
             fill="none"
-            stroke="#00d4ff"
+            stroke="#FFFFFF"
             strokeWidth="0.4"
           />
           <ellipse
@@ -95,7 +106,7 @@ export function GlobeFallback({
             rx="32"
             ry="46"
             fill="none"
-            stroke="#00d4ff"
+            stroke="#FFFFFF"
             strokeWidth="0.4"
           />
           <line
@@ -103,7 +114,7 @@ export function GlobeFallback({
             y1="4"
             x2="50"
             y2="96"
-            stroke="#00d4ff"
+            stroke="#FFFFFF"
             strokeWidth="0.5"
           />
         </svg>
@@ -112,81 +123,52 @@ export function GlobeFallback({
         <div className="relative flex items-center justify-center z-10">
           <span
             aria-hidden="true"
-            className="w-4 h-4 rounded-full bg-accent-500 animate-ping absolute"
-            style={{ opacity: 0.6 }}
+            className="w-4 h-4 rounded-full bg-[#FFC928] animate-ping absolute opacity-70"
           />
           <span
             aria-hidden="true"
-            className="w-3 h-3 rounded-full bg-accent-400 relative border border-white shadow-lg"
+            className="w-3.5 h-3.5 rounded-full bg-[#FFC928] relative border-2 border-white shadow-xs"
           />
         </div>
-
-        {/* Atmospheric Glow Rim */}
-        <div
-          className="absolute -inset-2 rounded-full pointer-events-none opacity-40 blur-md"
-          style={{
-            background:
-              "radial-gradient(circle, transparent 65%, rgba(0, 212, 255, 0.4) 100%)",
-          }}
-        />
       </div>
 
-      {/* Selected Location Telemetry Info */}
+      {/* Selected Location Info */}
       <div className="mt-4 flex flex-col items-center gap-1 z-10">
         <div className="flex items-center gap-2">
-          <span
-            className="font-display font-bold text-base sm:text-lg"
-            style={{ color: "var(--text-primary)" }}
-          >
-            {selectedLocation.name || "Target Vector"}
+          <span className="font-bold text-base sm:text-lg text-[#222222]">
+            {selectedLocation.name || "Global Coordinates"}
           </span>
-          <span
-            className="px-2 py-0.5 rounded text-[10px] font-mono"
-            style={{
-              background: "rgb(0 212 255 / 0.12)",
-              color: "var(--color-accent-400)",
-              border: "1px solid rgb(0 212 255 / 0.25)",
-            }}
-          >
-            {selectedLocation.latitude >= 0 ? "N" : "S"},{" "}
-            {selectedLocation.longitude >= 0 ? "E" : "W"}
+          <span className="text-xs text-[#6B7280]">
+            [{selectedLocation.latitude.toFixed(1)}°,{" "}
+            {selectedLocation.longitude.toFixed(1)}°]
           </span>
         </div>
-        <p className="text-xs font-mono" style={{ color: "var(--text-muted)" }}>
-          {selectedLocation.latitude.toFixed(3)}°,{" "}
-          {selectedLocation.longitude.toFixed(3)}°
-        </p>
+
+        {reason ? (
+          <p className="text-xs text-[#6B7280] max-w-sm">
+            {reason}
+          </p>
+        ) : (
+          <p className="text-xs text-[#6B7280]">
+            Use the location search or featured cities below to inspect weather.
+          </p>
+        )}
       </div>
 
-      {/* Quick Explore City Chips */}
+      {/* City Chips for Direct Navigation */}
       {onSelectCity && (
-        <div className="mt-4 flex flex-wrap items-center justify-center gap-1.5 max-w-sm">
-          {FEATURED_CITIES.slice(0, 6).map((city) => (
+        <div className="mt-3 flex flex-wrap items-center justify-center gap-1.5 z-10 max-w-sm">
+          {FEATURED_CITIES.slice(0, 5).map((city) => (
             <button
               key={city.id}
               type="button"
               onClick={() => onSelectCity(city)}
-              className="px-2.5 py-1 rounded-full text-xs font-mono hover:bg-atmos-700/50 transition-colors"
-              style={{
-                background: "var(--surface-raised)",
-                color: "var(--text-secondary)",
-                border: "1px solid var(--border-subtle)",
-              }}
+              className="px-2.5 py-1 rounded-md text-xs bg-white hover:bg-[#F7F7F7] border border-[#E5E7EB] text-[#222222] transition-colors shadow-xs"
             >
               {city.name}
             </button>
           ))}
         </div>
-      )}
-
-      {/* Optional fallback notice */}
-      {reason && (
-        <span
-          className="mt-3 text-[11px] font-mono"
-          style={{ color: "var(--text-muted)" }}
-        >
-          {reason}
-        </span>
       )}
     </div>
   );

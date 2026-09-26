@@ -10,6 +10,8 @@ import { DailyForecastComponent } from "./daily-forecast";
 import { WeatherMetricsComponent } from "./weather-metrics";
 import { WeatherSkeleton } from "./weather-skeleton";
 import { formatLocalTime } from "@/lib/weather/utils/date-format";
+import { DeveloperFooter } from "@/components/common/developer-credit";
+import { useCurrentLocation } from "@/lib/location/location-context";
 
 // Default initial location: London, UK
 const DEFAULT_INITIAL_LOCATION: GeocodingLocation = {
@@ -40,8 +42,9 @@ export function WeatherDashboard({
   initialLocation = DEFAULT_INITIAL_LOCATION,
   initialUnits = "metric",
 }: WeatherDashboardProps) {
-  const [selectedLocation, setSelectedLocation] =
-    useState<GeocodingLocation>(initialLocation);
+  const { activeLocation, setActiveLocation } = useCurrentLocation();
+  const selectedLocation = activeLocation || initialLocation;
+
   const [units, setUnits] = useState<"metric" | "imperial">(initialUnits);
   const [weatherBundle, setWeatherBundle] = useState<WeatherBundle | null>(
     null
@@ -121,7 +124,7 @@ export function WeatherDashboard({
 
   const handleSelectLocation = (loc: GeocodingLocation) => {
     setIsLoading(true);
-    setSelectedLocation(loc);
+    setActiveLocation(loc);
   };
 
   const handleToggleUnits = () => {
@@ -147,20 +150,14 @@ export function WeatherDashboard({
 
         <div className="flex items-center gap-2 self-end sm:self-center">
           {/* Unit Toggle Pill */}
-          <div
-            className="glass rounded-full p-1 flex items-center gap-1 text-xs font-mono font-medium"
-            style={{
-              background: "var(--surface-overlay)",
-              border: "1px solid var(--border-default)",
-            }}
-          >
+          <div className="rounded-md p-0.5 flex items-center gap-1 text-xs bg-[#F7F7F7] border border-[#E5E7EB]">
             <button
               type="button"
               onClick={() => setUnits("metric")}
-              className={`px-3 py-1 rounded-full transition-all duration-150 ${
+              className={`px-2.5 py-1 rounded text-xs transition-colors ${
                 units === "metric"
-                  ? "bg-accent-500 text-atmos-950 font-bold shadow-sm"
-                  : "text-atmos-300 hover:text-white"
+                  ? "bg-[#FFC928] text-[#222222] font-semibold shadow-xs"
+                  : "text-[#6B7280] hover:text-[#222222]"
               }`}
               aria-pressed={units === "metric"}
             >
@@ -169,10 +166,10 @@ export function WeatherDashboard({
             <button
               type="button"
               onClick={() => setUnits("imperial")}
-              className={`px-3 py-1 rounded-full transition-all duration-150 ${
+              className={`px-2.5 py-1 rounded text-xs transition-colors ${
                 units === "imperial"
-                  ? "bg-accent-500 text-atmos-950 font-bold shadow-sm"
-                  : "text-atmos-300 hover:text-white"
+                  ? "bg-[#FFC928] text-[#222222] font-semibold shadow-xs"
+                  : "text-[#6B7280] hover:text-[#222222]"
               }`}
               aria-pressed={units === "imperial"}
             >
@@ -187,12 +184,7 @@ export function WeatherDashboard({
             disabled={isLoading}
             title="Refresh current forecast"
             aria-label="Refresh forecast"
-            className="p-2 rounded-full glass hover:opacity-80 transition-opacity focus:outline-none disabled:opacity-50"
-            style={{
-              background: "var(--surface-overlay)",
-              border: "1px solid var(--border-default)",
-              color: "var(--text-secondary)",
-            }}
+            className="p-2 rounded-md bg-white hover:bg-[#F7F7F7] border border-[#E5E7EB] text-[#222222] transition-colors focus:outline-none disabled:opacity-50 shadow-xs"
           >
             <svg
               className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`}
@@ -218,19 +210,9 @@ export function WeatherDashboard({
       {error && !isLoading && (
         <div
           role="alert"
-          className="glass rounded-3xl p-8 text-center max-w-lg mx-auto space-y-4"
-          style={{
-            background: "var(--surface-overlay)",
-            border: "1px solid rgb(255 77 77 / 0.3)",
-          }}
+          className="rounded-lg p-6 text-center max-w-lg mx-auto space-y-4 bg-white border border-[#FED7D7] shadow-xs"
         >
-          <div
-            className="w-12 h-12 rounded-full mx-auto flex items-center justify-center"
-            style={{
-              background: "rgb(255 77 77 / 0.15)",
-              color: "var(--color-danger-400)",
-            }}
-          >
+          <div className="w-12 h-12 rounded-full mx-auto flex items-center justify-center bg-[#FFF5F5] text-[#D94841]">
             <svg
               className="w-6 h-6"
               fill="none"
@@ -245,23 +227,16 @@ export function WeatherDashboard({
               />
             </svg>
           </div>
-          <h2
-            className="text-xl font-bold font-display"
-            style={{ color: "var(--text-primary)" }}
-          >
+          <h2 className="text-xl font-bold text-[#222222]">
             Weather Forecast Unavailable
           </h2>
-          <p className="text-sm" style={{ color: "var(--text-muted)" }}>
+          <p className="text-sm text-[#6B7280]">
             {error}
           </p>
           <button
             type="button"
             onClick={handleRefresh}
-            className="px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-200"
-            style={{
-              background: "var(--color-accent-500)",
-              color: "#04060d",
-            }}
+            className="px-5 py-2.5 rounded-md text-sm font-semibold bg-[#FFC928] hover:bg-[#F2B900] text-[#222222] transition-colors shadow-xs cursor-pointer"
           >
             Try Again
           </button>
@@ -296,24 +271,21 @@ export function WeatherDashboard({
           <WeatherMetricsComponent bundle={weatherBundle} units={units} />
 
           {/* Provenance & Freshness Footer */}
-          <footer
-            className="text-center text-xs py-4 space-y-1.5 border-t border-atmos-700/20"
-            style={{ color: "var(--text-muted)" }}
-          >
+          <footer className="text-center text-xs py-4 space-y-2.5 border-t border-[#E5E7EB] text-[#626B78]">
             <p>
               Data provided by{" "}
               <a
                 href="https://open-meteo.com/"
                 target="_blank"
                 rel="noreferrer"
-                className="underline hover:text-accent-400 transition-colors"
+                className="underline hover:text-[#222222] transition-colors"
               >
                 Open-Meteo
               </a>{" "}
               under CC BY 4.0. Geocoding via GeoNames.
             </p>
             {lastUpdated && (
-              <p className="font-mono text-[11px] opacity-75">
+              <p className="text-xs text-[#737D8A] tabular-nums">
                 Last updated at{" "}
                 {formatLocalTime(lastUpdated, weatherBundle.meta.timezone, {
                   hour12: true,
@@ -322,6 +294,9 @@ export function WeatherDashboard({
                 local time
               </p>
             )}
+            <div className="pt-2 border-t border-[#E5E7EB]/60">
+              <DeveloperFooter />
+            </div>
           </footer>
         </div>
       )}

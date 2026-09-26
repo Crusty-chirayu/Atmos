@@ -38,13 +38,13 @@ export function WeatherChartsContainer({
   return (
     <div className="w-full flex flex-col gap-4">
       {/* Chart Selector Tabs Header */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-atmos-700/30 pb-3">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#E5E7EB] pb-3">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-display font-bold text-text-primary tracking-tight">
-            Meteorological Charts
+          <span className="text-sm font-bold text-[#222222]">
+            Forecast Charts
           </span>
-          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-accent-500/10 text-accent-400 border border-accent-500/20">
-            24H Telemetry
+          <span className="text-xs px-2 py-0.5 rounded bg-[#F7F7F7] text-[#6B7280] border border-[#E5E7EB]">
+            24h View
           </span>
         </div>
 
@@ -52,17 +52,17 @@ export function WeatherChartsContainer({
         <div
           role="tablist"
           aria-label="Weather telemetry charts"
-          className="p-1 rounded-xl glass flex items-center gap-1 overflow-x-auto max-w-full"
+          className="p-0.5 rounded-md bg-[#F7F7F7] border border-[#E5E7EB] flex items-center gap-0.5 overflow-x-auto max-w-full"
         >
           <button
             type="button"
             role="tab"
             aria-selected={activeTab === "temperature"}
             onClick={() => setActiveTab("temperature")}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all ${
+            className={`px-3 py-1 rounded text-xs font-medium whitespace-nowrap transition-all ${
               activeTab === "temperature"
-                ? "bg-accent-500 text-atmos-950 font-semibold shadow-sm"
-                : "text-text-secondary hover:text-text-primary hover:bg-atmos-700/30"
+                ? "bg-[#FFC928] text-[#222222] font-semibold shadow-xs"
+                : "text-[#6B7280] hover:text-[#222222]"
             }`}
           >
             Temperature
@@ -72,10 +72,10 @@ export function WeatherChartsContainer({
             role="tab"
             aria-selected={activeTab === "precipitation"}
             onClick={() => setActiveTab("precipitation")}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all ${
+            className={`px-3 py-1 rounded text-xs font-medium whitespace-nowrap transition-all ${
               activeTab === "precipitation"
-                ? "bg-accent-500 text-atmos-950 font-semibold shadow-sm"
-                : "text-text-secondary hover:text-text-primary hover:bg-atmos-700/30"
+                ? "bg-[#FFC928] text-[#222222] font-semibold shadow-xs"
+                : "text-[#6B7280] hover:text-[#222222]"
             }`}
           >
             Precipitation
@@ -85,10 +85,10 @@ export function WeatherChartsContainer({
             role="tab"
             aria-selected={activeTab === "wind"}
             onClick={() => setActiveTab("wind")}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all ${
+            className={`px-3 py-1 rounded text-xs font-medium whitespace-nowrap transition-all ${
               activeTab === "wind"
-                ? "bg-accent-500 text-atmos-950 font-semibold shadow-sm"
-                : "text-text-secondary hover:text-text-primary hover:bg-atmos-700/30"
+                ? "bg-[#FFC928] text-[#222222] font-semibold shadow-xs"
+                : "text-[#6B7280] hover:text-[#222222]"
             }`}
           >
             Wind & Direction
@@ -98,10 +98,10 @@ export function WeatherChartsContainer({
             role="tab"
             aria-selected={activeTab === "pressure"}
             onClick={() => setActiveTab("pressure")}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all ${
+            className={`px-3 py-1 rounded text-xs font-medium whitespace-nowrap transition-all ${
               activeTab === "pressure"
-                ? "bg-accent-500 text-atmos-950 font-semibold shadow-sm"
-                : "text-text-secondary hover:text-text-primary hover:bg-atmos-700/30"
+                ? "bg-[#FFC928] text-[#222222] font-semibold shadow-xs"
+                : "text-[#6B7280] hover:text-[#222222]"
             }`}
           >
             Pressure & Humidity
@@ -112,10 +112,10 @@ export function WeatherChartsContainer({
               role="tab"
               aria-selected={activeTab === "weekly"}
               onClick={() => setActiveTab("weekly")}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all ${
+              className={`px-3 py-1 rounded text-xs font-medium whitespace-nowrap transition-all ${
                 activeTab === "weekly"
-                  ? "bg-accent-500 text-atmos-950 font-semibold shadow-sm"
-                  : "text-text-secondary hover:text-text-primary hover:bg-atmos-700/30"
+                  ? "bg-[#FFC928] text-[#222222] font-semibold shadow-xs"
+                  : "text-[#6B7280] hover:text-[#222222]"
               }`}
             >
               7-Day Range
@@ -125,7 +125,7 @@ export function WeatherChartsContainer({
       </div>
 
       {/* Active Chart Panel */}
-      <div role="tabpanel" className="w-full transition-opacity duration-300">
+      <div role="tabpanel" className="w-full transition-opacity duration-200">
         {activeTab === "temperature" && (
           <TemperatureTrendChart
             entries={hourlyEntries}

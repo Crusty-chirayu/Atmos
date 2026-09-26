@@ -35,16 +35,16 @@ export default function OfflinePage() {
 
   return (
     <div
-      className="bg-atmospheric flex-1 flex flex-col items-center justify-center px-4 py-20 text-center"
+      className="bg-white flex-1 flex flex-col items-center justify-center px-4 py-20 text-center"
       role="main"
       aria-labelledby="offline-heading"
     >
       <div
-        className="w-20 h-20 rounded-2xl glass flex items-center justify-center mb-6 shadow-glow-sm"
+        className="w-16 h-16 rounded-full bg-[#F7F7F7] border border-[#E5E7EB] flex items-center justify-center mb-6 shadow-xs"
         aria-hidden="true"
       >
         <svg
-          className="w-10 h-10 text-cyan-400"
+          className="w-8 h-8 text-[#6B7280]"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -52,39 +52,39 @@ export default function OfflinePage() {
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
-            strokeWidth={1.5}
+            strokeWidth={1.75}
             d="M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.829m2.829 2.829L21 21M15.536 8.464a5 5 0 010 7.072m0 0l-2.829-2.829m-4.243 4.243a9 9 0 01-1.414-1.414M3 3l18 18"
           />
         </svg>
       </div>
 
-      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono mb-4 glass border border-amber-500/30 text-amber-300">
-        <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
-        OFFLINE TELEMETRY MODE
+      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium mb-4 bg-[#FFFBEB] border border-[#FDE68A] text-[#92400E]">
+        <span className="w-2 h-2 rounded-full bg-[#FFC928]" />
+        Offline Mode
       </div>
 
       <h1
         id="offline-heading"
-        className="font-display font-bold mb-3 text-text-primary text-3xl sm:text-4xl"
+        className="font-bold mb-3 text-[#222222] text-2xl sm:text-3xl tracking-tight"
       >
-        Radar Signal Disconnected
+        No Internet Connection
       </h1>
 
-      <p className="mb-6 max-w-md text-text-secondary text-sm sm:text-base leading-relaxed">
+      <p className="mb-6 max-w-md text-[#6B7280] text-sm sm:text-base leading-relaxed">
         {isOnline ? (
-          <span className="text-emerald-400 font-medium">
+          <span className="text-[#059669] font-medium">
             Internet connection re-established! Click retry to resume live
             feeds.
           </span>
         ) : (
-          "ATMOS cannot reach live weather satellites. You are in offline mode. Cached forecasts and shell pages remain accessible, but live radar and AI updates are paused."
+          "ATMOS cannot connect to weather services. You are currently offline. Cached forecasts and saved locations remain accessible, but live radar and AI updates are paused."
         )}
       </p>
 
       <div className="flex flex-wrap items-center justify-center gap-3">
         <button
           onClick={handleRetry}
-          className="btn-primary px-6 py-2.5 rounded-full text-sm font-medium shadow-glow flex items-center gap-2 cursor-pointer"
+          className="px-5 py-2.5 rounded-md bg-[#FFC928] hover:bg-[#F2B900] text-[#222222] text-sm font-semibold transition-colors flex items-center gap-2 cursor-pointer shadow-xs"
         >
           <svg
             className="w-4 h-4"
@@ -104,16 +104,16 @@ export default function OfflinePage() {
 
         <Link
           href="/"
-          className="glass px-5 py-2.5 rounded-full text-sm font-medium text-text-secondary hover:text-text-primary transition-colors"
+          className="px-5 py-2.5 rounded-md bg-[#F7F7F7] hover:bg-[#E5E7EB] border border-[#E5E7EB] text-sm font-medium text-[#222222] transition-colors"
         >
           Return Home
         </Link>
       </div>
 
-      <div className="mt-12 glass border border-surface-border rounded-xl p-4 max-w-sm text-left text-xs text-text-secondary">
-        <div className="flex items-center gap-2 text-text-primary font-semibold mb-1">
+      <div className="mt-12 bg-[#F7F7F7] border border-[#E5E7EB] rounded-lg p-4 max-w-sm text-left text-xs text-[#6B7280]">
+        <div className="flex items-center gap-2 text-[#222222] font-semibold mb-1">
           <svg
-            className="w-3.5 h-3.5 text-cyan-400"
+            className="w-4 h-4 text-[#FFC928]"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -125,10 +125,9 @@ export default function OfflinePage() {
               d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
             />
           </svg>
-          Offline Architecture Tip
+          Offline Availability
         </div>
-        Atmospheric forecast packets retrieved within the last 30 minutes are
-        preserved in your local Service Worker cache.
+        Forecast data previously retrieved is safely cached in your local browser storage.
       </div>
     </div>
   );

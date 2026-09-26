@@ -10,7 +10,7 @@ export function PwaInstallButton({ className = "" }: { className?: string }) {
 
   if (isInstalled) {
     return (
-      <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium text-emerald-400 bg-emerald-950/40 border border-emerald-500/30">
+      <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium text-[#059669] bg-[#ECFDF5] border border-[#A7F3D0]">
         <svg
           className="w-4 h-4"
           fill="none"
@@ -44,7 +44,7 @@ export function PwaInstallButton({ className = "" }: { className?: string }) {
       <button
         onClick={handleInstall}
         disabled={installing || !canInstall}
-        className="glass border border-cyan-500/40 hover:border-cyan-400 px-4 py-2 rounded-xl text-xs font-semibold text-cyan-300 hover:text-cyan-200 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-glow-sm"
+        className="bg-white hover:bg-[#F7F7F7] border border-[#E5E7EB] px-3.5 py-1.5 rounded-md text-xs font-medium text-[#222222] transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-xs"
         title={
           canInstall
             ? "Install ATMOS as native desktop/mobile app"
@@ -52,7 +52,7 @@ export function PwaInstallButton({ className = "" }: { className?: string }) {
         }
       >
         <svg
-          className="w-4 h-4 text-cyan-400"
+          className="w-4 h-4 text-[#222222]"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -67,7 +67,7 @@ export function PwaInstallButton({ className = "" }: { className?: string }) {
         {installing ? "Installing..." : "Install ATMOS App"}
       </button>
       {installedMessage && (
-        <span className="text-[10px] text-emerald-400 font-medium">
+        <span className="text-xs text-[#059669] font-medium">
           Installed successfully!
         </span>
       )}

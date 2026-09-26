@@ -1,8 +1,26 @@
 // ATMOS Service Worker — PWA & Offline Support
-const CACHE_VERSION = "v1";
+const CACHE_VERSION = "v3";
 const STATIC_CACHE = `atmos-static-${CACHE_VERSION}`;
 const SHELL_CACHE = `atmos-shell-${CACHE_VERSION}`;
 const WEATHER_CACHE = `atmos-weather-${CACHE_VERSION}`;
+
+// On localhost development, immediately unregister and clear all caches
+if (
+  typeof self !== "undefined" &&
+  (self.location?.hostname === "localhost" ||
+    self.location?.hostname === "127.0.0.1")
+) {
+  self.addEventListener("install", () => self.skipWaiting());
+  self.addEventListener("activate", (event) => {
+    event.waitUntil(
+      caches
+        .keys()
+        .then((keys) => Promise.all(keys.map((k) => caches.delete(k))))
+        .then(() => self.registration.unregister())
+        .then(() => self.clients.claim())
+    );
+  });
+}
 
 const PRECACHE_ASSETS = [
   "/offline",
@@ -60,12 +78,13 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // 1. STRICT PRIVACY EXCLUSION: Never cache sensitive user, AI, or auth endpoints
+  // 1. STRICT PRIVACY EXCLUSION: Never cache sensitive user, AI, auth endpoints, or private account pages
   if (
     url.pathname.startsWith("/api/user") ||
     url.pathname.startsWith("/api/ai") ||
     url.pathname.startsWith("/api/auth") ||
-    url.pathname.startsWith("/api/cron")
+    url.pathname.startsWith("/api/cron") ||
+    url.pathname.startsWith("/account")
   ) {
     return; // Passthrough directly to network
   }
@@ -128,7 +147,7 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // 3. Static assets: Next.js bundles, fonts, icons, manifest (Cache-First)
+  // 3. Static assets: Next.js bundles, fonts, icons, manifest
   if (
     url.pathname.startsWith("/_next/static/") ||
     url.pathname.startsWith("/icons/") ||
@@ -137,6 +156,24 @@ self.addEventListener("fetch", (event) => {
     url.pathname.endsWith(".woff2") ||
     url.pathname === "/manifest.json"
   ) {
+    // For Next.js dynamic code chunks, use Network-First to guarantee fresh application updates
+    if (url.pathname.startsWith("/_next/static/")) {
+      event.respondWith(
+        fetch(request)
+          .then((networkResponse) => {
+            if (networkResponse.status === 200) {
+              const resClone = networkResponse.clone();
+              caches.open(STATIC_CACHE).then((cache) => {
+                cache.put(request, resClone);
+              });
+            }
+            return networkResponse;
+          })
+          .catch(() => caches.match(request))
+      );
+      return;
+    }
+
     event.respondWith(
       caches.match(request).then((cached) => {
         if (cached) return cached;

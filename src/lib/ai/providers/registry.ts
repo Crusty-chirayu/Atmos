@@ -1,12 +1,14 @@
 import { AIProvider } from "./types";
+import { OpenRouterAdapter } from "./openrouter/adapter";
 import { GeminiAdapter } from "./gemini/adapter";
 
 export class AIProviderRegistry {
   private providers = new Map<string, AIProvider>();
-  private defaultProviderId = "google-gemini";
+  private defaultProviderId = "openrouter";
 
   constructor() {
-    this.register(new GeminiAdapter(), true);
+    this.register(new OpenRouterAdapter(), true);
+    this.register(new GeminiAdapter(), false);
   }
 
   register(provider: AIProvider, setAsDefault = false): void {

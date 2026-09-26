@@ -1,7 +1,6 @@
 import React from "react";
 import type { DailyForecast } from "@/lib/weather/domain/weather";
 import { WeatherIcon } from "./weather-icon";
-
 import {
   formatLocalDate,
   formatWeekday,
@@ -14,7 +13,8 @@ export interface DailyForecastProps {
 }
 
 /**
- * 7-to-14 day forecast component with visual temperature range bars.
+ * 7-day forecast component with clean visual temperature range bars.
+ * Conforms to authoritative clean consumer weather directive.
  */
 export function DailyForecastComponent({
   daily,
@@ -36,34 +36,17 @@ export function DailyForecastComponent({
   return (
     <section
       aria-label="Daily weather forecast"
-      className="glass rounded-3xl p-5 sm:p-6 transition-all duration-300"
-      style={{
-        background: "var(--surface-overlay)",
-        border: "1px solid var(--border-default)",
-      }}
+      className="rounded-lg bg-white p-5 sm:p-6 border border-[#E5E7EB] shadow-xs"
     >
       <div className="flex items-center justify-between mb-4">
-        <h2
-          className="text-base sm:text-lg font-bold font-display tracking-tight flex items-center gap-2"
-          style={{ color: "var(--text-primary)" }}
-        >
+        <h2 className="text-base sm:text-lg font-bold tracking-tight text-[#222222] flex items-center gap-2">
           <span>7-Day Outlook</span>
-          <span
-            className="text-xs font-mono font-normal px-2 py-0.5 rounded-full"
-            style={{
-              background: "var(--surface-raised)",
-              color: "var(--text-muted)",
-              border: "1px solid var(--border-subtle)",
-            }}
-          >
-            Daily
+          <span className="text-xs font-medium px-2 py-0.5 rounded bg-[#F7F7F7] text-[#6B7280] border border-[#E5E7EB]">
+            Daily Forecast
           </span>
         </h2>
-        <span
-          className="text-xs font-mono"
-          style={{ color: "var(--text-muted)" }}
-        >
-          Min / Max
+        <span className="text-xs text-[#6B7280]">
+          Low / High
         </span>
       </div>
 
@@ -80,40 +63,29 @@ export function DailyForecastComponent({
             ((day.temperatureMax - day.temperatureMin) / globalRange) * 100
           );
 
+          const isToday = idx === 0;
+
           return (
             <div
               key={day.date}
-              className="p-3 sm:p-3.5 rounded-2xl flex items-center justify-between gap-3 transition-colors duration-200"
-              style={{
-                background:
-                  idx === 0 ? "rgb(0 212 255 / 0.04)" : "var(--surface-raised)",
-                border:
-                  idx === 0
-                    ? "1px solid rgb(0 212 255 / 0.18)"
-                    : "1px solid var(--border-subtle)",
-              }}
+              className={`p-3 sm:p-3.5 rounded-md flex items-center justify-between gap-3 transition-colors ${
+                isToday
+                  ? "bg-[#FFF8E1] border border-[#FFC928] shadow-xs"
+                  : "bg-white border border-[#E5E7EB] hover:bg-[#F7F8FA]"
+              }`}
             >
               {/* Day & Date info */}
-              <div className="w-24 sm:w-32 flex flex-col shrink-0">
+              <div className="w-24 sm:w-28 flex flex-col shrink-0">
                 <span
-                  className={`text-sm font-medium ${
-                    idx === 0
-                      ? "font-bold text-accent-400"
-                      : "text-text-primary"
+                  className={`text-sm ${
+                    isToday
+                      ? "font-bold text-[#222222]"
+                      : "font-semibold text-[#222222]"
                   }`}
-                  style={{
-                    color:
-                      idx === 0
-                        ? "var(--color-accent-400)"
-                        : "var(--text-primary)",
-                  }}
                 >
                   {weekday}
                 </span>
-                <span
-                  className="text-[11px]"
-                  style={{ color: "var(--text-muted)" }}
-                >
+                <span className="text-xs text-[#626B78]">
                   {dateLabel}
                 </span>
               </div>
@@ -122,23 +94,18 @@ export function DailyForecastComponent({
               <div className="flex items-center gap-2 sm:gap-3 w-36 sm:w-44 shrink-0">
                 <WeatherIcon
                   category={day.conditionCategory}
+                  code={day.weatherCode}
                   isDay={true}
                   size={24}
                 />
                 <div className="flex flex-col overflow-hidden">
-                  <span
-                    className="text-xs truncate font-medium"
-                    style={{ color: "var(--text-primary)" }}
-                  >
+                  <span className="text-xs truncate font-medium text-[#222222]">
                     {day.conditionText}
                   </span>
                   {day.precipitationProbabilityMax !== null &&
                     day.precipitationProbabilityMax !== undefined &&
                     day.precipitationProbabilityMax > 0 && (
-                      <span
-                        className="text-[10px] font-mono"
-                        style={{ color: "var(--color-accent-400)" }}
-                      >
+                      <span className="text-xs text-[#3984D6] font-semibold tabular-nums">
                         {day.precipitationProbabilityMax}% rain
                       </span>
                     )}
@@ -146,36 +113,27 @@ export function DailyForecastComponent({
               </div>
 
               {/* Min Temperature */}
-              <span
-                className="w-10 text-right text-xs sm:text-sm font-mono shrink-0"
-                style={{ color: "var(--text-muted)" }}
-              >
+              <span className="w-10 text-right text-xs sm:text-sm font-medium text-[#6B7280] tabular-nums shrink-0">
                 {Math.round(day.temperatureMin)}
                 {tempUnit}
               </span>
 
-              {/* Visual Temperature Range Bar */}
+              {/* Clean Temperature Range Bar (No Rainbow) */}
               <div
                 aria-hidden="true"
-                className="hidden sm:block flex-1 h-2 rounded-full relative mx-2"
-                style={{ background: "var(--surface-overlay)" }}
+                className="hidden sm:block flex-1 h-2 rounded-full relative mx-2 bg-[#E5E7EB]"
               >
                 <div
-                  className="absolute h-full rounded-full"
+                  className="absolute h-full rounded-full bg-[#FFC928]"
                   style={{
                     left: `${Math.max(0, leftPercent)}%`,
                     width: `${Math.min(100 - leftPercent, widthPercent)}%`,
-                    background:
-                      "linear-gradient(90deg, #00d4ff 0%, #f5c842 100%)",
                   }}
                 />
               </div>
 
               {/* Max Temperature */}
-              <span
-                className="w-10 text-right text-xs sm:text-sm font-mono font-bold shrink-0"
-                style={{ color: "var(--text-primary)" }}
-              >
+              <span className="w-10 text-right text-xs sm:text-sm font-bold text-[#222222] tabular-nums shrink-0">
                 {Math.round(day.temperatureMax)}
                 {tempUnit}
               </span>

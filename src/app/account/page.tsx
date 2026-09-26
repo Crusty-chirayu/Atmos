@@ -13,6 +13,7 @@ import type {
 import { AlertRulesManager } from "@/components/notifications/alert-rules-manager";
 import { PushNotificationToggle } from "@/components/notifications/push-toggle";
 import { PwaInstallButton } from "@/components/pwa/pwa-install-button";
+import { DeveloperContactSection } from "@/components/common/developer-credit";
 
 export default function AccountPage() {
   const router = useRouter();
@@ -36,25 +37,25 @@ export default function AccountPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-dvh flex items-center justify-center p-4">
-        <div className="w-full max-w-3xl p-8 rounded-3xl glass-panel animate-pulse h-96" />
+      <div className="min-h-screen bg-white flex items-center justify-center p-4">
+        <div className="w-full max-w-3xl p-8 rounded-lg bg-[#F7F7F7] border border-[#E5E7EB] animate-pulse h-96" />
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div className="min-h-dvh flex items-center justify-center p-4">
-        <div className="w-full max-w-md p-8 rounded-3xl glass-panel text-center">
-          <h2 className="text-xl font-bold mb-2 text-text-primary">
+      <div className="min-h-screen bg-white flex items-center justify-center p-4">
+        <div className="w-full max-w-md p-8 rounded-lg bg-white border border-[#E5E7EB] shadow-xs text-center">
+          <h2 className="text-xl font-bold mb-2 text-[#222222]">
             Sign In Required
           </h2>
-          <p className="text-xs text-text-secondary mb-6">
+          <p className="text-xs text-[#6B7280] mb-6">
             You must be signed in to manage your account and saved locations.
           </p>
           <Link
             href="/login"
-            className="inline-block py-2.5 px-6 rounded-xl bg-accent-500 text-atmos-950 font-bold text-xs hover:bg-accent-400 transition-colors"
+            className="inline-block py-2.5 px-6 rounded-md bg-[#FFC928] hover:bg-[#F2B900] text-[#222222] font-bold text-xs transition-colors shadow-xs"
           >
             Sign In to ATMOS
           </Link>
@@ -104,23 +105,23 @@ export default function AccountPage() {
   };
 
   return (
-    <div className="min-h-dvh py-8 px-4 sm:px-6 max-w-4xl mx-auto w-full relative z-10">
+    <div className="min-h-screen bg-white text-[#222222] py-8 px-4 sm:px-6 max-w-4xl mx-auto w-full">
       {/* Top Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4 mb-8 pb-4 border-b border-atmos-700/20">
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-8 pb-4 border-b border-[#E5E7EB]">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <Link
               href="/"
-              className="text-xs font-mono text-accent-400 hover:text-accent-300 transition-colors"
+              className="text-xs text-[#6B7280] hover:text-[#222222] transition-colors"
             >
-              ← Back to Earth Observation
+              ← Back to weather home
             </Link>
           </div>
-          <h1 className="font-display font-black text-2xl sm:text-3xl tracking-tight text-text-primary">
-            Account &amp; Preferences
+          <h1 className="font-bold text-2xl sm:text-3xl tracking-tight text-[#222222]">
+            Account &amp; Settings
           </h1>
-          <p className="text-xs text-text-secondary mt-0.5">
-            Manage your synchronized meteorological profile and stored locations
+          <p className="text-xs text-[#6B7280] mt-0.5">
+            Manage your saved locations, units, and notifications
           </p>
         </div>
 
@@ -132,7 +133,7 @@ export default function AccountPage() {
               await signOut();
               router.push("/");
             }}
-            className="px-3.5 py-2 rounded-xl glass text-xs font-medium text-text-secondary hover:text-text-primary hover:bg-atmos-700/40 transition-colors flex items-center gap-1.5"
+            className="px-3.5 py-2 rounded-md bg-[#F7F7F7] hover:bg-[#E5E7EB] border border-[#E5E7EB] text-xs font-semibold text-[#222222] transition-colors flex items-center gap-1.5"
           >
             <svg
               className="w-4 h-4"
@@ -152,39 +153,31 @@ export default function AccountPage() {
         </div>
       </div>
 
-      <div className="space-y-8">
+      <div className="space-y-6">
         {/* Profile Card */}
         <section
           aria-labelledby="profile-heading"
-          className="p-6 rounded-3xl glass-panel border border-atmos-700/30 shadow-xl"
+          className="p-5 sm:p-6 rounded-lg bg-white border border-[#E5E7EB] shadow-xs"
         >
           <h2
             id="profile-heading"
-            className="text-sm font-mono uppercase tracking-wider text-text-muted mb-4"
+            className="text-xs font-bold uppercase tracking-wider text-[#6B7280] mb-4"
           >
-            User Profile
+            Profile Information
           </h2>
           <div className="flex flex-wrap items-center gap-4">
-            <div
-              className="w-14 h-14 rounded-2xl flex items-center justify-center text-lg font-black"
-              style={{
-                background:
-                  "linear-gradient(135deg, var(--color-accent-500), var(--color-accent-700))",
-                color: "var(--color-atmos-950)",
-              }}
-            >
+            <div className="w-12 h-12 rounded-full bg-[#FFF9E6] border border-[#FFC928] flex items-center justify-center text-base font-bold text-[#222222]">
               {displayName.slice(0, 2).toUpperCase()}
             </div>
             <div>
-              <p className="text-base font-bold text-text-primary">
+              <p className="text-base font-bold text-[#222222]">
                 {displayName}
               </p>
-              <p className="text-xs font-mono text-text-secondary mt-0.5">
+              <p className="text-xs text-[#6B7280] mt-0.5">
                 {user.email}
               </p>
-              <p className="text-[11px] text-text-muted mt-1">
-                Account ID:{" "}
-                <span className="font-mono">{user.id.slice(0, 8)}...</span>
+              <p className="text-xs text-[#9CA3AF] mt-0.5">
+                Account ID: {user.id.slice(0, 8)}...
               </p>
             </div>
           </div>
@@ -194,35 +187,29 @@ export default function AccountPage() {
         <section
           id="saved-locations"
           aria-labelledby="locations-heading"
-          className="p-6 rounded-3xl glass-panel border border-atmos-700/30 shadow-xl"
+          className="p-5 sm:p-6 rounded-lg bg-white border border-[#E5E7EB] shadow-xs"
         >
           <div className="flex items-center justify-between mb-4">
             <div>
               <h2
                 id="locations-heading"
-                className="text-sm font-mono uppercase tracking-wider text-text-muted"
+                className="text-xs font-bold uppercase tracking-wider text-[#6B7280]"
               >
                 Saved Locations
               </h2>
-              <p className="text-xs text-text-secondary mt-0.5">
-                Cities stored for rapid synoptic retrieval across sessions
+              <p className="text-xs text-[#6B7280] mt-0.5">
+                Saved cities for fast weather lookup
               </p>
             </div>
-            <span
-              className="px-2.5 py-0.5 rounded-full text-xs font-mono font-bold"
-              style={{
-                background: "rgb(0 212 255 / 0.12)",
-                color: "var(--color-accent-400)",
-              }}
-            >
+            <span className="px-2 py-0.5 rounded text-xs font-semibold bg-[#F7F7F7] text-[#222222] border border-[#E5E7EB]">
               {savedLocations.length} saved
             </span>
           </div>
 
           {savedLocations.length === 0 ? (
-            <div className="py-8 text-center border border-dashed border-atmos-700/40 rounded-2xl p-6">
+            <div className="py-8 text-center border border-dashed border-[#E5E7EB] rounded-md p-6 bg-[#F7F7F7]">
               <svg
-                className="w-8 h-8 text-text-muted mx-auto mb-2 opacity-50"
+                className="w-8 h-8 text-[#9CA3AF] mx-auto mb-2"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -239,12 +226,11 @@ export default function AccountPage() {
                   d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                 />
               </svg>
-              <p className="text-xs font-medium text-text-primary">
+              <p className="text-xs font-semibold text-[#222222]">
                 No saved locations yet
               </p>
-              <p className="text-[11px] text-text-muted mt-1 max-w-sm mx-auto">
-                Search for any global city on the homepage and click &ldquo;Save
-                City&rdquo; to add it to your synchronized collection.
+              <p className="text-xs text-[#6B7280] mt-1 max-w-sm mx-auto">
+                Search for any city on the dashboard and click &ldquo;Save City&rdquo; to add it to your collection.
               </p>
             </div>
           ) : (
@@ -252,25 +238,25 @@ export default function AccountPage() {
               {savedLocations.map((loc) => (
                 <div
                   key={loc.id}
-                  className="p-4 rounded-2xl glass border border-atmos-700/30 flex items-center justify-between gap-3 hover:border-accent-500/40 transition-all"
+                  className="p-3.5 rounded-md bg-[#F7F7F7] border border-[#E5E7EB] flex items-center justify-between gap-3 hover:border-[#FFC928] transition-colors"
                 >
                   <div className="min-w-0">
                     <div className="flex items-center gap-1.5">
-                      <h3 className="text-sm font-bold text-text-primary truncate">
+                      <h3 className="text-sm font-bold text-[#222222] truncate">
                         {loc.name}
                       </h3>
                       {loc.country_code && (
-                        <span className="px-1.5 py-0.2 rounded text-[10px] font-mono glass text-text-muted">
+                        <span className="px-1.5 py-0.2 rounded text-xs bg-white border border-[#E5E7EB] text-[#6B7280]">
                           {loc.country_code}
                         </span>
                       )}
                     </div>
-                    <p className="text-[11px] font-mono text-text-secondary mt-0.5">
+                    <p className="text-xs text-[#6B7280] mt-0.5 tabular-nums">
                       {Number(loc.latitude).toFixed(2)}°,{" "}
                       {Number(loc.longitude).toFixed(2)}°
                     </p>
                     {loc.admin_area && (
-                      <p className="text-[11px] text-text-muted truncate">
+                      <p className="text-xs text-[#6B7280] truncate">
                         {loc.admin_area}
                       </p>
                     )}
@@ -279,7 +265,7 @@ export default function AccountPage() {
                   <div className="flex items-center gap-1.5 shrink-0">
                     <Link
                       href={`/?lat=${loc.latitude}&lon=${loc.longitude}&name=${encodeURIComponent(loc.name)}`}
-                      className="px-2.5 py-1 rounded-lg bg-accent-500/10 text-accent-400 hover:bg-accent-500/20 text-xs font-medium transition-colors"
+                      className="px-2.5 py-1 rounded-md bg-[#FFF9E6] border border-[#FFC928] text-[#222222] text-xs font-semibold hover:bg-[#FFC928] transition-colors"
                       title="View live weather"
                     >
                       View
@@ -289,7 +275,7 @@ export default function AccountPage() {
                       onClick={async () => {
                         await removeLocation(loc.id);
                       }}
-                      className="p-1 rounded-lg text-text-muted hover:text-error-400 hover:bg-error-500/10 transition-colors"
+                      className="p-1 rounded-md text-[#6B7280] hover:text-[#D94841] hover:bg-[#FFF5F5] transition-colors"
                       title="Remove saved location"
                       aria-label={`Remove ${loc.name}`}
                     >
@@ -317,22 +303,22 @@ export default function AccountPage() {
         {/* Display Preferences Section */}
         <section
           aria-labelledby="preferences-heading"
-          className="p-6 rounded-3xl glass-panel border border-atmos-700/30 shadow-xl"
+          className="p-5 sm:p-6 rounded-lg bg-white border border-[#E5E7EB] shadow-xs"
         >
           <div className="flex items-center justify-between mb-4">
             <div>
               <h2
                 id="preferences-heading"
-                className="text-sm font-mono uppercase tracking-wider text-text-muted"
+                className="text-xs font-bold uppercase tracking-wider text-[#6B7280]"
               >
-                Display Preferences
+                Measurement Units
               </h2>
-              <p className="text-xs text-text-secondary mt-0.5">
-                Default measurement systems and visual configuration
+              <p className="text-xs text-[#6B7280] mt-0.5">
+                Default measurement systems for weather readings
               </p>
             </div>
             {prefSaveStatus && (
-              <span className="text-[11px] font-mono text-accent-400 animate-pulse">
+              <span className="text-xs font-semibold text-[#FFC928] animate-pulse">
                 {prefSaveStatus}
               </span>
             )}
@@ -340,12 +326,12 @@ export default function AccountPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* Temperature Unit */}
-            <div className="p-3.5 rounded-2xl glass border border-atmos-700/30">
+            <div className="p-3.5 rounded-md bg-[#F7F7F7] border border-[#E5E7EB]">
               <label
                 htmlFor="pref-temp-unit"
-                className="block text-xs font-mono text-text-secondary mb-1.5"
+                className="block text-xs font-semibold text-[#222222] mb-1.5"
               >
-                Temperature System
+                Temperature Units
               </label>
               <select
                 id="pref-temp-unit"
@@ -355,7 +341,7 @@ export default function AccountPage() {
                     temperature_unit: e.target.value as TemperatureUnit,
                   })
                 }
-                className="w-full px-3 py-2 rounded-xl glass border border-atmos-700/40 text-xs text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-500 bg-surface-base"
+                className="w-full px-3 py-2 rounded-md bg-white border border-[#E5E7EB] text-xs text-[#222222] focus:outline-none focus:border-[#FFC928]"
               >
                 <option value="celsius">Metric (°C — Celsius)</option>
                 <option value="fahrenheit">Imperial (°F — Fahrenheit)</option>
@@ -363,10 +349,10 @@ export default function AccountPage() {
             </div>
 
             {/* Wind Speed Unit */}
-            <div className="p-3.5 rounded-2xl glass border border-atmos-700/30">
+            <div className="p-3.5 rounded-md bg-[#F7F7F7] border border-[#E5E7EB]">
               <label
                 htmlFor="pref-wind-unit"
-                className="block text-xs font-mono text-text-secondary mb-1.5"
+                className="block text-xs font-semibold text-[#222222] mb-1.5"
               >
                 Wind Velocity Units
               </label>
@@ -378,7 +364,7 @@ export default function AccountPage() {
                     wind_speed_unit: e.target.value as WindSpeedUnit,
                   })
                 }
-                className="w-full px-3 py-2 rounded-xl glass border border-atmos-700/40 text-xs text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-500 bg-surface-base"
+                className="w-full px-3 py-2 rounded-md bg-white border border-[#E5E7EB] text-xs text-[#222222] focus:outline-none focus:border-[#FFC928]"
               >
                 <option value="kmh">Kilometres per hour (km/h)</option>
                 <option value="mph">Miles per hour (mph)</option>
@@ -388,12 +374,12 @@ export default function AccountPage() {
             </div>
 
             {/* Precipitation Unit */}
-            <div className="p-3.5 rounded-2xl glass border border-atmos-700/30">
+            <div className="p-3.5 rounded-md bg-[#F7F7F7] border border-[#E5E7EB]">
               <label
                 htmlFor="pref-precip-unit"
-                className="block text-xs font-mono text-text-secondary mb-1.5"
+                className="block text-xs font-semibold text-[#222222] mb-1.5"
               >
-                Precipitation Depth
+                Precipitation Units
               </label>
               <select
                 id="pref-precip-unit"
@@ -403,7 +389,7 @@ export default function AccountPage() {
                     precipitation_unit: e.target.value as PrecipitationUnit,
                   })
                 }
-                className="w-full px-3 py-2 rounded-xl glass border border-atmos-700/40 text-xs text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-500 bg-surface-base"
+                className="w-full px-3 py-2 rounded-md bg-white border border-[#E5E7EB] text-xs text-[#222222] focus:outline-none focus:border-[#FFC928]"
               >
                 <option value="mm">Millimetres (mm)</option>
                 <option value="inch">Inches (in)</option>
@@ -411,12 +397,12 @@ export default function AccountPage() {
             </div>
 
             {/* Theme Preference */}
-            <div className="p-3.5 rounded-2xl glass border border-atmos-700/30">
+            <div className="p-3.5 rounded-md bg-[#F7F7F7] border border-[#E5E7EB]">
               <label
                 htmlFor="pref-theme"
-                className="block text-xs font-mono text-text-secondary mb-1.5"
+                className="block text-xs font-semibold text-[#222222] mb-1.5"
               >
-                Visual Theme
+                Theme
               </label>
               <select
                 id="pref-theme"
@@ -426,11 +412,10 @@ export default function AccountPage() {
                     theme: e.target.value as ThemePreference,
                   })
                 }
-                className="w-full px-3 py-2 rounded-xl glass border border-atmos-700/40 text-xs text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-500 bg-surface-base"
+                className="w-full px-3 py-2 rounded-md bg-white border border-[#E5E7EB] text-xs text-[#222222] focus:outline-none focus:border-[#FFC928]"
               >
-                <option value="system">System Synchronized</option>
-                <option value="dark">Dark Theme (Cinematic)</option>
-                <option value="light">Light Theme</option>
+                <option value="light">Light Theme (Default)</option>
+                <option value="system">System Default</option>
               </select>
             </div>
           </div>
@@ -440,12 +425,12 @@ export default function AccountPage() {
         <section
           id="alerts"
           aria-labelledby="alerts-heading"
-          className="p-6 rounded-3xl glass-panel border border-atmos-700/40 shadow-xl space-y-6"
+          className="p-5 sm:p-6 rounded-lg bg-white border border-[#E5E7EB] shadow-xs space-y-6"
         >
           <div className="flex items-center justify-between">
             <h2
               id="alerts-heading"
-              className="text-sm font-mono uppercase tracking-wider text-accent-400"
+              className="text-xs font-bold uppercase tracking-wider text-[#6B7280]"
             >
               Weather Alerts & Notifications
             </h2>
@@ -455,26 +440,27 @@ export default function AccountPage() {
           <AlertRulesManager />
         </section>
 
+        {/* Developer Attribution & Contact */}
+        <DeveloperContactSection />
+
         {/* Danger Zone: Account Deletion */}
         <section
           aria-labelledby="danger-zone-heading"
-          className="p-6 rounded-3xl glass border border-error-500/30 shadow-xl"
+          className="p-5 sm:p-6 rounded-lg bg-white border border-[#FED7D7] shadow-xs"
         >
           <h2
             id="danger-zone-heading"
-            className="text-sm font-mono uppercase tracking-wider text-error-400 mb-2"
+            className="text-xs font-bold uppercase tracking-wider text-[#D94841] mb-2"
           >
             Danger Zone
           </h2>
-          <p className="text-xs text-text-secondary leading-relaxed mb-4">
-            Deleting your account will irreversibly remove your user profile,
-            all saved planetary locations, and your synchronized preferences.
-            This action cannot be undone.
+          <p className="text-xs text-[#6B7280] leading-relaxed mb-4">
+            Deleting your account will irreversibly remove your user profile, all saved locations, and customized preferences.
           </p>
           <button
             type="button"
             onClick={() => setShowDeleteModal(true)}
-            className="px-4 py-2 rounded-xl bg-error-500/10 border border-error-500/30 text-error-400 hover:bg-error-500/20 text-xs font-bold transition-colors"
+            className="px-4 py-2 rounded-md bg-[#FFF5F5] border border-[#FED7D7] text-[#D94841] hover:bg-[#FED7D7] text-xs font-bold transition-colors"
           >
             Delete Account and Data
           </button>
@@ -487,26 +473,24 @@ export default function AccountPage() {
           role="dialog"
           aria-modal="true"
           aria-labelledby="delete-modal-title"
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-atmos-950/80 backdrop-blur-md animate-in fade-in duration-200"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 animate-in fade-in"
         >
-          <div className="w-full max-w-md p-6 rounded-3xl glass-panel border border-error-500/40 shadow-2xl relative">
+          <div className="w-full max-w-md p-6 rounded-lg bg-white border border-[#E5E7EB] shadow-md relative">
             <h3
               id="delete-modal-title"
-              className="text-lg font-bold text-text-primary mb-2"
+              className="text-lg font-bold text-[#222222] mb-2"
             >
-              Permanent Account Deletion
+              Delete Account
             </h3>
-            <p className="text-xs text-text-secondary leading-relaxed mb-4">
-              All your saved locations and preference configurations will be
-              purged permanently. To proceed, please type{" "}
-              <strong className="text-error-400 font-mono">DELETE</strong>{" "}
-              below:
+            <p className="text-xs text-[#6B7280] leading-relaxed mb-4">
+              All your saved locations and preferences will be permanently removed. To proceed, please type{" "}
+              <strong className="text-[#D94841] font-mono">DELETE</strong> below:
             </p>
 
             {deleteError && (
               <div
                 role="alert"
-                className="mb-3 p-2.5 rounded-xl bg-error-500/10 border border-error-500/30 text-error-400 text-xs"
+                className="mb-3 p-2.5 rounded-md bg-[#FFF5F5] border border-[#FED7D7] text-[#D94841] text-xs"
               >
                 {deleteError}
               </div>
@@ -517,7 +501,7 @@ export default function AccountPage() {
               value={deleteConfirmation}
               onChange={(e) => setDeleteConfirmation(e.target.value)}
               placeholder="DELETE"
-              className="w-full px-3.5 py-2.5 rounded-xl glass border border-atmos-700/40 text-sm text-text-primary font-mono placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-error-500 mb-4"
+              className="w-full px-3.5 py-2.5 rounded-md bg-white border border-[#E5E7EB] text-sm text-[#222222] font-mono placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#D94841] mb-4"
             />
 
             <div className="flex items-center justify-end gap-2">
@@ -529,7 +513,7 @@ export default function AccountPage() {
                   setDeleteError(null);
                 }}
                 disabled={isDeleting}
-                className="px-4 py-2 rounded-xl glass text-xs font-medium text-text-secondary hover:text-text-primary"
+                className="px-4 py-2 rounded-md bg-[#F7F7F7] hover:bg-[#E5E7EB] border border-[#E5E7EB] text-xs font-medium text-[#222222]"
               >
                 Cancel
               </button>
@@ -537,7 +521,7 @@ export default function AccountPage() {
                 type="button"
                 onClick={handleDeleteAccount}
                 disabled={isDeleting || deleteConfirmation !== "DELETE"}
-                className="px-4 py-2 rounded-xl bg-error-500 hover:bg-error-600 text-white text-xs font-bold transition-colors disabled:opacity-50 flex items-center gap-1.5"
+                className="px-4 py-2 rounded-md bg-[#D94841] hover:bg-[#C62828] text-white text-xs font-bold transition-colors disabled:opacity-50"
               >
                 {isDeleting ? "Deleting..." : "Permanently Delete"}
               </button>

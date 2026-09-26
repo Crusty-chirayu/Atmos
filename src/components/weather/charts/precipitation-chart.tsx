@@ -21,7 +21,7 @@ export function PrecipitationChart({
 
   if (!entries || entries.length === 0) {
     return (
-      <div className="h-48 flex items-center justify-center text-text-muted text-sm glass rounded-2xl">
+      <div className="h-48 flex items-center justify-center text-text-muted text-sm bg-surface-raised border border-border-default/60 rounded-md">
         No precipitation telemetry available
       </div>
     );
@@ -79,44 +79,48 @@ export function PrecipitationChart({
       <div className="flex flex-wrap items-center justify-between gap-3 text-xs">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-1.5">
-            <span className="w-3 h-2 rounded bg-cyan-500/60" />
-            <span className="text-text-secondary font-medium">
+            <span className="w-3 h-2 rounded bg-[#4A90E2]" />
+            <span className="text-[#6B7280] font-medium">
               Probability (%)
             </span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-3 h-0.5 rounded-full bg-blue-400" />
-            <span className="text-text-muted">Volume ({unit})</span>
+            <span className="w-3 h-0.5 rounded-full bg-[#2563EB]" />
+            <span className="text-[#6B7280]">Volume ({unit})</span>
           </div>
         </div>
 
         {activeEntry ? (
-          <div className="font-mono text-xs flex items-center gap-2 px-2.5 py-1 rounded-lg glass">
-            <span className="text-cyan-400 font-semibold">
+          <div className="text-xs flex items-center gap-2 px-2.5 py-1 rounded-md bg-[#F7F7F7] border border-[#E5E7EB]">
+            <span className="text-[#4A90E2] font-semibold tabular-nums">
               {formatHourlyTime(activeEntry.timestamp, timezone)}:
             </span>
-            <span className="text-text-primary">
+            <span className="text-[#222222] font-medium tabular-nums">
               {activeEntry.precipitationProbability ?? 0}% chance
             </span>
-            <span className="text-text-secondary">
+            <span className="text-[#6B7280] tabular-nums">
               · {formatPrecipitation(activeEntry.precipitation, unit)}
             </span>
           </div>
         ) : (
-          <div className="text-text-muted text-[11px] font-mono">
-            Max Probability:{" "}
-            {Math.max(...data.map((d) => d.precipitationProbability ?? 0))}% ·
-            Total:{" "}
-            {formatPrecipitation(
-              data.reduce((acc, cur) => acc + cur.precipitation, 0),
-              unit
-            )}
+          <div className="text-[#6B7280] text-xs">
+            Max:{" "}
+            <span className="font-semibold text-[#222222] tabular-nums">
+              {Math.max(...data.map((d) => d.precipitationProbability ?? 0))}%
+            </span>{" "}
+            · Total:{" "}
+            <span className="font-semibold text-[#222222] tabular-nums">
+              {formatPrecipitation(
+                data.reduce((acc, cur) => acc + cur.precipitation, 0),
+                unit
+              )}
+            </span>
           </div>
         )}
       </div>
 
       {/* SVG Chart */}
-      <div className="relative w-full aspect-[16/7] sm:aspect-[16/5] glass rounded-2xl p-2 sm:p-4 overflow-hidden">
+      <div className="relative w-full aspect-[16/7] sm:aspect-[16/5] bg-white border border-[#E5E7EB] rounded-lg p-2 sm:p-4 overflow-hidden shadow-xs">
         <svg
           viewBox={`0 0 ${width} ${height}`}
           className="w-full h-full overflow-visible select-none"
@@ -126,11 +130,11 @@ export function PrecipitationChart({
         >
           <defs>
             <linearGradient id={barGradientId} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="rgb(6 182 212)" stopOpacity="0.8" />
+              <stop offset="0%" stopColor="#4A90E2" stopOpacity="0.85" />
               <stop
                 offset="100%"
-                stopColor="rgb(6 182 212)"
-                stopOpacity="0.1"
+                stopColor="#4A90E2"
+                stopOpacity="0.2"
               />
             </linearGradient>
           </defs>
@@ -205,7 +209,7 @@ export function PrecipitationChart({
                 cy={getVolY(d.precipitation)}
                 r="3"
                 fill="rgb(96 165 250)"
-                stroke="var(--color-atmos-950)"
+                stroke="#FFFFFF"
                 strokeWidth="1.5"
               />
             );

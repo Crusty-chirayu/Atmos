@@ -77,15 +77,15 @@ export function SaveLocationButton({
             ? `Remove ${location.name} from saved locations`
             : `Save ${location.name} to account`
         }
-        className={`px-3 py-1.5 rounded-xl glass text-xs font-medium flex items-center gap-1.5 transition-all focus:outline-none focus:ring-2 focus:ring-accent-500 ${
+        className={`px-3 py-1.5 rounded-md text-xs font-medium flex items-center gap-1.5 transition-colors shadow-xs ${
           isSaved
-            ? "border border-accent-500/40 text-accent-300 bg-accent-500/10"
-            : "hover:bg-atmos-700/40 text-text-secondary hover:text-text-primary"
+            ? "border border-[#FFC928] text-[#222222] bg-[#FFF9E6]"
+            : "bg-white border border-[#E5E7EB] hover:bg-[#F7F7F7] text-[#222222]"
         }`}
       >
         {isProcessing ? (
           <svg
-            className="w-3.5 h-3.5 animate-spin"
+            className="w-3.5 h-3.5 animate-spin text-[#6B7280]"
             fill="none"
             viewBox="0 0 24 24"
             aria-hidden="true"
@@ -106,7 +106,7 @@ export function SaveLocationButton({
           </svg>
         ) : isSaved ? (
           <svg
-            className="w-3.5 h-3.5 fill-current text-accent-400"
+            className="w-3.5 h-3.5 fill-[#FFC928] text-[#FFC928]"
             viewBox="0 0 24 24"
             aria-hidden="true"
           >
@@ -114,7 +114,7 @@ export function SaveLocationButton({
           </svg>
         ) : (
           <svg
-            className="w-3.5 h-3.5"
+            className="w-3.5 h-3.5 text-[#6B7280]"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -136,48 +136,38 @@ export function SaveLocationButton({
         <div
           role="dialog"
           aria-labelledby="save-prompt-heading"
-          className="absolute left-0 sm:left-auto sm:right-0 mt-2 w-64 rounded-2xl glass-panel p-4 shadow-2xl z-50 animate-in fade-in zoom-in-95 duration-100"
-          style={{
-            background: "var(--color-surface-overlay)",
-            border: "1px solid var(--border-primary)",
-          }}
+          className="absolute left-0 sm:left-auto sm:right-0 mt-2 w-64 rounded-lg bg-white p-4 shadow-lg border border-[#E5E7EB] z-50"
         >
           <div className="flex items-start justify-between gap-2 mb-2">
             <h4
               id="save-prompt-heading"
-              className="text-xs font-semibold"
-              style={{ color: "var(--text-primary)" }}
+              className="text-xs font-bold text-[#222222]"
             >
               Save Location
             </h4>
             <button
               type="button"
               onClick={() => setShowSignInPrompt(false)}
-              className="text-text-muted hover:text-text-primary p-0.5"
+              className="text-[#9CA3AF] hover:text-[#222222] p-0.5 text-xs"
               aria-label="Close dialog"
             >
               ✕
             </button>
           </div>
-          <p
-            className="text-[11px] mb-3 leading-relaxed"
-            style={{ color: "var(--text-secondary)" }}
-          >
-            Sign in or create a free ATMOS account to save{" "}
-            <strong>{location.name}</strong> and sync your weather across
-            devices.
+          <p className="text-xs mb-3 leading-relaxed text-[#6B7280]">
+            Sign in or create an account to bookmark{" "}
+            <strong>{location.name}</strong> and access your weather across devices.
           </p>
           <div className="flex items-center gap-2">
             <Link
               href="/login"
-              className="flex-1 py-1.5 px-3 rounded-xl bg-accent-500 text-atmos-950 font-bold text-xs text-center hover:bg-accent-400 transition-colors"
+              className="flex-1 py-1.5 px-3 rounded-md bg-[#FFC928] text-[#222222] font-semibold text-xs text-center hover:bg-[#F2B900] transition-colors"
             >
               Sign In
             </Link>
             <Link
               href="/signup"
-              className="flex-1 py-1.5 px-3 rounded-xl glass text-xs text-center hover:bg-atmos-700/40 transition-colors"
-              style={{ color: "var(--text-primary)" }}
+              className="flex-1 py-1.5 px-3 rounded-md bg-[#F7F7F7] hover:bg-[#E5E7EB] border border-[#E5E7EB] text-xs text-center text-[#222222] transition-colors"
             >
               Sign Up
             </Link>
@@ -190,7 +180,7 @@ export function SaveLocationButton({
         <div
           role="status"
           aria-live="polite"
-          className="absolute left-0 mt-1.5 whitespace-nowrap px-2.5 py-1 rounded-lg text-[11px] font-medium glass border border-accent-500/30 text-accent-300 z-40 animate-in fade-in duration-150"
+          className="absolute left-0 mt-1.5 whitespace-nowrap px-2.5 py-1 rounded-md text-xs font-medium bg-[#FFFBEB] border border-[#FDE68A] text-[#92400E] shadow-sm z-40"
         >
           {statusMessage}
         </div>

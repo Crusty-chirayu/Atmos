@@ -22,7 +22,7 @@ export function TemperatureTrendChart({
 
   if (!entries || entries.length === 0) {
     return (
-      <div className="h-48 flex items-center justify-center text-text-muted text-sm glass rounded-2xl">
+      <div className="h-48 flex items-center justify-center text-text-muted text-sm bg-surface-raised border border-border-default/60 rounded-md">
         No hourly temperature telemetry available
       </div>
     );
@@ -113,34 +113,34 @@ export function TemperatureTrendChart({
         </div>
 
         {activeEntry ? (
-          <div className="font-mono text-xs flex items-center gap-2 px-2.5 py-1 rounded-lg glass">
-            <span className="text-accent-400 font-semibold">
+          <div className="text-xs flex items-center gap-2 px-2.5 py-1 rounded-md bg-[#F7F7F7] border border-[#E5E7EB]">
+            <span className="text-[#222222] font-semibold tabular-nums">
               {formatHourlyTime(activeEntry.timestamp, timezone)}:
             </span>
-            <span className="text-text-primary">
+            <span className="text-[#222222] font-bold tabular-nums">
               {formatTemperature(activeEntry.temperature, unit)}
             </span>
             {activeEntry.apparentTemperature !== null &&
               activeEntry.apparentTemperature !== undefined && (
-                <span className="text-text-muted">
+                <span className="text-[#6B7280] tabular-nums">
                   (Feels{" "}
                   {formatTemperature(activeEntry.apparentTemperature, unit)})
                 </span>
               )}
-            <span className="text-text-secondary">
+            <span className="text-[#6B7280]">
               · {activeEntry.conditionText}
             </span>
           </div>
         ) : (
-          <div className="text-text-muted text-[11px] font-mono">
-            High: {formatTemperature(Math.max(...temperatures), unit)} · Low:{" "}
-            {formatTemperature(Math.min(...temperatures), unit)}
+          <div className="text-[#6B7280] text-xs">
+            High: <strong className="text-[#222222] tabular-nums">{formatTemperature(Math.max(...temperatures), unit)}</strong> · Low:{" "}
+            <strong className="text-[#222222] tabular-nums">{formatTemperature(Math.min(...temperatures), unit)}</strong>
           </div>
         )}
       </div>
 
       {/* SVG Chart */}
-      <div className="relative w-full aspect-[16/7] sm:aspect-[16/5] glass rounded-2xl p-2 sm:p-4 overflow-hidden">
+      <div className="relative w-full aspect-[16/7] sm:aspect-[16/5] bg-white border border-[#E5E7EB] rounded-lg p-2 sm:p-4 overflow-hidden shadow-xs">
         <svg
           viewBox={`0 0 ${width} ${height}`}
           className="w-full h-full overflow-visible select-none"
@@ -301,7 +301,7 @@ export function TemperatureTrendChart({
                 cy={activeY}
                 r="5"
                 fill="var(--color-accent-400)"
-                stroke="var(--color-atmos-950)"
+                stroke="#FFFFFF"
                 strokeWidth="2"
               />
             </g>

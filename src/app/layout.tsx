@@ -1,26 +1,24 @@
 import type { Metadata, Viewport } from "next";
 import { AuthProvider } from "@/lib/auth/auth-context";
 import { PwaProvider } from "@/components/pwa/pwa-provider";
+import { LocationProvider } from "@/lib/location/location-context";
 import { FloatingAiAssistant } from "@/components/ai/floating-ai-assistant";
 import { resolveAppUrl } from "@/lib/config/env";
 import "./globals.css";
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: dark)", color: "#04060d" },
-    { media: "(prefers-color-scheme: light)", color: "#f0f6ff" },
-  ],
+  themeColor: "#FFFFFF",
   width: "device-width",
   initialScale: 1,
 };
 
 export const metadata: Metadata = {
   title: {
-    default: "ATMOS — Global Weather Intelligence",
+    default: "ATMOS — Clean Consumer Weather Intelligence",
     template: "%s | ATMOS",
   },
   description:
-    "ATMOS is a cinematic, AI-powered global weather platform. Live forecasts, 3D globe, AI insights, and personalized alerts for every location on Earth.",
+    "ATMOS is a clean, modern consumer weather intelligence platform. Real-time forecasts, interactive globe, radar maps, and AI-powered weather insights.",
   keywords: [
     "weather",
     "forecast",
@@ -37,15 +35,15 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     siteName: "ATMOS",
-    title: "ATMOS — Global Weather Intelligence",
+    title: "ATMOS — Clean Consumer Weather Intelligence",
     description:
-      "Cinematic, AI-powered global weather — live forecasts, 3D globe, and personalized alerts.",
+      "Clean, modern consumer weather platform — live forecasts, 3D globe, and accurate weather updates.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "ATMOS — Global Weather Intelligence",
+    title: "ATMOS — Clean Consumer Weather Intelligence",
     description:
-      "Cinematic, AI-powered global weather — live forecasts, 3D globe, and personalized alerts.",
+      "Clean, modern consumer weather platform — live forecasts, 3D globe, and accurate weather updates.",
   },
   robots: {
     index: true,
@@ -54,7 +52,7 @@ export const metadata: Metadata = {
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
-    statusBarStyle: "black-translucent",
+    statusBarStyle: "default",
     title: "ATMOS",
   },
 };
@@ -68,45 +66,37 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      // data-theme is set client-side by ThemeProvider (M1-T2);
-      // default to dark (dark-first design, D-002)
+      data-theme="light"
     >
       <head>
-        {/*
-          Inline script to apply theme before first paint,
-          preventing flash of wrong theme (FOUT).
-          Reads localStorage "atmos-theme"; falls back to system preference.
-        */}
+        {/* Enforce light theme across document */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
 (function () {
   try {
-    var stored = localStorage.getItem('atmos-theme');
-    var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    var theme = stored === 'light' || stored === 'dark'
-      ? stored
-      : prefersDark ? 'dark' : 'light';
-    document.documentElement.setAttribute('data-theme', theme);
+    document.documentElement.setAttribute('data-theme', 'light');
   } catch (_) {}
 })();
             `.trim(),
           }}
         />
       </head>
-      <body className="bg-surface-base text-text-primary antialiased min-h-dvh flex flex-col">
+      <body className="bg-white text-[#222222] antialiased min-h-dvh flex flex-col font-sans">
         {/* Accessibility: skip to main content */}
         <a href="#main-content" className="skip-link">
           Skip to content
         </a>
 
         <AuthProvider>
-          <PwaProvider>
-            <main id="main-content" className="flex-1 flex flex-col">
-              {children}
-            </main>
-            <FloatingAiAssistant />
-          </PwaProvider>
+          <LocationProvider>
+            <PwaProvider>
+              <main id="main-content" className="flex-1 flex flex-col">
+                {children}
+              </main>
+              <FloatingAiAssistant />
+            </PwaProvider>
+          </LocationProvider>
         </AuthProvider>
       </body>
     </html>

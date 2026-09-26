@@ -25,8 +25,8 @@ export function SevenDayRangeChart({
 
   if (!days || days.length === 0) {
     return (
-      <div className="h-48 flex items-center justify-center text-text-muted text-sm glass rounded-2xl">
-        No daily forecast telemetry available
+      <div className="h-48 flex items-center justify-center text-[#6B7280] text-sm bg-[#F7F7F7] border border-[#E5E7EB] rounded-md">
+        No daily forecast data available
       </div>
     );
   }
@@ -40,19 +40,15 @@ export function SevenDayRangeChart({
   return (
     <div className="w-full flex flex-col gap-3">
       {/* Legend & range summary */}
-      <div className="flex items-center justify-between text-xs text-text-muted font-mono">
+      <div className="flex items-center justify-between text-xs text-[#6B7280]">
         <span>
-          Week Min: {Math.round(globalMin)}
-          {tempUnit}
+          Week Low: <strong className="text-[#222222] tabular-nums">{Math.round(globalMin)}{tempUnit}</strong>
         </span>
-        <span className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-cyan-400" /> Cold
-          <span className="w-8 h-1.5 rounded-full bg-gradient-to-r from-cyan-400 via-amber-400 to-orange-500" />
-          <span className="w-2 h-2 rounded-full bg-orange-500" /> Warm
+        <span className="flex items-center gap-1.5 text-xs text-[#6B7280]">
+          <span className="w-3 h-1.5 rounded-full bg-[#FFC928]" /> Temperature Range
         </span>
         <span>
-          Week Max: {Math.round(globalMax)}
-          {tempUnit}
+          Week High: <strong className="text-[#222222] tabular-nums">{Math.round(globalMax)}{tempUnit}</strong>
         </span>
       </div>
 
@@ -72,33 +68,34 @@ export function SevenDayRangeChart({
             <div
               key={day.date}
               onClick={() => setSelectedDayIndex(isSelected ? null : idx)}
-              className={`p-3 sm:p-3.5 rounded-2xl flex flex-col gap-2 transition-all cursor-pointer ${
+              className={`p-3 sm:p-3.5 rounded-md flex flex-col gap-2 transition-colors cursor-pointer ${
                 isSelected
-                  ? "glass border-accent-400/50 shadow-lg"
-                  : "glass hover:bg-atmos-800/40"
+                  ? "bg-[#FFF8E1] border border-[#FFC928] shadow-xs"
+                  : "bg-white border border-[#E5E7EB] hover:bg-[#F7F8FA]"
               }`}
             >
               <div className="flex items-center justify-between gap-3">
                 {/* Date & Weekday */}
                 <div className="w-24 sm:w-32 shrink-0">
-                  <div className="text-sm font-medium text-text-primary">
+                  <div className="text-sm font-semibold text-[#222222]">
                     {weekday}
                   </div>
-                  <div className="text-[11px] font-mono text-text-muted">
+                  <div className="text-xs text-[#626B78]">
                     {dateLabel}
                   </div>
                 </div>
 
-                {/* Weather Condition Icon & Text */}
+                {/* Weather Condition Icon */}
                 <div className="flex items-center gap-2 w-28 sm:w-36 shrink-0">
                   <WeatherIcon
+                    code={day.weatherCode}
                     category={
                       WMO_CODE_MAP[day.weatherCode]?.category ?? "clear"
                     }
                     isDay={true}
                     className="w-5 h-5 shrink-0"
                   />
-                  <span className="text-xs text-text-secondary truncate hidden sm:inline">
+                  <span className="text-xs text-[#626B78] truncate hidden sm:inline">
                     {day.conditionText}
                   </span>
                 </div>
@@ -106,23 +103,23 @@ export function SevenDayRangeChart({
                 {/* Precipitation chance */}
                 <div className="w-14 text-center shrink-0">
                   {(day.precipitationProbabilityMax ?? 0) > 0 ? (
-                    <span className="text-xs font-mono text-cyan-400 font-medium">
+                    <span className="text-xs tabular-nums text-[#3984D6] font-semibold">
                       {day.precipitationProbabilityMax}%
                     </span>
                   ) : (
-                    <span className="text-xs font-mono text-text-muted">—</span>
+                    <span className="text-xs text-[#737D8A]">—</span>
                   )}
                 </div>
 
                 {/* Range Bar */}
                 <div className="flex-1 flex items-center gap-2">
-                  <span className="text-xs font-mono text-text-muted w-8 text-right shrink-0">
+                  <span className="text-xs tabular-nums text-[#626B78] w-8 text-right shrink-0">
                     {Math.round(day.temperatureMin)}°
                   </span>
 
-                  <div className="flex-1 h-2 rounded-full bg-atmos-800/60 relative overflow-hidden">
+                  <div className="flex-1 h-2 rounded-full bg-[#E5E7EB] relative overflow-hidden">
                     <div
-                      className="absolute top-0 bottom-0 rounded-full bg-gradient-to-r from-cyan-400 via-amber-400 to-orange-400 transition-all duration-300"
+                      className="absolute top-0 bottom-0 rounded-full bg-[#FFC928] transition-all duration-300"
                       style={{
                         left: `${leftPercent}%`,
                         width: `${widthPercent}%`,
@@ -130,7 +127,7 @@ export function SevenDayRangeChart({
                     />
                   </div>
 
-                  <span className="text-xs font-mono font-semibold text-text-primary w-8 text-left shrink-0">
+                  <span className="text-xs tabular-nums font-bold text-[#222222] w-8 text-left shrink-0">
                     {Math.round(day.temperatureMax)}°
                   </span>
                 </div>
@@ -138,36 +135,36 @@ export function SevenDayRangeChart({
 
               {/* Expanded details when clicked */}
               {isSelected && (
-                <div className="pt-2 border-t border-atmos-700/30 grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-mono">
-                  <div className="p-2 rounded-xl bg-atmos-900/40">
-                    <span className="text-text-muted text-[10px] block">
-                      PRECIPITATION
+                <div className="pt-2 border-t border-[#E5E7EB] grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                  <div className="p-2 rounded-md bg-[#F7F8FA] border border-[#E5E7EB]">
+                    <span className="text-[#626B78] text-xs block font-medium">
+                      Precipitation
                     </span>
-                    <span className="text-cyan-400 font-medium">
+                    <span className="text-[#3984D6] font-semibold tabular-nums">
                       {day.precipitationSum} mm
                     </span>
                   </div>
-                  <div className="p-2 rounded-xl bg-atmos-900/40">
-                    <span className="text-text-muted text-[10px] block">
-                      PEAK WIND
+                  <div className="p-2 rounded-md bg-[#F7F8FA] border border-[#E5E7EB]">
+                    <span className="text-[#626B78] text-xs block font-medium">
+                      Peak Wind
                     </span>
-                    <span className="text-emerald-400 font-medium">
+                    <span className="text-[#222222] font-semibold tabular-nums">
                       {Math.round(day.windSpeedMax)} km/h
                     </span>
                   </div>
-                  <div className="p-2 rounded-xl bg-atmos-900/40">
-                    <span className="text-text-muted text-[10px] block">
-                      MAX UV INDEX
+                  <div className="p-2 rounded-md bg-[#F7F8FA] border border-[#E5E7EB]">
+                    <span className="text-[#626B78] text-xs block font-medium">
+                      Max UV Index
                     </span>
-                    <span className="text-amber-400 font-medium">
+                    <span className="text-[#222222] font-semibold tabular-nums">
                       {day.uvIndexMax ?? "N/A"}
                     </span>
                   </div>
-                  <div className="p-2 rounded-xl bg-atmos-900/40">
-                    <span className="text-text-muted text-[10px] block">
-                      FEELS LIKE
+                  <div className="p-2 rounded-md bg-[#F7F8FA] border border-[#E5E7EB]">
+                    <span className="text-[#626B78] text-xs block font-medium">
+                      Feels Like
                     </span>
-                    <span className="text-text-primary font-medium">
+                    <span className="text-[#222222] font-semibold tabular-nums">
                       {day.apparentTemperatureMin !== null &&
                       day.apparentTemperatureMin !== undefined &&
                       day.apparentTemperatureMax !== null &&

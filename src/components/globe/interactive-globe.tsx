@@ -13,6 +13,7 @@ export interface InteractiveGlobeProps {
     name?: string;
   };
   onSelectCity?: (city: FeaturedCity) => void;
+  onSelectCoordinates?: (coords: { latitude: number; longitude: number }) => void;
   className?: string;
 }
 
@@ -28,14 +29,10 @@ const DynamicGlobeCanvas = dynamic(
         aria-label="Loading interactive globe..."
       >
         <div
-          className="w-64 h-64 rounded-full border border-atmos-700/40"
-          style={{ background: "var(--surface-raised)" }}
+          className="w-64 h-64 rounded-full border border-[#E5E7EB] bg-[#F7F7F7]"
         />
-        <span
-          className="mt-4 text-xs font-mono"
-          style={{ color: "var(--text-muted)" }}
-        >
-          Initializing Planetary Mesh...
+        <span className="mt-4 text-xs text-[#6B7280]">
+          Loading 3D Globe...
         </span>
       </div>
     ),
@@ -47,6 +44,7 @@ import { useWebGLSupport } from "@/hooks/use-media-query";
 export function InteractiveGlobe({
   selectedLocation,
   onSelectCity,
+  onSelectCoordinates,
   className = "",
 }: InteractiveGlobeProps) {
   const hasWebGL = useWebGLSupport();
@@ -57,6 +55,7 @@ export function InteractiveGlobe({
       <GlobeFallback
         selectedLocation={selectedLocation}
         onSelectCity={onSelectCity}
+        onSelectCoordinates={onSelectCoordinates}
         className={className}
         reason="WebGL unavailable — 2.5D visual mode active"
       />
@@ -69,6 +68,7 @@ export function InteractiveGlobe({
       <DynamicGlobeCanvas
         selectedLocation={selectedLocation}
         onSelectCity={onSelectCity}
+        onSelectCoordinates={onSelectCoordinates}
       />
     </div>
   );

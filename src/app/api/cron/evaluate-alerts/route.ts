@@ -49,10 +49,15 @@ export async function POST(request: NextRequest) {
     });
   } catch (err) {
     console.error("[CRON evaluate-alerts] Execution failed:", err);
+    const isProd = publicEnv.NEXT_PUBLIC_APP_ENV === "production";
     return NextResponse.json(
       {
         status: "error",
-        error: err instanceof Error ? err.message : String(err),
+        error: isProd
+          ? "Alert evaluation failed"
+          : err instanceof Error
+            ? err.message
+            : String(err),
       },
       { status: 500 }
     );

@@ -23,7 +23,7 @@ export function HistoricalTrendChart({
   const summaries = data.dailySummaries;
   if (!summaries || summaries.length === 0) {
     return (
-      <div className="h-48 flex items-center justify-center text-text-muted text-sm glass rounded-2xl">
+      <div className="h-48 flex items-center justify-center text-text-muted text-sm bg-surface-raised border border-border-default/60 rounded-md">
         No historical reanalysis telemetry available for this range
       </div>
     );
@@ -74,53 +74,51 @@ export function HistoricalTrendChart({
       <div className="flex flex-wrap items-center justify-between gap-3 text-xs">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded bg-amber-400/40 border border-amber-400/80" />
-            <span className="text-text-secondary font-medium">
+            <span className="w-2.5 h-2.5 rounded bg-[#FFC928]/40 border border-[#FFC928]" />
+            <span className="text-[#6B7280] font-medium">
               Daily Range (Min/Max)
             </span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-3 h-0.5 rounded-full bg-amber-400" />
-            <span className="text-text-muted">Mean Temperature</span>
+            <span className="w-3 h-0.5 rounded-full bg-[#FFC928]" />
+            <span className="text-[#6B7280]">Mean Temperature</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-1.5 rounded bg-cyan-400/60" />
-            <span className="text-text-muted">
+            <span className="w-2.5 h-1.5 rounded bg-[#4A90E2]" />
+            <span className="text-[#6B7280]">
               Precipitation ({precipUnit})
             </span>
           </div>
         </div>
 
         {activeDay ? (
-          <div className="font-mono text-xs flex items-center gap-2 px-2.5 py-1 rounded-lg glass">
-            <span className="text-amber-400 font-semibold">
+          <div className="text-xs flex items-center gap-2 px-2.5 py-1 rounded-md bg-[#F7F7F7] border border-[#E5E7EB]">
+            <span className="text-[#222222] font-semibold tabular-nums">
               {activeDay.date}:
             </span>
-            <span className="text-text-primary">
+            <span className="text-[#222222] tabular-nums">
               {formatTemperature(activeDay.temperatureMin, tempUnit)} -{" "}
               {formatTemperature(activeDay.temperatureMax, tempUnit)}
             </span>
             {activeDay.temperatureMean !== null &&
               activeDay.temperatureMean !== undefined && (
-                <span className="text-text-muted">
-                  (Mean {formatTemperature(activeDay.temperatureMean, tempUnit)}
-                  )
+                <span className="text-[#6B7280] tabular-nums">
+                  (Mean {formatTemperature(activeDay.temperatureMean, tempUnit)})
                 </span>
               )}
-            <span className="text-cyan-400">
+            <span className="text-[#4A90E2] font-medium tabular-nums">
               · {formatPrecipitation(activeDay.precipitationSum, precipUnit)}
             </span>
           </div>
         ) : (
-          <div className="text-text-muted text-[11px] font-mono">
-            {summaries.length} days analyzed ({data.startDate} to {data.endDate}
-            )
+          <div className="text-[#6B7280] text-xs">
+            {summaries.length} days analyzed ({data.startDate} to {data.endDate})
           </div>
         )}
       </div>
 
       {/* SVG Chart */}
-      <div className="relative w-full aspect-[16/7] sm:aspect-[16/5] glass rounded-2xl p-2 sm:p-4 overflow-hidden">
+      <div className="relative w-full aspect-[16/7] sm:aspect-[16/5] bg-white border border-[#E5E7EB] rounded-lg p-2 sm:p-4 overflow-hidden shadow-xs">
         <svg
           viewBox={`0 0 ${width} ${height}`}
           className="w-full h-full overflow-visible select-none"

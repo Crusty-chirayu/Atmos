@@ -2,57 +2,44 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Page Not Found",
+  title: "Page Not Found | ATMOS",
   description: "The page you requested could not be found.",
 };
 
 /**
  * ATMOS 404 — not-found page.
- * Per AGENT_RULES §4: every route has a designed empty/not-found state.
+ * Clean, bright consumer empty/not-found state.
  */
 export default function NotFound() {
   return (
     <div
-      className="bg-atmospheric flex-1 flex flex-col items-center justify-center px-4 py-20 text-center"
+      className="bg-white flex-1 flex flex-col items-center justify-center px-4 py-20 text-center"
       role="main"
       aria-labelledby="not-found-heading"
     >
       <p
         aria-hidden="true"
-        style={{ fontSize: "4rem", marginBottom: "1rem", lineHeight: 1 }}
+        className="text-5xl mb-4 leading-none select-none"
       >
-        🌫️
+        🌤️
       </p>
 
       <h1
         id="not-found-heading"
-        className="font-display font-bold mb-3"
-        style={{
-          fontSize: "clamp(1.75rem, 5vw, 2.5rem)",
-          color: "var(--text-primary)",
-        }}
+        className="text-2xl sm:text-3xl font-bold mb-2 text-[#222222] tracking-tight"
       >
-        Lost in the clouds
+        Page Not Found
       </h1>
 
-      <p
-        className="mb-8 max-w-sm"
-        style={{ color: "var(--text-secondary)", lineHeight: 1.7 }}
-      >
-        That page doesn&apos;t exist in our forecast. The URL may be wrong or
-        the page may have moved.
+      <p className="mb-6 max-w-sm text-sm text-[#6B7280] leading-relaxed">
+        The weather forecast or page you were looking for doesn&apos;t exist or may have been moved.
       </p>
 
       <Link
         href="/"
-        className="glass inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-medium"
-        style={{
-          color: "#00d4ff",
-          textDecoration: "none",
-          transition: "box-shadow 200ms ease",
-        }}
+        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-md bg-[#FFC928] hover:bg-[#F2B900] text-sm font-semibold text-[#222222] transition-colors shadow-xs"
       >
-        ← Back to ATMOS
+        ← Back to Home
       </Link>
     </div>
   );

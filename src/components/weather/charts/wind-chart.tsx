@@ -39,7 +39,7 @@ export function WindChart({ entries, unit, timezone }: WindChartProps) {
 
   if (!entries || entries.length === 0) {
     return (
-      <div className="h-48 flex items-center justify-center text-text-muted text-sm glass rounded-2xl">
+      <div className="h-48 flex items-center justify-center text-text-muted text-sm bg-surface-raised border border-border-default/60 rounded-md">
         No wind telemetry available
       </div>
     );
@@ -120,27 +120,27 @@ export function WindChart({ entries, unit, timezone }: WindChartProps) {
         </div>
 
         {activeEntry ? (
-          <div className="font-mono text-xs flex items-center gap-2 px-2.5 py-1 rounded-lg glass">
-            <span className="text-emerald-400 font-semibold">
+          <div className="text-xs flex items-center gap-2 px-2.5 py-1 rounded-md bg-[#F7F7F7] border border-[#E5E7EB]">
+            <span className="text-[#222222] font-semibold tabular-nums">
               {formatHourlyTime(activeEntry.timestamp, timezone)}:
             </span>
-            <span className="text-text-primary">
+            <span className="text-[#222222] font-medium tabular-nums">
               {formatWindSpeed(activeEntry.windSpeed, unit)}
             </span>
             {activeEntry.windGusts !== null &&
               activeEntry.windGusts !== undefined && (
-                <span className="text-text-muted">
+                <span className="text-[#6B7280] tabular-nums">
                   (Gusts {formatWindSpeed(activeEntry.windGusts, unit)})
                 </span>
               )}
-            <span className="text-text-secondary flex items-center gap-1">
+            <span className="text-[#6B7280] flex items-center gap-1">
               <span>{getCardinalDirection(activeEntry.windDirection)}</span>
               <span>({activeEntry.windDirection}°)</span>
             </span>
           </div>
         ) : (
-          <div className="text-text-muted text-[11px] font-mono">
-            Max Sustained: {formatWindSpeed(Math.max(...speeds), unit)}
+          <div className="text-[#6B7280] text-xs">
+            Max Sustained: <strong className="text-[#222222] tabular-nums">{formatWindSpeed(Math.max(...speeds), unit)}</strong>
             {gusts.length > 0 &&
               ` · Max Gust: ${formatWindSpeed(Math.max(...gusts), unit)}`}
           </div>
@@ -148,7 +148,7 @@ export function WindChart({ entries, unit, timezone }: WindChartProps) {
       </div>
 
       {/* SVG Chart */}
-      <div className="relative w-full aspect-[16/7] sm:aspect-[16/5] glass rounded-2xl p-2 sm:p-4 overflow-hidden">
+      <div className="relative w-full aspect-[16/7] sm:aspect-[16/5] bg-white border border-[#E5E7EB] rounded-lg p-2 sm:p-4 overflow-hidden shadow-xs">
         <svg
           viewBox={`0 0 ${width} ${height}`}
           className="w-full h-full overflow-visible select-none"
@@ -220,7 +220,7 @@ export function WindChart({ entries, unit, timezone }: WindChartProps) {
               >
                 <circle
                   r="7"
-                  fill="var(--color-atmos-900)"
+                  fill="#FFFFFF"
                   stroke="rgb(52 211 153)"
                   strokeWidth="1.5"
                 />

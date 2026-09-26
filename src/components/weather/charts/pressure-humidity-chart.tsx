@@ -21,7 +21,7 @@ export function PressureHumidityChart({
 
   if (!entries || entries.length === 0) {
     return (
-      <div className="h-48 flex items-center justify-center text-text-muted text-sm glass rounded-2xl">
+      <div className="h-48 flex items-center justify-center text-text-muted text-sm bg-surface-raised border border-border-default/60 rounded-md">
         No barometric telemetry available
       </div>
     );
@@ -116,32 +116,34 @@ export function PressureHumidityChart({
         </div>
 
         {activeEntry ? (
-          <div className="font-mono text-xs flex items-center gap-2 px-2.5 py-1 rounded-lg glass">
-            <span className="text-violet-400 font-semibold">
+          <div className="text-xs flex items-center gap-2 px-2.5 py-1 rounded-md bg-[#F7F7F7] border border-[#E5E7EB]">
+            <span className="text-[#222222] font-semibold tabular-nums">
               {formatHourlyTime(activeEntry.timestamp, timezone)}:
             </span>
-            <span className="text-text-primary">
+            <span className="text-[#222222] font-bold tabular-nums">
               {activeEntry.pressureMsl !== null &&
               activeEntry.pressureMsl !== undefined
                 ? formatPressure(activeEntry.pressureMsl, unit)
                 : "N/A"}
             </span>
-            <span className="text-text-secondary">
+            <span className="text-[#6B7280] tabular-nums">
               · Humidity {activeEntry.relativeHumidity ?? 0}%
             </span>
           </div>
         ) : (
-          <div className="text-text-muted text-[11px] font-mono">
-            Range:{" "}
-            {pressures.length > 0
-              ? `${formatPressure(minPress, unit)} - ${formatPressure(maxPress, unit)}`
-              : "N/A"}
+          <div className="text-[#6B7280] text-xs">
+            Pressure Range:{" "}
+            <strong className="text-[#222222] tabular-nums">
+              {pressures.length > 0
+                ? `${formatPressure(minPress, unit)} - ${formatPressure(maxPress, unit)}`
+                : "N/A"}
+            </strong>
           </div>
         )}
       </div>
 
       {/* SVG Chart */}
-      <div className="relative w-full aspect-[16/7] sm:aspect-[16/5] glass rounded-2xl p-2 sm:p-4 overflow-hidden">
+      <div className="relative w-full aspect-[16/7] sm:aspect-[16/5] bg-white border border-[#E5E7EB] rounded-lg p-2 sm:p-4 overflow-hidden shadow-xs">
         <svg
           viewBox={`0 0 ${width} ${height}`}
           className="w-full h-full overflow-visible select-none"

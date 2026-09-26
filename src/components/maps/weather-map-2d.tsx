@@ -52,7 +52,7 @@ export function WeatherMap2D({
     lon: number;
   } | null>(null);
 
-  // Synchronize state during render when location prop changes (official React pattern)
+  // Synchronize state during render when location prop changes
   if (
     prevLocation.latitude !== location.latitude ||
     prevLocation.longitude !== location.longitude
@@ -86,7 +86,6 @@ export function WeatherMap2D({
           };
           const past = data.radar?.past;
           if (past && past.length > 0 && !ignore) {
-            // Most recent past radar frame
             const latest = past[past.length - 1];
             setRadarTimestamp(latest.time);
           }
@@ -104,7 +103,7 @@ export function WeatherMap2D({
     };
   }, []);
 
-  // Compute tile range for viewport (assuming 800x480 container)
+  // Compute tile range for viewport (assuming 800x450 container)
   const containerWidth = 800;
   const containerHeight = 450;
   const centerTile = latLonToTile(centerLat, centerLon, zoom);
@@ -120,7 +119,6 @@ export function WeatherMap2D({
   for (let x = startTileX; x <= endTileX; x++) {
     for (let y = startTileY; y <= endTileY; y++) {
       if (y >= 0 && y < maxTile) {
-        // Normalize wrap-around for X (longitude)
         const wrappedX = ((x % maxTile) + maxTile) % maxTile;
         const pixelLeft = containerWidth / 2 + (x - centerTile.x) * 256;
         const pixelTop = containerHeight / 2 + (y - centerTile.y) * 256;
@@ -146,54 +144,60 @@ export function WeatherMap2D({
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     if (!isDraggingRef.current) return;
+
     const dx = e.clientX - dragStartRef.current.x;
     const dy = e.clientY - dragStartRef.current.y;
 
     const n = Math.pow(2, zoom);
-    // Delta in tile units
-    const dTileX = dx / 256;
-    const dTileY = dy / 256;
+    const dLon = -(dx / 256 / n) * 360;
 
-    const startTile = latLonToTile(
+    const currentTile = latLonToTile(
       centerStartRef.current.lat,
       centerStartRef.current.lon,
       zoom
     );
-    const newTileX = startTile.x - dTileX;
-    const newTileY = Math.min(Math.max(startTile.y - dTileY, 0), n - 1);
+    const newTileY = currentTile.y - dy / 256;
+    const latRad = Math.atan(Math.sinh(Math.PI * (1 - (2 * newTileY) / n)));
+    const newLat = Math.max(-85, Math.min(85, (latRad * 180) / Math.PI));
 
-    const newCoords = tileToLatLon(newTileX, newTileY, zoom);
-    setCenterLat(newCoords.lat);
-    setCenterLon(newCoords.lon);
+    let newLon = centerStartRef.current.lon + dLon;
+    while (newLon > 180) newLon -= 360;
+    while (newLon < -180) newLon += 360;
+
+    setCenterLat(newLat);
+    setCenterLon(newLon);
   };
 
   const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
-    isDraggingRef.current = false;
-    try {
-      (e.target as HTMLElement).releasePointerCapture(e.pointerId);
-    } catch {
-      // Ignored
+    if (isDraggingRef.current) {
+      isDraggingRef.current = false;
+      try {
+        (e.target as HTMLElement).releasePointerCapture(e.pointerId);
+      } catch {
+        // Ignored
+      }
     }
   };
 
-  // Map Click to inspect location
+  // Click on map to inspect coordinate
   const handleMapClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!containerRef.current) return;
     const rect = containerRef.current.getBoundingClientRect();
     const clickX = e.clientX - rect.left;
     const clickY = e.clientY - rect.top;
 
-    const dxPixels = clickX - containerWidth / 2;
-    const dyPixels = clickY - containerHeight / 2;
+    const tileX = centerTile.x + (clickX - containerWidth / 2) / 256;
+    const tileY = centerTile.y + (clickY - containerHeight / 2) / 256;
 
-    const clickedTileX = centerTile.x + dxPixels / 256;
-    const clickedTileY = centerTile.y + dyPixels / 256;
+    const coords = tileToLatLon(tileX, tileY, zoom);
+    const clampedLat = parseFloat(
+      Math.max(-85, Math.min(85, coords.lat)).toFixed(4)
+    );
+    const clampedLon = parseFloat(
+      Math.max(-180, Math.min(180, coords.lon)).toFixed(4)
+    );
 
-    const coords = tileToLatLon(clickedTileX, clickedTileY, zoom);
-    setClickedCoords({
-      lat: Number(coords.lat.toFixed(4)),
-      lon: Number(coords.lon.toFixed(4)),
-    });
+    setClickedCoords({ lat: clampedLat, lon: clampedLon });
   };
 
   const handleRecenter = () => {
@@ -223,23 +227,23 @@ export function WeatherMap2D({
       {/* Map Header Toolbar */}
       <div className="flex flex-wrap items-center justify-between gap-3 text-xs">
         <div className="flex items-center gap-2">
-          <span className="font-display font-bold text-text-primary text-sm">
-            2D Atmospheric Radar & Map
+          <span className="font-bold text-[#222222] text-sm">
+            Radar & Map
           </span>
-          <span className="font-mono text-[10px] px-2 py-0.5 rounded-full bg-accent-500/10 text-accent-400 border border-accent-500/20">
+          <span className="text-xs px-2 py-0.5 rounded bg-[#F7F7F7] text-[#6B7280] border border-[#E5E7EB]">
             Interactive
           </span>
         </div>
 
         {/* Layer Selector */}
-        <div className="flex items-center gap-1.5 p-1 rounded-xl glass">
+        <div className="flex items-center gap-0.5 p-0.5 rounded-md bg-[#F7F7F7] border border-[#E5E7EB]">
           <button
             type="button"
             onClick={() => setActiveLayer("radar")}
-            className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all ${
+            className={`px-2.5 py-1 rounded text-xs font-medium transition-all ${
               activeLayer === "radar"
-                ? "bg-accent-500 text-atmos-950 font-semibold"
-                : "text-text-secondary hover:text-text-primary"
+                ? "bg-[#FFC928] text-[#222222] font-semibold shadow-xs"
+                : "text-[#6B7280] hover:text-[#222222]"
             }`}
           >
             Precipitation Radar
@@ -247,10 +251,10 @@ export function WeatherMap2D({
           <button
             type="button"
             onClick={() => setActiveLayer("temperature")}
-            className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all ${
+            className={`px-2.5 py-1 rounded text-xs font-medium transition-all ${
               activeLayer === "temperature"
-                ? "bg-accent-500 text-atmos-950 font-semibold"
-                : "text-text-secondary hover:text-text-primary"
+                ? "bg-[#FFC928] text-[#222222] font-semibold shadow-xs"
+                : "text-[#6B7280] hover:text-[#222222]"
             }`}
           >
             Temperature
@@ -258,27 +262,29 @@ export function WeatherMap2D({
           <button
             type="button"
             onClick={() => setActiveLayer("wind")}
-            className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all ${
+            className={`px-2.5 py-1 rounded text-xs font-medium transition-all ${
               activeLayer === "wind"
-                ? "bg-accent-500 text-atmos-950 font-semibold"
-                : "text-text-secondary hover:text-text-primary"
+                ? "bg-[#FFC928] text-[#222222] font-semibold shadow-xs"
+                : "text-[#6B7280] hover:text-[#222222]"
             }`}
           >
-            Wind Vector
+            Wind
           </button>
         </div>
       </div>
 
-      {/* Map Canvas Container */}
+      {/* Main Map Tile Container */}
       <div
         ref={containerRef}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         onClick={handleMapClick}
-        className="relative w-full h-[400px] sm:h-[450px] glass rounded-3xl overflow-hidden cursor-grab active:cursor-grabbing border border-atmos-700/40 select-none bg-atmos-950"
+        role="region"
+        aria-label="2D interactive weather map. Drag to pan, use +/- buttons to zoom, click anywhere to inspect."
+        className="w-full h-[450px] relative rounded-lg overflow-hidden border border-[#E5E7EB] bg-[#F7F7F7] cursor-grab active:cursor-grabbing select-none"
       >
-        {/* Render Tile Grid */}
+        {/* Render visible Web Mercator tile grid */}
         <div className="absolute inset-0 pointer-events-none">
           {tiles.map((t) => (
             <div
@@ -291,10 +297,10 @@ export function WeatherMap2D({
                 height: "256px",
               }}
             >
-              {/* Base CartoDB Dark Matter Tile */}
+              {/* Esri World Imagery / Natural Basemap Tile */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={`https://cartodb-basemaps-a.global.ssl.fastly.net/dark_all/${zoom}/${t.x}/${t.y}.png`}
+                src={`https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/${zoom}/${t.y}/${t.x}`}
                 alt=""
                 className="w-full h-full object-cover"
                 loading="lazy"
@@ -338,50 +344,50 @@ export function WeatherMap2D({
               className="pointer-events-none flex flex-col items-center z-10"
             >
               {/* Telemetry Badge */}
-              <div className="px-2.5 py-1 rounded-xl glass text-[11px] font-mono font-bold text-text-primary shadow-2xl flex items-center gap-1.5 whitespace-nowrap border border-accent-400/40 bg-atmos-900/90">
-                <span className="w-2 h-2 rounded-full bg-accent-400 animate-pulse" />
+              <div className="px-2.5 py-1 rounded-md text-xs font-semibold text-[#222222] shadow-sm flex items-center gap-1.5 whitespace-nowrap border border-[#E5E7EB] bg-white">
+                <span className="w-2 h-2 rounded-full bg-[#FFC928]" />
                 <span>{location.name}</span>
                 {currentTemp !== undefined && (
-                  <span className="text-accent-400">
+                  <span className="font-bold text-[#222222] tabular-nums">
                     {Math.round(currentTemp)}
                     {tempUnit}
                   </span>
                 )}
                 {conditionText && (
-                  <span className="text-[10px] text-text-muted font-normal">
+                  <span className="text-xs text-[#6B7280] font-normal">
                     · {conditionText}
                   </span>
                 )}
               </div>
               {/* Pin point */}
-              <div className="w-2.5 h-2.5 rotate-45 bg-accent-400 border border-atmos-900 -mt-1 shadow-md" />
+              <div className="w-2.5 h-2.5 rotate-45 bg-[#FFC928] border border-white -mt-1 shadow-xs" />
             </div>
           )}
 
         {/* Clicked Coordinate Marker & Action Popover */}
         {clickedCoords && (
           <div
-            className="absolute top-4 left-4 z-20 p-3 rounded-2xl glass border border-accent-500/30 bg-atmos-900/95 shadow-2xl flex flex-col gap-2 max-w-xs animate-in fade-in"
+            className="absolute top-4 left-4 z-20 p-3 rounded-md border border-[#E5E7EB] bg-white shadow-md flex flex-col gap-2 max-w-xs animate-in fade-in"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="text-xs font-semibold text-text-primary">
+            <div className="text-xs font-semibold text-[#222222]">
               Inspected Coordinate
             </div>
-            <div className="font-mono text-[11px] text-text-muted">
+            <div className="text-xs text-[#6B7280] tabular-nums">
               Lat: {clickedCoords.lat}, Lon: {clickedCoords.lon}
             </div>
             <div className="flex items-center gap-2 pt-1">
               <button
                 type="button"
                 onClick={handleSelectClicked}
-                className="px-3 py-1.5 rounded-xl bg-accent-500 text-atmos-950 font-bold text-xs hover:bg-accent-400 transition-colors shadow-sm"
+                className="px-3 py-1.5 rounded-md bg-[#FFC928] hover:bg-[#F2B900] text-[#222222] font-semibold text-xs transition-colors shadow-xs"
               >
                 Inspect Weather
               </button>
               <button
                 type="button"
                 onClick={() => setClickedCoords(null)}
-                className="px-2 py-1.5 text-xs text-text-muted hover:text-text-primary"
+                className="px-2 py-1.5 text-xs text-[#6B7280] hover:text-[#222222]"
               >
                 Cancel
               </button>
@@ -389,18 +395,16 @@ export function WeatherMap2D({
           </div>
         )}
 
-        {/* Non-Radar Layer Configuration Notice (Honest Architecture) */}
+        {/* Non-Radar Layer Configuration Notice */}
         {activeLayer !== "radar" && (
-          <div className="absolute top-4 right-4 z-20 p-3 rounded-2xl glass border border-amber-500/30 bg-atmos-900/90 max-w-xs text-xs text-text-secondary">
-            <span className="font-semibold text-amber-400 block mb-1">
+          <div className="absolute top-4 right-4 z-20 p-3 rounded-md border border-[#E5E7EB] bg-white max-w-xs text-xs text-[#6B7280] shadow-sm">
+            <span className="font-semibold text-[#222222] block mb-1">
               {activeLayer === "temperature"
                 ? "Global Temperature Heatmap"
                 : "Wind Streamline Vector"}
             </span>
             <span>
-              Real-time raster tiles require commercial weather provider keys
-              (OpenWeatherMap or Mapbox). Local telemetry for {location.name} is
-              active in dashboard cards.
+              Real-time raster tiles require commercial weather provider keys. Local telemetry for {location.name} is active in dashboard cards.
             </span>
           </div>
         )}
@@ -414,7 +418,7 @@ export function WeatherMap2D({
             type="button"
             onClick={() => setZoom((z) => Math.min(z + 1, 12))}
             aria-label="Zoom in map"
-            className="w-8 h-8 rounded-xl glass flex items-center justify-center text-text-primary hover:bg-atmos-700/60 font-bold text-lg shadow-md transition-colors"
+            className="w-8 h-8 rounded-md bg-white border border-[#E5E7EB] text-[#222222] hover:bg-[#F7F7F7] font-bold text-base shadow-xs flex items-center justify-center transition-colors"
           >
             +
           </button>
@@ -422,7 +426,7 @@ export function WeatherMap2D({
             type="button"
             onClick={() => setZoom((z) => Math.max(z - 1, 2))}
             aria-label="Zoom out map"
-            className="w-8 h-8 rounded-xl glass flex items-center justify-center text-text-primary hover:bg-atmos-700/60 font-bold text-lg shadow-md transition-colors"
+            className="w-8 h-8 rounded-md bg-white border border-[#E5E7EB] text-[#222222] hover:bg-[#F7F7F7] font-bold text-base shadow-xs flex items-center justify-center transition-colors"
           >
             −
           </button>
@@ -431,36 +435,49 @@ export function WeatherMap2D({
             onClick={handleRecenter}
             aria-label="Recenter map on current location"
             title="Recenter on location"
-            className="w-8 h-8 rounded-xl glass flex items-center justify-center text-accent-400 hover:bg-atmos-700/60 text-xs font-mono shadow-md transition-colors"
+            className="w-8 h-8 rounded-md bg-white border border-[#E5E7EB] text-[#222222] hover:bg-[#F7F7F7] text-xs shadow-xs flex items-center justify-center transition-colors"
           >
             🎯
           </button>
         </div>
 
-        {/* Radar Opacity Slider (When Radar Active) */}
+        {/* Radar Controls & Legend */}
         {activeLayer === "radar" && (
           <div
-            className="absolute bottom-4 left-4 z-20 px-3 py-2 rounded-2xl glass flex items-center gap-2 text-xs font-mono bg-atmos-900/80"
+            className="absolute bottom-4 left-4 z-20 p-2.5 rounded-md border border-[#E5E7EB] bg-white flex flex-col gap-2 text-xs shadow-xs"
             onClick={(e) => e.stopPropagation()}
           >
-            <span className="text-text-muted">Radar Opacity</span>
-            <input
-              type="range"
-              min="0.2"
-              max="1"
-              step="0.05"
-              value={radarOpacity}
-              onChange={(e) => setRadarOpacity(parseFloat(e.target.value))}
-              aria-label="Precipitation radar tile opacity"
-              className="w-20 accent-accent-400"
-            />
+            <div className="flex items-center justify-between gap-3 text-xs">
+              <span className="text-[#6B7280]">Radar Opacity</span>
+              <input
+                type="range"
+                min="0.2"
+                max="1"
+                step="0.05"
+                value={radarOpacity}
+                onChange={(e) => setRadarOpacity(parseFloat(e.target.value))}
+                aria-label="Precipitation radar tile opacity"
+                className="w-20 accent-[#FFC928] cursor-pointer"
+              />
+            </div>
+            {/* Reflectivity dBZ Legend */}
+            <div className="flex items-center gap-1.5 pt-1 border-t border-[#E5E7EB] text-xs">
+              <span className="text-[#6B7280]">dBZ:</span>
+              <div className="flex items-center h-2 rounded overflow-hidden">
+                <span className="w-5 h-full bg-emerald-500" title="Light: 20-30 dBZ" />
+                <span className="w-5 h-full bg-sky-400" title="Moderate: 30-40 dBZ" />
+                <span className="w-5 h-full bg-amber-400" title="Heavy: 40-50 dBZ" />
+                <span className="w-5 h-full bg-rose-500" title="Intense/Hail: 50+ dBZ" />
+              </div>
+              <span className="text-[#6B7280]">Light → Heavy</span>
+            </div>
           </div>
         )}
       </div>
 
       {/* Attribution Footer */}
-      <div className="flex flex-wrap items-center justify-between text-[11px] text-text-muted font-mono px-1">
-        <span>Map: © OpenStreetMap contributors, © CARTO</span>
+      <div className="flex flex-wrap items-center justify-between text-xs text-[#6B7280] px-1">
+        <span>Map: © Esri, HERE, Garmin, FAO, NOAA, USGS</span>
         <span>
           Radar:{" "}
           {isRadarLoading ? "Refreshing..." : "RainViewer Real-time Tile API"}

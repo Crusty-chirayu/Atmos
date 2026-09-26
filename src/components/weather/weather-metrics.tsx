@@ -8,7 +8,8 @@ export interface WeatherMetricsProps {
 }
 
 /**
- * Auxiliary weather metrics cards for in-depth meteorological telemetry.
+ * Auxiliary weather metrics cards for in-depth meteorological details.
+ * Clean, bright consumer weather cards.
  */
 export function WeatherMetricsComponent({
   bundle,
@@ -30,37 +31,25 @@ export function WeatherMetricsComponent({
       const diffMs = set - rise;
       const hours = Math.floor(diffMs / (1000 * 60 * 60));
       const mins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-      daylightHours = `${hours}h ${mins}m of daylight`;
+      daylightHours = `${hours}h ${mins}m daylight`;
     }
   }
 
   return (
-    <section aria-label="Detailed weather telemetry" className="space-y-4">
-      <h2
-        className="text-base sm:text-lg font-bold font-display tracking-tight"
-        style={{ color: "var(--text-primary)" }}
-      >
-        Meteorological Telemetry
+    <section aria-label="Detailed weather telemetry" className="space-y-3">
+      <h2 className="text-base sm:text-lg font-bold tracking-tight text-[#222222]">
+        Weather Details
       </h2>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
         {/* Card 1: Wind Dynamics & Gusts */}
-        <div
-          className="glass rounded-3xl p-5 flex flex-col justify-between"
-          style={{
-            background: "var(--surface-overlay)",
-            border: "1px solid var(--border-default)",
-          }}
-        >
+        <div className="rounded-lg bg-white p-4 sm:p-5 flex flex-col justify-between border border-[#E5E7EB] shadow-xs">
           <div className="flex items-center justify-between mb-2">
-            <span
-              className="text-xs uppercase font-mono tracking-wider font-semibold"
-              style={{ color: "var(--text-muted)" }}
-            >
+            <span className="text-xs font-semibold text-[#6B7280]">
               Wind & Gusts
             </span>
             <svg
-              className="w-4 h-4 text-atmos-300"
+              className="w-4 h-4 text-[#6B7280]"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -75,52 +64,31 @@ export function WeatherMetricsComponent({
           </div>
           <div>
             <div className="flex items-baseline gap-1 my-1">
-              <span
-                className="text-2xl font-bold font-display"
-                style={{ color: "var(--text-primary)" }}
-              >
+              <span className="text-2xl font-bold text-[#222222] tabular-nums">
                 {Math.round(current.windSpeed)}
               </span>
-              <span
-                className="text-xs font-mono"
-                style={{ color: "var(--text-muted)" }}
-              >
+              <span className="text-xs text-[#6B7280]">
                 {speedUnit}
               </span>
             </div>
             {current.windGusts !== null && current.windGusts !== undefined ? (
-              <p
-                className="text-xs mt-1"
-                style={{ color: "var(--text-secondary)" }}
-              >
+              <p className="text-xs text-[#6B7280] mt-1">
                 Gusts up to{" "}
-                <span
-                  className="font-semibold"
-                  style={{ color: "var(--text-primary)" }}
-                >
+                <span className="font-semibold text-[#222222] tabular-nums">
                   {Math.round(current.windGusts)} {speedUnit}
                 </span>
               </p>
             ) : today?.windGustsMax ? (
-              <p
-                className="text-xs mt-1"
-                style={{ color: "var(--text-secondary)" }}
-              >
+              <p className="text-xs text-[#6B7280] mt-1">
                 Peak gusts: {Math.round(today.windGustsMax)} {speedUnit}
               </p>
             ) : (
-              <p
-                className="text-xs mt-1"
-                style={{ color: "var(--text-muted)" }}
-              >
+              <p className="text-xs text-[#6B7280] mt-1">
                 Steady wind pattern
               </p>
             )}
           </div>
-          <div
-            className="pt-3 border-t border-atmos-700/20 text-xs flex items-center justify-between"
-            style={{ color: "var(--text-muted)" }}
-          >
+          <div className="pt-3 border-t border-[#E5E7EB] text-xs text-[#6B7280] flex items-center justify-between">
             <span>Direction: {current.windDirection}°</span>
             <span>
               Dominant:{" "}
@@ -132,22 +100,13 @@ export function WeatherMetricsComponent({
         </div>
 
         {/* Card 2: Barometric System */}
-        <div
-          className="glass rounded-3xl p-5 flex flex-col justify-between"
-          style={{
-            background: "var(--surface-overlay)",
-            border: "1px solid var(--border-default)",
-          }}
-        >
+        <div className="rounded-lg bg-white p-4 sm:p-5 flex flex-col justify-between border border-[#E5E7EB] shadow-xs">
           <div className="flex items-center justify-between mb-2">
-            <span
-              className="text-xs uppercase font-mono tracking-wider font-semibold"
-              style={{ color: "var(--text-muted)" }}
-            >
-              Pressure System
+            <span className="text-xs font-semibold text-[#6B7280]">
+              Pressure
             </span>
             <svg
-              className="w-4 h-4 text-atmos-300"
+              className="w-4 h-4 text-[#6B7280]"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -162,34 +121,22 @@ export function WeatherMetricsComponent({
           </div>
           <div>
             <div className="flex items-baseline gap-1 my-1">
-              <span
-                className="text-2xl font-bold font-display"
-                style={{ color: "var(--text-primary)" }}
-              >
+              <span className="text-2xl font-bold text-[#222222] tabular-nums">
                 {Math.round(current.pressureMsl)}
               </span>
-              <span
-                className="text-xs font-mono"
-                style={{ color: "var(--text-muted)" }}
-              >
+              <span className="text-xs text-[#6B7280]">
                 {pressUnit}
               </span>
             </div>
-            <p
-              className="text-xs mt-1"
-              style={{ color: "var(--text-secondary)" }}
-            >
+            <p className="text-xs text-[#6B7280] mt-1">
               {current.pressureMsl > 1015
-                ? "High pressure: typically settled & dry"
+                ? "High pressure: settled conditions"
                 : current.pressureMsl < 1005
-                  ? "Low pressure: unsettled & active"
-                  : "Standard atmospheric pressure"}
+                  ? "Low pressure: precipitation risk"
+                  : "Normal atmospheric pressure"}
             </p>
           </div>
-          <div
-            className="pt-3 border-t border-atmos-700/20 text-xs flex items-center justify-between"
-            style={{ color: "var(--text-muted)" }}
-          >
+          <div className="pt-3 border-t border-[#E5E7EB] text-xs text-[#6B7280] flex items-center justify-between">
             <span>
               Surface:{" "}
               {current.surfacePressure
@@ -201,22 +148,13 @@ export function WeatherMetricsComponent({
         </div>
 
         {/* Card 3: Precipitation & Moisture */}
-        <div
-          className="glass rounded-3xl p-5 flex flex-col justify-between"
-          style={{
-            background: "var(--surface-overlay)",
-            border: "1px solid var(--border-default)",
-          }}
-        >
+        <div className="rounded-lg bg-white p-4 sm:p-5 flex flex-col justify-between border border-[#E5E7EB] shadow-xs">
           <div className="flex items-center justify-between mb-2">
-            <span
-              className="text-xs uppercase font-mono tracking-wider font-semibold"
-              style={{ color: "var(--text-muted)" }}
-            >
+            <span className="text-xs font-semibold text-[#6B7280]">
               Precipitation
             </span>
             <svg
-              className="w-4 h-4 text-accent-400"
+              className="w-4 h-4 text-[#4A90E2]"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -231,58 +169,33 @@ export function WeatherMetricsComponent({
           </div>
           <div>
             <div className="flex items-baseline gap-1 my-1">
-              <span
-                className="text-2xl font-bold font-display"
-                style={{ color: "var(--text-primary)" }}
-              >
+              <span className="text-2xl font-bold text-[#222222] tabular-nums">
                 {today?.precipitationSum ?? current.precipitation}
               </span>
-              <span
-                className="text-xs font-mono"
-                style={{ color: "var(--text-muted)" }}
-              >
+              <span className="text-xs text-[#6B7280]">
                 {precipUnit} today
               </span>
             </div>
-            <p
-              className="text-xs mt-1"
-              style={{ color: "var(--text-secondary)" }}
-            >
+            <p className="text-xs text-[#6B7280] mt-1">
               {today?.precipitationProbabilityMax
-                ? `${today.precipitationProbabilityMax}% probability of rain`
+                ? `${today.precipitationProbabilityMax}% chance of rain`
                 : "No significant accumulation"}
             </p>
           </div>
-          <div
-            className="pt-3 border-t border-atmos-700/20 text-xs flex items-center justify-between"
-            style={{ color: "var(--text-muted)" }}
-          >
-            <span>
-              Rain: {current.rain ?? 0} {precipUnit}
-            </span>
-            <span>
-              Showers: {current.showers ?? 0} {precipUnit}
-            </span>
+          <div className="pt-3 border-t border-[#E5E7EB] text-xs text-[#6B7280] flex items-center justify-between">
+            <span>Rain: {current.rain ?? 0} {precipUnit}</span>
+            <span>Showers: {current.showers ?? 0} {precipUnit}</span>
           </div>
         </div>
 
         {/* Card 4: Celestial & Solar Progression */}
-        <div
-          className="glass rounded-3xl p-5 flex flex-col justify-between"
-          style={{
-            background: "var(--surface-overlay)",
-            border: "1px solid var(--border-default)",
-          }}
-        >
+        <div className="rounded-lg bg-white p-4 sm:p-5 flex flex-col justify-between border border-[#E5E7EB] shadow-xs">
           <div className="flex items-center justify-between mb-2">
-            <span
-              className="text-xs uppercase font-mono tracking-wider font-semibold"
-              style={{ color: "var(--text-muted)" }}
-            >
-              Sun Progression
+            <span className="text-xs font-semibold text-[#6B7280]">
+              Sun & Daylight
             </span>
             <svg
-              className="w-4 h-4 text-gold-400"
+              className="w-4 h-4 text-[#FFC928]"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -294,16 +207,8 @@ export function WeatherMetricsComponent({
           <div>
             <div className="flex justify-between items-baseline my-1">
               <div>
-                <span
-                  className="text-[11px] block"
-                  style={{ color: "var(--text-muted)" }}
-                >
-                  Sunrise
-                </span>
-                <span
-                  className="text-sm font-mono font-bold"
-                  style={{ color: "var(--text-primary)" }}
-                >
+                <span className="text-xs block text-[#6B7280]">Sunrise</span>
+                <span className="text-sm font-bold text-[#222222] tabular-nums">
                   {today?.sunrise
                     ? formatLocalTime(today.sunrise, meta.timezone, {
                         hour12: true,
@@ -312,16 +217,8 @@ export function WeatherMetricsComponent({
                 </span>
               </div>
               <div className="text-right">
-                <span
-                  className="text-[11px] block"
-                  style={{ color: "var(--text-muted)" }}
-                >
-                  Sunset
-                </span>
-                <span
-                  className="text-sm font-mono font-bold"
-                  style={{ color: "var(--text-primary)" }}
-                >
+                <span className="text-xs block text-[#6B7280]">Sunset</span>
+                <span className="text-sm font-bold text-[#222222] tabular-nums">
                   {today?.sunset
                     ? formatLocalTime(today.sunset, meta.timezone, {
                         hour12: true,
@@ -330,20 +227,13 @@ export function WeatherMetricsComponent({
                 </span>
               </div>
             </div>
-            <p
-              className="text-xs mt-1"
-              style={{ color: "var(--text-secondary)" }}
-            >
-              {daylightHours ||
-                (current.isDay ? "Daytime phase" : "Nighttime phase")}
+            <p className="text-xs text-[#6B7280] mt-1">
+              {daylightHours || (current.isDay ? "Daylight active" : "Nighttime")}
             </p>
           </div>
-          <div
-            className="pt-3 border-t border-atmos-700/20 text-xs flex items-center justify-between"
-            style={{ color: "var(--text-muted)" }}
-          >
+          <div className="pt-3 border-t border-[#E5E7EB] text-xs text-[#6B7280] flex items-center justify-between">
             <span>UV Max: {today?.uvIndexMax ?? "--"}</span>
-            <span>{current.isDay ? "Sun active" : "Dusk / Night"}</span>
+            <span>{current.isDay ? "Daylight" : "Night"}</span>
           </div>
         </div>
       </div>

@@ -1,7 +1,6 @@
 import React from "react";
 import type { HourlyForecast } from "@/lib/weather/domain/weather";
 import { WeatherIcon } from "./weather-icon";
-
 import { formatHourlyTime } from "@/lib/weather/utils/date-format";
 
 export interface HourlyForecastProps {
@@ -11,8 +10,8 @@ export interface HourlyForecastProps {
 }
 
 /**
- * Hourly weather timeline displaying forecast progression for up to 48 hours.
- * Uses keyboard-accessible horizontal scrolling with smooth snapping.
+ * Hourly weather timeline displaying forecast progression for up to 24 hours.
+ * Uses clean consumer styling with keyboard-accessible horizontal scrolling.
  */
 export function HourlyForecastComponent({
   hourly,
@@ -32,31 +31,17 @@ export function HourlyForecastComponent({
   return (
     <section
       aria-label="Hourly forecast"
-      className="glass rounded-3xl p-5 sm:p-6 transition-all duration-300"
-      style={{
-        background: "var(--surface-overlay)",
-        border: "1px solid var(--border-default)",
-      }}
+      className="rounded-lg bg-white p-5 sm:p-6 border border-[#E5E7EB] shadow-xs"
     >
       <div className="flex items-center justify-between mb-4">
-        <h2
-          className="text-base sm:text-lg font-bold font-display tracking-tight flex items-center gap-2"
-          style={{ color: "var(--text-primary)" }}
-        >
+        <h2 className="text-base sm:text-lg font-bold tracking-tight text-[#222222] flex items-center gap-2">
           <span>Hourly Forecast</span>
-          <span
-            className="text-xs font-mono font-normal px-2 py-0.5 rounded-full"
-            style={{
-              background: "var(--surface-raised)",
-              color: "var(--text-muted)",
-              border: "1px solid var(--border-subtle)",
-            }}
-          >
-            Next 24h
+          <span className="text-xs font-medium px-2 py-0.5 rounded bg-[#F7F7F7] text-[#6B7280] border border-[#E5E7EB]">
+            Next 24 Hours
           </span>
         </h2>
-        <span className="text-xs" style={{ color: "var(--text-muted)" }}>
-          Scroll for more →
+        <span className="text-xs text-[#6B7280]">
+          Scroll for timeline →
         </span>
       </div>
 
@@ -65,7 +50,7 @@ export function HourlyForecastComponent({
         tabIndex={0}
         role="region"
         aria-label="Hourly forecast scrollable strip"
-        className="flex gap-2.5 overflow-x-auto pb-2 pt-1 focus:outline-none focus:ring-1 focus:ring-accent-500 rounded-xl"
+        className="flex gap-2 overflow-x-auto pb-2 pt-1 focus:outline-none focus:ring-1 focus:ring-[#FFC928] rounded-md"
         style={{
           scrollbarWidth: "thin",
         }}
@@ -76,65 +61,54 @@ export function HourlyForecastComponent({
               ? "Now"
               : formatHourlyTime(entry.timestamp, timezone, true);
 
+          const isCurrent = idx === 0;
+
           return (
             <div
               key={entry.timestamp}
-              className="flex-shrink-0 w-20 py-3.5 px-2 rounded-2xl flex flex-col items-center justify-between transition-colors duration-200"
-              style={{
-                background:
-                  idx === 0 ? "rgb(0 212 255 / 0.08)" : "var(--surface-raised)",
-                border:
-                  idx === 0
-                    ? "1px solid rgb(0 212 255 / 0.25)"
-                    : "1px solid var(--border-subtle)",
-              }}
+              className={`shrink-0 w-20 py-3 px-2 rounded-md flex flex-col items-center justify-between transition-colors ${
+                isCurrent
+                  ? "bg-[#FFF8E1] border border-[#FFC928] shadow-xs"
+                  : "bg-white border border-[#E5E7EB] hover:bg-[#F7F8FA]"
+              }`}
             >
               {/* Hour Label */}
               <span
-                className={`text-xs font-mono ${
-                  idx === 0 ? "font-bold text-accent-400" : "text-atmos-300"
+                className={`text-xs ${
+                  isCurrent ? "font-bold text-[#222222]" : "text-[#626B78]"
                 }`}
               >
                 {hourLabel}
               </span>
 
               {/* Weather Icon */}
-              <div className="my-2.5">
+              <div className="my-2">
                 <WeatherIcon
                   category={entry.conditionCategory}
-                  isDay={entry.isDay}
-                  size={28}
+                  code={entry.weatherCode}
+                  isDay={entry.isDay ?? true}
+                  size={26}
                 />
               </div>
 
               {/* Temperature */}
-              <span
-                className="font-bold text-sm tracking-tight"
-                style={{ color: "var(--text-primary)" }}
-              >
+              <span className="font-bold text-sm text-[#222222] tabular-nums tracking-tight">
                 {Math.round(entry.temperature)}
-                <span className="text-[10px] font-normal">{tempUnit}</span>
+                <span className="text-xs font-normal text-[#626B78]">
+                  {tempUnit}
+                </span>
               </span>
 
-              {/* Precipitation Probability pill */}
+              {/* Precipitation Probability pill or Wind */}
               <div className="h-4 mt-1 flex items-center justify-center">
                 {entry.precipitationProbability !== null &&
                 entry.precipitationProbability !== undefined &&
                 entry.precipitationProbability > 0 ? (
-                  <span
-                    className="text-[10px] font-mono font-semibold px-1 rounded"
-                    style={{
-                      background: "rgb(0 212 255 / 0.15)",
-                      color: "var(--color-accent-400)",
-                    }}
-                  >
+                  <span className="text-xs font-semibold px-1 rounded bg-[#EBF3FC] text-[#3984D6] tabular-nums">
                     {entry.precipitationProbability}%
                   </span>
                 ) : (
-                  <span
-                    className="text-[10px] opacity-40 font-mono"
-                    style={{ color: "var(--text-muted)" }}
-                  >
+                  <span className="text-xs text-[#737D8A] tabular-nums">
                     {Math.round(entry.windSpeed)}
                     {speedUnit}
                   </span>

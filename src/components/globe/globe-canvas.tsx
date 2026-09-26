@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import * as THREE from "three";
 import {
   latLonToCartesian,
+  cartesianToLatLon,
   FEATURED_CITIES,
   FeaturedCity,
 } from "@/lib/globe/coordinates";
@@ -17,12 +18,14 @@ export interface GlobeCanvasProps {
     name?: string;
   };
   onSelectCity?: (city: FeaturedCity) => void;
+  onSelectCoordinates?: (coords: { latitude: number; longitude: number }) => void;
   className?: string;
 }
 
 export function GlobeCanvas({
   selectedLocation,
   onSelectCity,
+  onSelectCoordinates,
   className = "",
 }: GlobeCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -33,12 +36,15 @@ export function GlobeCanvas({
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const globeGroupRef = useRef<THREE.Group | null>(null);
+  const earthMeshRef = useRef<THREE.Mesh | null>(null);
   const selectedMarkerRef = useRef<THREE.Group | null>(null);
   const cityMarkersRef = useRef<Map<string, THREE.Mesh>>(new Map());
 
   // Interaction tracking refs
   const isDraggingRef = useRef(false);
+  const hasDraggedRef = useRef(false);
   const previousPointerPosRef = useRef({ x: 0, y: 0 });
+  const pointerDownPosRef = useRef({ x: 0, y: 0 });
   const isHoveringCityRef = useRef<string | null>(null);
   const targetRotationRef = useRef<{ x: number; y: number } | null>(null);
   const isAnimatingToTargetRef = useRef(false);
@@ -48,6 +54,11 @@ export function GlobeCanvas({
   // Accessible state
   const [hoveredCityName, setHoveredCityName] = useState<string | null>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
+
+  const selectedLocationRef = useRef(selectedLocation);
+  useEffect(() => {
+    selectedLocationRef.current = selectedLocation;
+  }, [selectedLocation]);
 
   // Update target rotation when selectedLocation changes
   useEffect(() => {
@@ -87,53 +98,115 @@ export function GlobeCanvas({
     camera.position.set(0, 0, 3.2);
     cameraRef.current = camera;
 
-    // 2. Renderer
-    const renderer = new THREE.WebGLRenderer({
-      canvas,
-      antialias: true,
-      alpha: true,
-      powerPreference: "high-performance",
-    });
+    // 2. Renderer with safe WebGL context acquisition
+    let renderer: THREE.WebGLRenderer;
+    try {
+      renderer = new THREE.WebGLRenderer({
+        canvas,
+        antialias: true,
+        alpha: true,
+        powerPreference: "high-performance",
+      });
+    } catch (err) {
+      console.warn("WebGL initialization failed:", err);
+      return;
+    }
+
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     rendererRef.current = renderer;
 
-    // 3. Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+    // 3. Realistic Natural Planetary Lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.55);
     scene.add(ambientLight);
 
-    const sunLight = new THREE.DirectionalLight(0xfff3d1, 1.8);
-    sunLight.position.set(5, 3, 5);
+    // Warm Sun directional light creating realistic day/night terminator
+    const sunLight = new THREE.DirectionalLight(0xfffaed, 1.5);
+    sunLight.position.set(6, 3, 5);
     scene.add(sunLight);
-
-    const rimLight = new THREE.DirectionalLight(0x00d4ff, 0.8);
-    rimLight.position.set(-5, -2, -3);
-    scene.add(rimLight);
 
     // 4. Globe Parent Group
     const globeGroup = new THREE.Group();
     scene.add(globeGroup);
     globeGroupRef.current = globeGroup;
 
-    // 5. Earth Sphere Mesh with Procedural Texture
+    // 5. Earth Sphere Mesh with Natural Satellite Surface
+    const textureLoader = new THREE.TextureLoader();
+
+    // Start with procedural canvas as immediate texture so it never flashes black or blank
     const earthCanvas = createProceduralEarthCanvas(2048, 1024);
-    const earthTexture = new THREE.CanvasTexture(earthCanvas);
-    earthTexture.colorSpace = THREE.SRGBColorSpace;
+    const proceduralTexture = new THREE.CanvasTexture(earthCanvas);
+    proceduralTexture.colorSpace = THREE.SRGBColorSpace;
 
     const earthGeo = new THREE.SphereGeometry(1, 64, 64);
     const earthMat = new THREE.MeshStandardMaterial({
-      map: earthTexture,
+      map: proceduralTexture,
       roughness: 0.65,
-      metalness: 0.1,
+      metalness: 0.05,
     });
     const earthMesh = new THREE.Mesh(earthGeo, earthMat);
+    earthMesh.rotation.y = -Math.PI / 2;
     globeGroup.add(earthMesh);
+    earthMeshRef.current = earthMesh;
 
-    // 6. Atmospheric Glow Outer Shell
-    const glowGeo = new THREE.SphereGeometry(1.08, 48, 48);
+    // Asynchronously load the high-res photorealistic NASA Blue Marble texture
+    textureLoader.load(
+      "/textures/earth_day.jpg",
+      (loadedTexture) => {
+        loadedTexture.colorSpace = THREE.SRGBColorSpace;
+        earthMat.map = loadedTexture;
+        earthMat.needsUpdate = true;
+      },
+      undefined,
+      (err) => {
+        console.warn("Using procedural fallback for Earth surface:", err);
+      }
+    );
+
+    // Specular ocean map for realistic ocean sunlight reflection
+    textureLoader.load(
+      "/textures/earth_specular.jpg",
+      (specularTexture) => {
+        earthMat.roughnessMap = specularTexture;
+        earthMat.roughness = 0.7;
+        earthMat.needsUpdate = true;
+      },
+      undefined,
+      () => {
+        // Specular map optional
+      }
+    );
+
+    // 6. Natural Dynamic Cloud Layer (Atmospheric Shell)
+    const cloudGeo = new THREE.SphereGeometry(1.008, 48, 48);
+    const cloudMat = new THREE.MeshStandardMaterial({
+      transparent: true,
+      opacity: 0.32,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+    });
+    const cloudMesh = new THREE.Mesh(cloudGeo, cloudMat);
+    cloudMesh.rotation.y = -Math.PI / 2;
+    globeGroup.add(cloudMesh);
+
+    textureLoader.load(
+      "/textures/earth_clouds.png",
+      (cloudsTexture) => {
+        cloudsTexture.colorSpace = THREE.SRGBColorSpace;
+        cloudMat.map = cloudsTexture;
+        cloudMat.needsUpdate = true;
+      },
+      undefined,
+      () => {
+        // Cloud layer optional
+      }
+    );
+
+    // 7. Subtle Rayleigh Scattering Limb Atmospheric Haze (restrained blue halo)
+    const glowGeo = new THREE.SphereGeometry(1.025, 48, 48);
     const glowMat = new THREE.ShaderMaterial({
       uniforms: {
-        glowColor: { value: new THREE.Color(0x00d4ff) },
+        glowColor: { value: new THREE.Color(0x3887d1) },
         viewVector: { value: camera.position },
       },
       vertexShader: `
@@ -147,8 +220,8 @@ export function GlobeCanvas({
         uniform vec3 glowColor;
         varying vec3 vNormal;
         void main() {
-          float intensity = pow(0.65 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 2.5);
-          gl_FragColor = vec4(glowColor, intensity * 0.45);
+          float intensity = pow(0.70 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 3.0);
+          gl_FragColor = vec4(glowColor, max(0.0, intensity * 0.25));
         }
       `,
       side: THREE.BackSide,
@@ -157,42 +230,42 @@ export function GlobeCanvas({
       depthWrite: false,
     });
     const glowMesh = new THREE.Mesh(glowGeo, glowMat);
-    scene.add(glowMesh); // Kept in scene so it doesn't rotate with globe
+    scene.add(glowMesh);
 
-    // 7. Selected Location Marker Group
+    // 8. Precision Station Marker (Aeronautical Reticle)
     const selectedGroup = new THREE.Group();
     globeGroup.add(selectedGroup);
     selectedMarkerRef.current = selectedGroup;
 
-    // Glowing core sphere
-    const pinGeo = new THREE.SphereGeometry(0.024, 16, 16);
-    const pinMat = new THREE.MeshBasicMaterial({ color: 0x00d4ff });
+    // Center focal pin - Primary Yellow #FFC928
+    const pinGeo = new THREE.SphereGeometry(0.016, 16, 16);
+    const pinMat = new THREE.MeshBasicMaterial({ color: 0xffc928 });
     const pinMesh = new THREE.Mesh(pinGeo, pinMat);
     selectedGroup.add(pinMesh);
 
-    // Pulsing outer beacon ring
-    const ringGeo = new THREE.RingGeometry(0.03, 0.045, 24);
+    // Clean outer reticle ring - Crisp White
+    const ringGeo = new THREE.RingGeometry(0.024, 0.032, 24);
     const ringMat = new THREE.MeshBasicMaterial({
-      color: 0x7eebff,
+      color: 0xffffff,
       side: THREE.DoubleSide,
       transparent: true,
-      opacity: 0.8,
+      opacity: 0.9,
     });
     const ringMesh = new THREE.Mesh(ringGeo, ringMat);
     selectedGroup.add(ringMesh);
 
-    // 8. Featured Cities Markers
+    // 9. Featured Reference Cities (Discrete Pips)
     cityMarkersRef.current.clear();
-    const cityMarkerGeo = new THREE.SphereGeometry(0.016, 12, 12);
+    const cityMarkerGeo = new THREE.SphereGeometry(0.011, 12, 12);
 
     for (const city of FEATURED_CITIES) {
       const cityMat = new THREE.MeshBasicMaterial({
-        color: 0xffd67e,
+        color: 0xe2e8f0,
         transparent: true,
-        opacity: 0.85,
+        opacity: 0.65,
       });
       const cityMesh = new THREE.Mesh(cityMarkerGeo, cityMat);
-      const pos = latLonToCartesian(city.latitude, city.longitude, 1.008);
+      const pos = latLonToCartesian(city.latitude, city.longitude, 1.004);
       cityMesh.position.set(pos.x, pos.y, pos.z);
       cityMesh.userData = { cityId: city.id, city };
       globeGroup.add(cityMesh);
@@ -201,16 +274,16 @@ export function GlobeCanvas({
 
     // 9. Position the initial selected marker
     const initPos = latLonToCartesian(
-      selectedLocation.latitude,
-      selectedLocation.longitude,
+      selectedLocationRef.current.latitude,
+      selectedLocationRef.current.longitude,
       1.01
     );
     selectedGroup.position.set(initPos.x, initPos.y, initPos.z);
     selectedGroup.lookAt(initPos.x * 2, initPos.y * 2, initPos.z * 2);
 
     // Initial globe orientation to selected coordinates
-    globeGroup.rotation.y = -(selectedLocation.longitude * Math.PI) / 180;
-    globeGroup.rotation.x = (selectedLocation.latitude * Math.PI) / 180;
+    globeGroup.rotation.y = -(selectedLocationRef.current.longitude * Math.PI) / 180;
+    globeGroup.rotation.x = (selectedLocationRef.current.latitude * Math.PI) / 180;
 
     // 10. Animation Loop
     let pulseAngle = 0;
@@ -231,6 +304,9 @@ export function GlobeCanvas({
       const scale = 1 + Math.sin(pulseAngle) * 0.25;
       ringMesh.scale.set(scale, scale, scale);
       ringMat.opacity = 0.5 + Math.sin(pulseAngle) * 0.3;
+
+      // Gently rotate clouds for dynamic atmospheric realism
+      cloudMesh.rotation.y += 0.0002;
 
       // Smooth camera interpolation to target coordinates
       if (isAnimatingToTargetRef.current && targetRotationRef.current) {
@@ -289,7 +365,9 @@ export function GlobeCanvas({
       // Dispose geometries, materials, textures, renderer
       earthGeo.dispose();
       earthMat.dispose();
-      earthTexture.dispose();
+      proceduralTexture.dispose();
+      cloudGeo.dispose();
+      cloudMat.dispose();
       glowGeo.dispose();
       glowMat.dispose();
       pinGeo.dispose();
@@ -299,11 +377,7 @@ export function GlobeCanvas({
       cityMarkerGeo.dispose();
       renderer.dispose();
     };
-  }, [
-    prefersReducedMotion,
-    selectedLocation.latitude,
-    selectedLocation.longitude,
-  ]);
+  }, [prefersReducedMotion]);
 
   // Update selected marker position when coordinates change
   useEffect(() => {
@@ -320,9 +394,11 @@ export function GlobeCanvas({
   // ── Pointer / Drag Interaction Handlers ──
   const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
     isDraggingRef.current = true;
+    hasDraggedRef.current = false;
     autoRotateRef.current = false;
     isAnimatingToTargetRef.current = false;
     previousPointerPosRef.current = { x: e.clientX, y: e.clientY };
+    pointerDownPosRef.current = { x: e.clientX, y: e.clientY };
     (e.target as HTMLElement).setPointerCapture(e.pointerId);
   };
 
@@ -336,6 +412,14 @@ export function GlobeCanvas({
     const deltaX = e.clientX - previousPointerPosRef.current.x;
     const deltaY = e.clientY - previousPointerPosRef.current.y;
     previousPointerPosRef.current = { x: e.clientX, y: e.clientY };
+
+    const totalDist = Math.hypot(
+      e.clientX - pointerDownPosRef.current.x,
+      e.clientY - pointerDownPosRef.current.y
+    );
+    if (totalDist > 6) {
+      hasDraggedRef.current = true;
+    }
 
     const globe = globeGroupRef.current;
     globe.rotation.y += deltaX * 0.006;
@@ -353,25 +437,70 @@ export function GlobeCanvas({
       // Ignored
     }
 
-    // Raycast on click to see if user tapped a featured city
-    if (onSelectCity && cameraRef.current && sceneRef.current) {
-      const rect = (e.target as HTMLElement).getBoundingClientRect();
-      const mouse = new THREE.Vector2(
-        ((e.clientX - rect.left) / rect.width) * 2 - 1,
-        -((e.clientY - rect.top) / rect.height) * 2 + 1
-      );
+    const totalDist = Math.hypot(
+      e.clientX - pointerDownPosRef.current.x,
+      e.clientY - pointerDownPosRef.current.y
+    );
 
-      const raycaster = new THREE.Raycaster();
-      raycaster.setFromCamera(mouse, cameraRef.current);
+    // If the user dragged more than 6 pixels, treat as a drag rotation and DO NOT trigger coordinate picking
+    if (hasDraggedRef.current || totalDist > 6) {
+      return;
+    }
 
-      const cityMeshes = Array.from(cityMarkersRef.current.values());
-      const intersects = raycaster.intersectObjects(cityMeshes, false);
+    if (!cameraRef.current || !sceneRef.current) return;
 
-      if (intersects.length > 0) {
-        const hit = intersects[0];
-        const city = hit?.object.userData.city as FeaturedCity | undefined;
-        if (city) {
-          onSelectCity(city);
+    const rect = (e.target as HTMLElement).getBoundingClientRect();
+    const mouse = new THREE.Vector2(
+      ((e.clientX - rect.left) / rect.width) * 2 - 1,
+      -((e.clientY - rect.top) / rect.height) * 2 + 1
+    );
+
+    const raycaster = new THREE.Raycaster();
+    raycaster.setFromCamera(mouse, cameraRef.current);
+
+    // 1. First priority: Check if user tapped an existing featured city marker
+    const cityMeshes = Array.from(cityMarkersRef.current.values());
+    const cityIntersects = raycaster.intersectObjects(cityMeshes, false);
+    if (cityIntersects.length > 0) {
+      const hit = cityIntersects[0];
+      const city = hit?.object.userData.city as FeaturedCity | undefined;
+      if (city && onSelectCity) {
+        onSelectCity(city);
+        return;
+      }
+    }
+
+    // 2. Second priority: Raycast against the actual Earth globe sphere
+    if (earthMeshRef.current && (onSelectCoordinates || onSelectCity)) {
+      const earthIntersects = raycaster.intersectObject(earthMeshRef.current, false);
+      if (earthIntersects.length > 0) {
+        const hit = earthIntersects[0];
+        // Convert world hit point into globeGroup's local coordinate system (accounts for all rotations)
+        const localPoint = globeGroupRef.current
+          ? globeGroupRef.current.worldToLocal(hit.point.clone())
+          : hit.point.clone();
+
+        const { latitude, longitude } = cartesianToLatLon(
+          localPoint.x,
+          localPoint.y,
+          localPoint.z
+        );
+
+        const validLat = Math.max(-90, Math.min(90, Number(latitude.toFixed(4))));
+        let validLon = Number(longitude.toFixed(4));
+        while (validLon > 180) validLon -= 360;
+        while (validLon < -180) validLon += 360;
+        validLon = Number(validLon.toFixed(4));
+
+        // Update selected marker pin position immediately to give instant visual feedback
+        if (selectedMarkerRef.current) {
+          const newPos = latLonToCartesian(validLat, validLon, 1.01);
+          selectedMarkerRef.current.position.set(newPos.x, newPos.y, newPos.z);
+          selectedMarkerRef.current.lookAt(newPos.x * 2, newPos.y * 2, newPos.z * 2);
+        }
+
+        if (onSelectCoordinates) {
+          onSelectCoordinates({ latitude: validLat, longitude: validLon });
         }
       }
     }
@@ -491,33 +620,19 @@ export function GlobeCanvas({
         }}
       />
 
-      {/* Hovered City Pill Tooltip */}
+      {/* Hovered City Tooltip */}
       {hoveredCityName && (
-        <div
-          className="absolute top-4 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-xs font-mono font-medium pointer-events-none transition-opacity duration-200"
-          style={{
-            background: "rgb(14 22 40 / 0.85)",
-            color: "var(--color-accent-400)",
-            border: "1px solid rgb(0 212 255 / 0.3)",
-            backdropFilter: "blur(8px)",
-          }}
-        >
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 px-3 py-1 rounded-md text-xs font-semibold bg-white text-[#222222] border border-[#E5E7EB] shadow-xs pointer-events-none transition-opacity duration-200">
           Click to explore {hoveredCityName}
         </div>
       )}
 
-      {/* Selected Location Latitude / Longitude HUD Overlay */}
-      <div
-        className="absolute bottom-4 left-4 flex flex-col gap-0.5 text-[11px] font-mono pointer-events-none"
-        style={{ color: "var(--text-muted)" }}
-      >
-        <span
-          className="font-semibold"
-          style={{ color: "var(--text-primary)" }}
-        >
-          {selectedLocation.name || "Target Vector"}
+      {/* Selected Location Latitude / Longitude Overlay */}
+      <div className="absolute bottom-4 left-4 flex flex-col gap-0.5 text-xs text-[#6B7280] pointer-events-none">
+        <span className="font-semibold text-[#222222]">
+          {selectedLocation.name || "Selected Location"}
         </span>
-        <span>
+        <span className="tabular-nums">
           {Math.abs(selectedLocation.latitude).toFixed(2)}°
           {selectedLocation.latitude >= 0 ? "N" : "S"},{" "}
           {Math.abs(selectedLocation.longitude).toFixed(2)}°
@@ -525,19 +640,18 @@ export function GlobeCanvas({
         </span>
       </div>
 
-      {/* Accessible External Control HUD */}
+      {/* Accessible Control Toolbar */}
       <div
-        className="absolute bottom-4 right-4 flex items-center gap-1.5 p-1 rounded-xl glass shadow-lg"
+        className="absolute bottom-4 right-4 flex items-center gap-1 p-1 rounded-md bg-white border border-[#E5E7EB] shadow-xs"
         role="toolbar"
         aria-label="Globe navigation controls"
       >
         <button
           type="button"
           onClick={() => rotateGlobe(-0.25, 0)}
-          className="p-1.5 rounded-lg text-xs hover:bg-atmos-700/40 transition-colors"
-          style={{ color: "var(--text-secondary)" }}
+          className="p-1.5 rounded-md text-[#6B7280] hover:text-[#222222] hover:bg-[#F7F7F7] transition-colors"
           aria-label="Rotate globe left"
-          title="Rotate Left (←)"
+          title="Rotate Left"
         >
           <svg
             className="w-4 h-4"
@@ -557,10 +671,9 @@ export function GlobeCanvas({
         <button
           type="button"
           onClick={() => rotateGlobe(0.25, 0)}
-          className="p-1.5 rounded-lg text-xs hover:bg-atmos-700/40 transition-colors"
-          style={{ color: "var(--text-secondary)" }}
+          className="p-1.5 rounded-md text-[#6B7280] hover:text-[#222222] hover:bg-[#F7F7F7] transition-colors"
           aria-label="Rotate globe right"
-          title="Rotate Right (→)"
+          title="Rotate Right"
         >
           <svg
             className="w-4 h-4"
@@ -580,10 +693,9 @@ export function GlobeCanvas({
         <button
           type="button"
           onClick={() => adjustZoom("in")}
-          className="p-1.5 rounded-lg text-xs hover:bg-atmos-700/40 transition-colors"
-          style={{ color: "var(--text-secondary)" }}
+          className="p-1.5 rounded-md text-[#6B7280] hover:text-[#222222] hover:bg-[#F7F7F7] transition-colors"
           aria-label="Zoom in"
-          title="Zoom In (+)"
+          title="Zoom In"
         >
           <svg
             className="w-4 h-4"
@@ -603,10 +715,9 @@ export function GlobeCanvas({
         <button
           type="button"
           onClick={() => adjustZoom("out")}
-          className="p-1.5 rounded-lg text-xs hover:bg-atmos-700/40 transition-colors"
-          style={{ color: "var(--text-secondary)" }}
+          className="p-1.5 rounded-md text-[#6B7280] hover:text-[#222222] hover:bg-[#F7F7F7] transition-colors"
           aria-label="Zoom out"
-          title="Zoom Out (-)"
+          title="Zoom Out"
         >
           <svg
             className="w-4 h-4"
@@ -622,10 +733,9 @@ export function GlobeCanvas({
         <button
           type="button"
           onClick={recenterGlobe}
-          className="px-2 py-1 rounded-lg text-xs font-mono font-medium hover:bg-atmos-700/40 transition-colors"
-          style={{ color: "var(--color-accent-400)" }}
+          className="px-2 py-1 rounded-md text-xs font-semibold bg-[#F7F7F7] hover:bg-[#E5E7EB] text-[#222222] border border-[#E5E7EB] transition-colors"
           aria-label="Recenter on selected location"
-          title="Recenter on target"
+          title="Recenter"
         >
           Center
         </button>

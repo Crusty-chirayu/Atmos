@@ -1,59 +1,67 @@
-/* ── Google Fonts — must be first (before all other @rules) ── */
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
+/* ── Google Fonts — Inter clean typography ── */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
 @import "tailwindcss";
 
-/* ─────────────────────────────────────────────
-   ATMOS Design System — Tailwind v4 CSS tokens
-   Dark-first, with complete light-mode overrides.
-   All motion tokens respect prefers-reduced-motion.
-   ───────────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────────────────────────
+   ATMOS Clean Consumer Weather Design System
+   Bright, conventional, human-designed consumer weather aesthetic.
+   Dominant background: #FFFFFF | Secondary: #F7F7F7 | Accent: #FFC928
+   ───────────────────────────────────────────────────────────────────────────── */
 
 @theme inline {
-  /* ── Typography ── */
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Space Grotesk", "Inter", ui-sans-serif, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  /* ── Typography: Clean Human Consumer Sans ── */
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-display: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
-  /* ── Color: Neutrals (dark-first) ── */
-  --color-atmos-950: #04060d;
-  --color-atmos-900: #080d1a;
-  --color-atmos-800: #0e1628;
-  --color-atmos-700: #162035;
-  --color-atmos-600: #1e2d47;
-  --color-atmos-500: #2a3f60;
-  --color-atmos-400: #3d5a85;
-  --color-atmos-300: #5a7eb5;
-  --color-atmos-200: #8aace0;
-  --color-atmos-100: #c2d5f0;
-  --color-atmos-50: #eef4fb;
+  /* ── Authoritative Palette ── */
+  --color-page-bg: #FFFFFF;
+  --color-section-bg: #F7F7F7;
+  --color-primary-accent: #FFC928;
+  --color-accent-hover: #F2B900;
+  --color-main-text: #222222;
+  --color-secondary-text: #6B7280;
+  --color-border-divider: #E5E7EB;
 
-  /* ── Color: Accent — Electric Cyan ── */
-  --color-accent-500: #00d4ff;
-  --color-accent-400: #38deff;
-  --color-accent-300: #7eebff;
-  --color-accent-600: #00aad4;
-  --color-accent-700: #008aad;
+  /* Weather Functional Colors */
+  --color-weather-rain: #4A90E2;
+  --color-weather-cloudy: #8B95A5;
+  --color-weather-sunny: #FFC928;
+  --color-weather-severe: #D94841;
 
-  /* ── Color: Warm gold (AI / alerts) ── */
-  --color-gold-500: #f5c842;
-  --color-gold-400: #f9db72;
-  --color-gold-600: #c9a020;
+  /* Weather Yellow & Warm Accents */
+  --color-accent-500: #FFC928;
+  --color-accent-400: #FFD54F;
+  --color-accent-300: #FFE082;
+  --color-accent-600: #F2B900;
+  --color-accent-700: #D9A400;
 
-  /* ── Color: Alert / danger ── */
-  --color-danger-500: #ff4d4d;
-  --color-danger-400: #ff7a7a;
-  --color-danger-600: #cc2020;
+  /* Functional Alert Colors */
+  --color-danger-500: #D94841;
+  --color-danger-400: #EF5350;
+  --color-danger-600: #C62828;
 
-  /* ── Color: Success ── */
-  --color-success-500: #22d3a4;
-  --color-success-400: #4ddfb8;
+  --color-success-500: #10B981;
+  --color-success-400: #34D399;
 
-  /* ── Color: Warning ── */
-  --color-warning-500: #f5a623;
-  --color-warning-400: #f9c264;
+  --color-warning-500: #F59E0B;
+  --color-warning-400: #FBBF24;
 
-  /* ── Semantic surfaces (CSS vars resolved below) ── */
+  /* Neutral Spectrum: Inverted from dark-first to clean light-first */
+  --color-atmos-950: #FFFFFF;
+  --color-atmos-900: #F7F7F7;
+  --color-atmos-800: #F3F4F6;
+  --color-atmos-700: #E5E7EB;
+  --color-atmos-600: #D1D5DB;
+  --color-atmos-500: #9CA3AF;
+  --color-atmos-400: #6B7280;
+  --color-atmos-300: #4B5563;
+  --color-atmos-200: #374151;
+  --color-atmos-100: #1F2937;
+  --color-atmos-50: #111827;
+
+  /* Semantic Surfaces */
   --color-surface-base: var(--surface-base);
   --color-surface-raised: var(--surface-raised);
   --color-surface-overlay: var(--surface-overlay);
@@ -68,7 +76,7 @@
   --color-border-default: var(--border-default);
   --color-border-strong: var(--border-strong);
 
-  /* ── Spacing scale (base 4 px) ── */
+  /* Spacing Scale (Base 4px) */
   --spacing-px: 1px;
   --spacing-0: 0;
   --spacing-1: 0.25rem;
@@ -83,39 +91,25 @@
   --spacing-16: 4rem;
   --spacing-20: 5rem;
   --spacing-24: 6rem;
-  --spacing-32: 8rem;
 
-  /* ── Border radius ── */
-  --radius-sm: 0.25rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
-  --radius-2xl: 1.5rem;
+  /* Small restrained corner radii (8–12px) */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 12px;
+  --radius-2xl: 12px;
+  --radius-3xl: 12px;
   --radius-full: 9999px;
 
-  /* ── Motion: duration ── */
-  --duration-instant: 100ms;
-  --duration-fast: 200ms;
-  --duration-base: 300ms;
-  --duration-slow: 500ms;
-  --duration-slower: 800ms;
-  --duration-scene: 1200ms;
+  /* Clean subtle elevation — no heavy glows or pitch shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 1px 3px 0 rgba(0, 0, 0, 0.06), 0 1px 2px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 4px 6px -1px rgba(0, 0, 0, 0.06);
+  --shadow-xl: 0 10px 15px -3px rgba(0, 0, 0, 0.07);
+  --shadow-panel: 0 1px 3px rgba(0, 0, 0, 0.05);
 
-  /* ── Motion: easing ── */
-  --ease-out: cubic-bezier(0, 0, 0.2, 1);
-  --ease-in: cubic-bezier(0.4, 0, 1, 1);
-  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
-  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --ease-atmospheric: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-
-  /* ── Elevation / shadow ── */
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
-  --shadow-md: 0 4px 12px 0 rgb(0 0 0 / 0.4);
-  --shadow-lg: 0 8px 24px 0 rgb(0 0 0 / 0.5);
-  --shadow-xl: 0 16px 48px 0 rgb(0 0 0 / 0.6);
-  --shadow-glow: 0 0 24px 4px rgb(0 212 255 / 0.2);
-
-  /* ── Breakpoints ── */
+  /* Breakpoints */
   --breakpoint-sm: 640px;
   --breakpoint-md: 768px;
   --breakpoint-lg: 1024px;
@@ -123,51 +117,32 @@
   --breakpoint-2xl: 1536px;
 }
 
-/* ═══════════════════════════════════════════
-   DARK MODE (default — dark-first design)
-   ═══════════════════════════════════════════ */
-:root {
-  color-scheme: dark;
-
-  --surface-base: #04060d;
-  --surface-raised: #0e1628;
-  --surface-overlay: #162035;
-  --surface-glass: rgb(14 22 40 / 0.72);
-
-  --text-primary: #eef4fb;
-  --text-secondary: #8aace0;
-  --text-muted: #5a7eb5;
-  --text-inverse: #04060d;
-
-  --border-subtle: rgb(90 126 181 / 0.15);
-  --border-default: rgb(90 126 181 / 0.25);
-  --border-strong: rgb(90 126 181 / 0.5);
-}
-
-/* ═══════════════════════════════════════════
-   LIGHT MODE
-   ═══════════════════════════════════════════ */
-[data-theme="light"] {
+/* ═══════════════════════════════════════════════════════════════════════════
+   GLOBAL ROOT STYLING: CLEAN, BRIGHT, CONVENTIONAL
+   ═══════════════════════════════════════════════════════════════════════════ */
+:root,
+[data-theme="light"],
+[data-theme="dark"] {
   color-scheme: light;
 
-  --surface-base: #f0f6ff;
-  --surface-raised: #ffffff;
-  --surface-overlay: #e8f0fd;
-  --surface-glass: rgb(255 255 255 / 0.75);
+  --surface-base: #FFFFFF;
+  --surface-raised: #FFFFFF;
+  --surface-overlay: #F7F7F7;
+  --surface-glass: #FFFFFF;
 
-  --text-primary: #0e1628;
-  --text-secondary: #2a3f60;
-  --text-muted: #5a7eb5;
-  --text-inverse: #eef4fb;
+  --text-primary: #222222;
+  --text-secondary: #6B7280;
+  --text-muted: #9CA3AF;
+  --text-inverse: #FFFFFF;
 
-  --border-subtle: rgb(42 63 96 / 0.1);
-  --border-default: rgb(42 63 96 / 0.18);
-  --border-strong: rgb(42 63 96 / 0.35);
+  --border-subtle: #F3F4F6;
+  --border-default: #E5E7EB;
+  --border-strong: #D1D5DB;
+
+  --primary-accent: #FFC928;
+  --accent-hover: #F2B900;
 }
 
-/* ═══════════════════════════════════════════
-   GLOBAL BASE STYLES
-   ═══════════════════════════════════════════ */
 *,
 *::before,
 *::after {
@@ -176,8 +151,8 @@
 
 html {
   font-family: var(--font-sans);
-  background-color: var(--surface-base);
-  color: var(--text-primary);
+  background-color: #FFFFFF;
+  color: #222222;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   scroll-behavior: smooth;
@@ -186,43 +161,49 @@ html {
 
 body {
   min-height: 100dvh;
-  line-height: 1.6;
+  background-color: #FFFFFF;
+  color: #222222;
+  line-height: 1.5;
   overflow-x: hidden;
 }
 
-/* ── Focus styles (visible, consistent) ── */
+/* ── Tabular Numerals for Numeric Weather Values ── */
+.tabular-nums,
+.font-tabular {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" on;
+}
+
+/* ── Focus Outline ── */
 :focus-visible {
-  outline: 2px solid #00d4ff;
+  outline: 2px solid #FFC928;
   outline-offset: 2px;
   border-radius: var(--radius-sm);
 }
 
-/* ── Selection ── */
+/* ── Text Selection ── */
 ::selection {
-  background-color: rgb(0 212 255 / 0.25);
-  color: var(--text-primary);
+  background-color: #FFC928;
+  color: #222222;
 }
 
-/* ── Scrollbar (dark-themed) ── */
+/* ── Minimal Clean Scrollbar ── */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--surface-base);
+  background: #F7F7F7;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgb(90 126 181 / 0.4);
-  border-radius: var(--radius-full);
+  background: #D1D5DB;
+  border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgb(90 126 181 / 0.65);
+  background: #9CA3AF;
 }
 
-/* ═══════════════════════════════════════════
-   MOTION UTILITIES
-   Respect prefers-reduced-motion globally.
-   ═══════════════════════════════════════════ */
+/* ── Motion: Respect reduced motion ── */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -234,56 +215,44 @@ body {
   }
 }
 
-/* ── Utility: glass panel ── */
-.glass {
-  background: var(--surface-glass);
-  backdrop-filter: blur(16px) saturate(1.4);
-  -webkit-backdrop-filter: blur(16px) saturate(1.4);
-  border: 1px solid var(--border-subtle);
+/* ── Clean UI Utilities (Replacing Dark/Glass/Neon Overlays) ── */
+.glass,
+.glass-panel,
+.glass-card,
+.instrument-panel {
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
 }
 
-/* ── Utility: gradient text ── */
 .text-gradient {
-  background: linear-gradient(135deg, #00d4ff 0%, #7eebff 50%, #c2d5f0 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #222222;
+  background: none;
+  -webkit-text-fill-color: initial;
 }
 
-/* ── Utility: accent glow ── */
 .glow-accent {
-  box-shadow: var(--shadow-glow);
+  box-shadow: none;
+  border-color: #FFC928;
 }
 
-/* ── Utility: atmospheric gradient bg ── */
 .bg-atmospheric {
-  background:
-    radial-gradient(
-      ellipse 80% 60% at 50% -20%,
-      rgb(0 212 255 / 0.12) 0%,
-      transparent 70%
-    ),
-    radial-gradient(
-      ellipse 60% 40% at 80% 100%,
-      rgb(245 200 66 / 0.06) 0%,
-      transparent 60%
-    ),
-    var(--surface-base);
+  background-color: #FFFFFF;
 }
 
-/* ── Utility: skip-to-content link ── */
 .skip-link {
   position: absolute;
   top: -100%;
   left: 1rem;
   z-index: 9999;
   padding: 0.5rem 1rem;
-  background: #00d4ff;
-  color: #04060d;
+  background: #FFC928;
+  color: #222222;
   font-weight: 600;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   text-decoration: none;
-  transition: top var(--duration-fast) var(--ease-out);
+  transition: top 150ms ease-out;
 }
 .skip-link:focus {
   top: 1rem;

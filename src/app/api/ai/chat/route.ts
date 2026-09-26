@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { AiChatRequestSchema } from "@/lib/ai/domain/schemas";
 import { getAIProviderRegistry } from "@/lib/ai/providers/registry";
-import { buildWeatherGroundingSnapshot } from "@/lib/ai/context/grounding";
+import { resolveQueryGrounding } from "@/lib/ai/context/intent";
 import { getAIConversationService } from "@/lib/ai/service/conversation-service";
 import { getAuthenticatedUser } from "@/lib/auth/supabase-server";
 import {
@@ -66,17 +66,10 @@ export async function POST(request: NextRequest) {
   const user = await getAuthenticatedUser();
   const convService = getAIConversationService();
 
-  // Build grounding context if location is supplied
-  let groundingContext = null;
-  if (location) {
-    groundingContext = await buildWeatherGroundingSnapshot({
-      name: location.name,
-      country: location.country,
-      latitude: location.latitude,
-      longitude: location.longitude,
-      timezone: location.timezone,
-    });
-  }
+  // Dynamically resolve weather grounding based on query intent & active location
+  const resolved = await resolveQueryGrounding(message, location);
+  const groundingContext = resolved.primaryGrounding;
+  const secondaryGrounding = resolved.secondaryGrounding;
 
   // Retrieve conversation history if conversationId is provided
   let history: Array<{ role: "user" | "model"; content: string }> = [];
@@ -90,9 +83,11 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  // Construct custom instructions based on mode
+  // Construct custom instructions based on mode & travel intent
   let customInstruction = "";
-  if (mode === "planning") {
+  if (resolved.isTravelQuery && secondaryGrounding) {
+    customInstruction = `The user is planning travel from ${secondaryGrounding.location.name} to ${groundingContext?.location.name ?? "destination"}. Compare weather, rain risks, and give clear packing & travel advice.`;
+  } else if (mode === "planning") {
     customInstruction =
       "The user is planning travel or an outdoor activity. Highlight precipitation probability, temperature shifts, and recommended gear or optimal timing.";
   } else if (mode === "comparison") {
@@ -147,7 +142,13 @@ export async function POST(request: NextRequest) {
         conversationId: activeConvId,
         grounded: result.grounded,
         model: result.model,
-        location: location
+        location: groundingContext?.location
+          ? {
+              name: groundingContext.location.name,
+              latitude: groundingContext.location.latitude,
+              longitude: groundingContext.location.longitude,
+            }
+          : location
           ? {
               name: location.name,
               latitude: location.latitude,
@@ -159,11 +160,16 @@ export async function POST(request: NextRequest) {
       { status: 200, headers }
     );
   } catch (err: unknown) {
-    const errorMessage =
+    const rawErrorMessage =
       err instanceof Error ? err.message : "Failed to generate AI response";
+    // Security: sanitize any potential upstream API keys or query params from error message
+    const sanitizedError = rawErrorMessage
+      .replace(/key=[A-Za-z0-9_-]+/gi, "key=[REDACTED]")
+      .replace(/AIza[A-Za-z0-9_-]+/g, "[REDACTED]");
+
     return NextResponse.json(
       {
-        error: errorMessage,
+        error: sanitizedError,
         code: "AI_GENERATION_FAILED",
       },
       { status: 502, headers }
