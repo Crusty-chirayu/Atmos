@@ -6,6 +6,5 @@ coverage
 .env
 .env.local
 *.tsbuildinfo
-ATMOS-engineering-blueprint/
 docs/
 *.md
