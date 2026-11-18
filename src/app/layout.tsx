@@ -30,7 +30,10 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "ATMOS" }],
   creator: "ATMOS",
-  metadataBase: resolveAppUrl(process.env.NEXT_PUBLIC_APP_URL, "https://atmos.app"),
+  metadataBase: resolveAppUrl(
+    process.env.NEXT_PUBLIC_APP_URL,
+    "https://atmos.app"
+  ),
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -63,11 +66,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-      data-theme="light"
-    >
+    <html lang="en" suppressHydrationWarning data-theme="light">
       <head>
         {/* Enforce light theme across document */}
         <script

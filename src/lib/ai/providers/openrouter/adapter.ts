@@ -46,10 +46,7 @@ export class OpenRouterAdapter implements AIProvider {
       process.env.OPENROUTER_API_KEY ??
       process.env.OPENROUTER_KEY ??
       "";
-    this.model =
-      config.model ??
-      process.env.OPENROUTER_MODEL ??
-      DEFAULT_MODEL;
+    this.model = config.model ?? process.env.OPENROUTER_MODEL ?? DEFAULT_MODEL;
     this.baseUrl = config.baseUrl ?? DEFAULT_BASE_URL;
     this.timeoutMs = config.timeoutMs ?? DEFAULT_TIMEOUT_MS;
     this.fetchFn = config.fetchFn ?? fetch;
@@ -124,20 +121,17 @@ export class OpenRouterAdapter implements AIProvider {
         max_tokens: options.maxOutputTokens ?? 1024,
       };
 
-      const response = await this.fetchFn(
-        `${this.baseUrl}/chat/completions`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${this.apiKey}`,
-            "HTTP-Referer": "https://atmos.app",
-            "X-Title": "ATMOS Weather Intelligence",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(bodyPayload),
-          signal: controller.signal,
-        }
-      );
+      const response = await this.fetchFn(`${this.baseUrl}/chat/completions`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${this.apiKey}`,
+          "HTTP-Referer": "https://atmos.app",
+          "X-Title": "ATMOS Weather Intelligence",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(bodyPayload),
+        signal: controller.signal,
+      });
 
       if (!response.ok) {
         const errorText = await response.text();

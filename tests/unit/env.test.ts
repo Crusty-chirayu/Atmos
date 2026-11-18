@@ -107,7 +107,10 @@ describe("Environment Configuration & URL Resolution", () => {
 
     it("returns fallback when variable is unset", () => {
       delete process.env[TEST_KEY];
-      assert.equal(optionalEnv(TEST_KEY, "fallback-default"), "fallback-default");
+      assert.equal(
+        optionalEnv(TEST_KEY, "fallback-default"),
+        "fallback-default"
+      );
     });
 
     it("returns fallback when variable is empty string", () => {
@@ -142,9 +145,11 @@ describe("Environment Configuration & URL Resolution", () => {
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = "   ";
         assert.strictEqual(isSupabaseConfigured(), false);
       } finally {
-        if (origUrl !== undefined) process.env.NEXT_PUBLIC_SUPABASE_URL = origUrl;
+        if (origUrl !== undefined)
+          process.env.NEXT_PUBLIC_SUPABASE_URL = origUrl;
         else delete process.env.NEXT_PUBLIC_SUPABASE_URL;
-        if (origKey !== undefined) process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = origKey;
+        if (origKey !== undefined)
+          process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = origKey;
         else delete process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
       }
     });
@@ -158,7 +163,8 @@ describe("Environment Configuration & URL Resolution", () => {
         process.env.SUPABASE_SERVICE_ROLE_KEY = "   ";
         assert.strictEqual(isSupabaseAdminConfigured(), false);
       } finally {
-        if (origKey !== undefined) process.env.SUPABASE_SERVICE_ROLE_KEY = origKey;
+        if (origKey !== undefined)
+          process.env.SUPABASE_SERVICE_ROLE_KEY = origKey;
         else delete process.env.SUPABASE_SERVICE_ROLE_KEY;
       }
     });
@@ -171,7 +177,8 @@ describe("Environment Configuration & URL Resolution", () => {
         process.env.VAPID_PRIVATE_KEY = "";
         assert.strictEqual(isVapidConfigured(), false);
       } finally {
-        if (origPub !== undefined) process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY = origPub;
+        if (origPub !== undefined)
+          process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY = origPub;
         else delete process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
         if (origPriv !== undefined) process.env.VAPID_PRIVATE_KEY = origPriv;
         else delete process.env.VAPID_PRIVATE_KEY;

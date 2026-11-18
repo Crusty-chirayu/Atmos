@@ -40,9 +40,7 @@ export function HourlyForecastComponent({
             Next 24 Hours
           </span>
         </h2>
-        <span className="text-xs text-[#6B7280]">
-          Scroll for timeline →
-        </span>
+        <span className="text-xs text-[#6B7280]">Scroll for timeline →</span>
       </div>
 
       {/* Horizontal scroll container with tabIndex for keyboard users */}

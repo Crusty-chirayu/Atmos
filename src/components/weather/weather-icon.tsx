@@ -102,7 +102,13 @@ export function WeatherIcon({
           {day ? (
             /* Sun behind cloud */
             <g stroke="#FFC928" strokeWidth="1.8">
-              <circle cx="15.5" cy="8.5" r="3" fill="#FFC928" fillOpacity="0.2" />
+              <circle
+                cx="15.5"
+                cy="8.5"
+                r="3"
+                fill="#FFC928"
+                fillOpacity="0.2"
+              />
               <line x1="15.5" y1="2.5" x2="15.5" y2="3.8" />
               <line x1="19.7" y1="4.3" x2="18.8" y2="5.2" />
               <line x1="21.5" y1="8.5" x2="20.2" y2="8.5" />

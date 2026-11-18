@@ -13,7 +13,10 @@ export interface InteractiveGlobeProps {
     name?: string;
   };
   onSelectCity?: (city: FeaturedCity) => void;
-  onSelectCoordinates?: (coords: { latitude: number; longitude: number }) => void;
+  onSelectCoordinates?: (coords: {
+    latitude: number;
+    longitude: number;
+  }) => void;
   className?: string;
 }
 
@@ -28,12 +31,8 @@ const DynamicGlobeCanvas = dynamic(
         role="status"
         aria-label="Loading interactive globe..."
       >
-        <div
-          className="w-64 h-64 rounded-full border border-[#E5E7EB] bg-[#F7F7F7]"
-        />
-        <span className="mt-4 text-xs text-[#6B7280]">
-          Loading 3D Globe...
-        </span>
+        <div className="w-64 h-64 rounded-full border border-[#E5E7EB] bg-[#F7F7F7]" />
+        <span className="mt-4 text-xs text-[#6B7280]">Loading 3D Globe...</span>
       </div>
     ),
   }

@@ -133,8 +133,14 @@ export function TemperatureTrendChart({
           </div>
         ) : (
           <div className="text-[#6B7280] text-xs">
-            High: <strong className="text-[#222222] tabular-nums">{formatTemperature(Math.max(...temperatures), unit)}</strong> · Low:{" "}
-            <strong className="text-[#222222] tabular-nums">{formatTemperature(Math.min(...temperatures), unit)}</strong>
+            High:{" "}
+            <strong className="text-[#222222] tabular-nums">
+              {formatTemperature(Math.max(...temperatures), unit)}
+            </strong>{" "}
+            · Low:{" "}
+            <strong className="text-[#222222] tabular-nums">
+              {formatTemperature(Math.min(...temperatures), unit)}
+            </strong>
           </div>
         )}
       </div>

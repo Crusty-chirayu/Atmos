@@ -80,9 +80,7 @@ export function PrecipitationChart({
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-1.5">
             <span className="w-3 h-2 rounded bg-[#4A90E2]" />
-            <span className="text-[#6B7280] font-medium">
-              Probability (%)
-            </span>
+            <span className="text-[#6B7280] font-medium">Probability (%)</span>
           </div>
           <div className="flex items-center gap-1.5">
             <span className="w-3 h-0.5 rounded-full bg-[#2563EB]" />
@@ -131,11 +129,7 @@ export function PrecipitationChart({
           <defs>
             <linearGradient id={barGradientId} x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#4A90E2" stopOpacity="0.85" />
-              <stop
-                offset="100%"
-                stopColor="#4A90E2"
-                stopOpacity="0.2"
-              />
+              <stop offset="100%" stopColor="#4A90E2" stopOpacity="0.2" />
             </linearGradient>
           </defs>
 

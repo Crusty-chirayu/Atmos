@@ -49,9 +49,12 @@ describe("OpenRouterAdapter", () => {
 
   it("returns structured preview guidance when unconfigured", async () => {
     const adapter = new OpenRouterAdapter({ apiKey: "" });
-    const result = await adapter.generateCompletion("Is it raining in Reykjavik?", {
-      context: mockSnapshot,
-    });
+    const result = await adapter.generateCompletion(
+      "Is it raining in Reykjavik?",
+      {
+        context: mockSnapshot,
+      }
+    );
 
     assert.ok(result.model.includes("preview"));
     assert.equal(result.grounded, true);
@@ -141,7 +144,9 @@ describe("OpenRouterAdapter", () => {
   it("handles upstream 429 rate limit cleanly", async () => {
     const mockFetch = async () => {
       return new Response(
-        JSON.stringify({ error: { code: 429, message: "Rate limit exceeded" } }),
+        JSON.stringify({
+          error: { code: 429, message: "Rate limit exceeded" },
+        }),
         { status: 429, headers: { "Content-Type": "application/json" } }
       );
     };

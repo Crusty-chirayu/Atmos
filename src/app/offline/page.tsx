@@ -127,7 +127,8 @@ export default function OfflinePage() {
           </svg>
           Offline Availability
         </div>
-        Forecast data previously retrieved is safely cached in your local browser storage.
+        Forecast data previously retrieved is safely cached in your local
+        browser storage.
       </div>
     </div>
   );

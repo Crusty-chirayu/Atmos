@@ -227,9 +227,7 @@ export function WeatherMap2D({
       {/* Map Header Toolbar */}
       <div className="flex flex-wrap items-center justify-between gap-3 text-xs">
         <div className="flex items-center gap-2">
-          <span className="font-bold text-[#222222] text-sm">
-            Radar & Map
-          </span>
+          <span className="font-bold text-[#222222] text-sm">Radar & Map</span>
           <span className="text-xs px-2 py-0.5 rounded bg-[#F7F7F7] text-[#6B7280] border border-[#E5E7EB]">
             Interactive
           </span>
@@ -404,7 +402,8 @@ export function WeatherMap2D({
                 : "Wind Streamline Vector"}
             </span>
             <span>
-              Real-time raster tiles require commercial weather provider keys. Local telemetry for {location.name} is active in dashboard cards.
+              Real-time raster tiles require commercial weather provider keys.
+              Local telemetry for {location.name} is active in dashboard cards.
             </span>
           </div>
         )}
@@ -464,10 +463,22 @@ export function WeatherMap2D({
             <div className="flex items-center gap-1.5 pt-1 border-t border-[#E5E7EB] text-xs">
               <span className="text-[#6B7280]">dBZ:</span>
               <div className="flex items-center h-2 rounded overflow-hidden">
-                <span className="w-5 h-full bg-emerald-500" title="Light: 20-30 dBZ" />
-                <span className="w-5 h-full bg-sky-400" title="Moderate: 30-40 dBZ" />
-                <span className="w-5 h-full bg-amber-400" title="Heavy: 40-50 dBZ" />
-                <span className="w-5 h-full bg-rose-500" title="Intense/Hail: 50+ dBZ" />
+                <span
+                  className="w-5 h-full bg-emerald-500"
+                  title="Light: 20-30 dBZ"
+                />
+                <span
+                  className="w-5 h-full bg-sky-400"
+                  title="Moderate: 30-40 dBZ"
+                />
+                <span
+                  className="w-5 h-full bg-amber-400"
+                  title="Heavy: 40-50 dBZ"
+                />
+                <span
+                  className="w-5 h-full bg-rose-500"
+                  title="Intense/Hail: 50+ dBZ"
+                />
               </div>
               <span className="text-[#6B7280]">Light → Heavy</span>
             </div>

@@ -67,9 +67,7 @@ export function WeatherMetricsComponent({
               <span className="text-2xl font-bold text-[#222222] tabular-nums">
                 {Math.round(current.windSpeed)}
               </span>
-              <span className="text-xs text-[#6B7280]">
-                {speedUnit}
-              </span>
+              <span className="text-xs text-[#6B7280]">{speedUnit}</span>
             </div>
             {current.windGusts !== null && current.windGusts !== undefined ? (
               <p className="text-xs text-[#6B7280] mt-1">
@@ -83,9 +81,7 @@ export function WeatherMetricsComponent({
                 Peak gusts: {Math.round(today.windGustsMax)} {speedUnit}
               </p>
             ) : (
-              <p className="text-xs text-[#6B7280] mt-1">
-                Steady wind pattern
-              </p>
+              <p className="text-xs text-[#6B7280] mt-1">Steady wind pattern</p>
             )}
           </div>
           <div className="pt-3 border-t border-[#E5E7EB] text-xs text-[#6B7280] flex items-center justify-between">
@@ -124,9 +120,7 @@ export function WeatherMetricsComponent({
               <span className="text-2xl font-bold text-[#222222] tabular-nums">
                 {Math.round(current.pressureMsl)}
               </span>
-              <span className="text-xs text-[#6B7280]">
-                {pressUnit}
-              </span>
+              <span className="text-xs text-[#6B7280]">{pressUnit}</span>
             </div>
             <p className="text-xs text-[#6B7280] mt-1">
               {current.pressureMsl > 1015
@@ -172,9 +166,7 @@ export function WeatherMetricsComponent({
               <span className="text-2xl font-bold text-[#222222] tabular-nums">
                 {today?.precipitationSum ?? current.precipitation}
               </span>
-              <span className="text-xs text-[#6B7280]">
-                {precipUnit} today
-              </span>
+              <span className="text-xs text-[#6B7280]">{precipUnit} today</span>
             </div>
             <p className="text-xs text-[#6B7280] mt-1">
               {today?.precipitationProbabilityMax
@@ -183,8 +175,12 @@ export function WeatherMetricsComponent({
             </p>
           </div>
           <div className="pt-3 border-t border-[#E5E7EB] text-xs text-[#6B7280] flex items-center justify-between">
-            <span>Rain: {current.rain ?? 0} {precipUnit}</span>
-            <span>Showers: {current.showers ?? 0} {precipUnit}</span>
+            <span>
+              Rain: {current.rain ?? 0} {precipUnit}
+            </span>
+            <span>
+              Showers: {current.showers ?? 0} {precipUnit}
+            </span>
           </div>
         </div>
 
@@ -228,7 +224,8 @@ export function WeatherMetricsComponent({
               </div>
             </div>
             <p className="text-xs text-[#6B7280] mt-1">
-              {daylightHours || (current.isDay ? "Daylight active" : "Nighttime")}
+              {daylightHours ||
+                (current.isDay ? "Daylight active" : "Nighttime")}
             </p>
           </div>
           <div className="pt-3 border-t border-[#E5E7EB] text-xs text-[#6B7280] flex items-center justify-between">

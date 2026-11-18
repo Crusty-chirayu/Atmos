@@ -42,13 +42,22 @@ export function SevenDayRangeChart({
       {/* Legend & range summary */}
       <div className="flex items-center justify-between text-xs text-[#6B7280]">
         <span>
-          Week Low: <strong className="text-[#222222] tabular-nums">{Math.round(globalMin)}{tempUnit}</strong>
+          Week Low:{" "}
+          <strong className="text-[#222222] tabular-nums">
+            {Math.round(globalMin)}
+            {tempUnit}
+          </strong>
         </span>
         <span className="flex items-center gap-1.5 text-xs text-[#6B7280]">
-          <span className="w-3 h-1.5 rounded-full bg-[#FFC928]" /> Temperature Range
+          <span className="w-3 h-1.5 rounded-full bg-[#FFC928]" /> Temperature
+          Range
         </span>
         <span>
-          Week High: <strong className="text-[#222222] tabular-nums">{Math.round(globalMax)}{tempUnit}</strong>
+          Week High:{" "}
+          <strong className="text-[#222222] tabular-nums">
+            {Math.round(globalMax)}
+            {tempUnit}
+          </strong>
         </span>
       </div>
 
@@ -80,9 +89,7 @@ export function SevenDayRangeChart({
                   <div className="text-sm font-semibold text-[#222222]">
                     {weekday}
                   </div>
-                  <div className="text-xs text-[#626B78]">
-                    {dateLabel}
-                  </div>
+                  <div className="text-xs text-[#626B78]">{dateLabel}</div>
                 </div>
 
                 {/* Weather Condition Icon */}

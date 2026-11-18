@@ -85,9 +85,7 @@ export function HistoricalTrendChart({
           </div>
           <div className="flex items-center gap-1.5">
             <span className="w-2.5 h-1.5 rounded bg-[#4A90E2]" />
-            <span className="text-[#6B7280]">
-              Precipitation ({precipUnit})
-            </span>
+            <span className="text-[#6B7280]">Precipitation ({precipUnit})</span>
           </div>
         </div>
 
@@ -103,7 +101,8 @@ export function HistoricalTrendChart({
             {activeDay.temperatureMean !== null &&
               activeDay.temperatureMean !== undefined && (
                 <span className="text-[#6B7280] tabular-nums">
-                  (Mean {formatTemperature(activeDay.temperatureMean, tempUnit)})
+                  (Mean {formatTemperature(activeDay.temperatureMean, tempUnit)}
+                  )
                 </span>
               )}
             <span className="text-[#4A90E2] font-medium tabular-nums">
@@ -112,7 +111,8 @@ export function HistoricalTrendChart({
           </div>
         ) : (
           <div className="text-[#6B7280] text-xs">
-            {summaries.length} days analyzed ({data.startDate} to {data.endDate})
+            {summaries.length} days analyzed ({data.startDate} to {data.endDate}
+            )
           </div>
         )}
       </div>

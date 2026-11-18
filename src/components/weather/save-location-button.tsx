@@ -156,7 +156,8 @@ export function SaveLocationButton({
           </div>
           <p className="text-xs mb-3 leading-relaxed text-[#6B7280]">
             Sign in or create an account to bookmark{" "}
-            <strong>{location.name}</strong> and access your weather across devices.
+            <strong>{location.name}</strong> and access your weather across
+            devices.
           </p>
           <div className="flex items-center gap-2">
             <Link
