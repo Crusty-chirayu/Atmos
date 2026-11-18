@@ -17,7 +17,10 @@ export interface ReverseGeocodeResult {
 /**
  * Formats coordinates into standard international geographic notation (e.g. "51.51° N, 0.13° W").
  */
-export function formatCoordinateLabel(latitude: number, longitude: number): string {
+export function formatCoordinateLabel(
+  latitude: number,
+  longitude: number
+): string {
   const latAbs = Math.abs(latitude).toFixed(2);
   const latDir = latitude >= 0 ? "N" : "S";
   const lonAbs = Math.abs(longitude).toFixed(2);
@@ -41,7 +44,9 @@ export async function reverseGeocodeCoordinates(
   }
 
   try {
-    const url = new URL("https://api.bigdatacloud.net/data/reverse-geocode-client");
+    const url = new URL(
+      "https://api.bigdatacloud.net/data/reverse-geocode-client"
+    );
     url.searchParams.set("latitude", latitude.toFixed(4));
     url.searchParams.set("longitude", longitude.toFixed(4));
     url.searchParams.set("localityLanguage", "en");

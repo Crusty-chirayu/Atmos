@@ -249,10 +249,7 @@ export function HistoricalExplorer({
         </div>
 
         <div className="flex items-center gap-2">
-          <label
-            htmlFor="hist-end-date"
-            className="text-[#6B7280] font-medium"
-          >
+          <label htmlFor="hist-end-date" className="text-[#6B7280] font-medium">
             To:
           </label>
           <input

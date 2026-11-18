@@ -154,9 +154,7 @@ export function FloatingAiAssistant({
           </div>
 
           <div className="flex flex-col text-left">
-            <span className="text-xs font-bold text-[#222222]">
-              Weather AI
-            </span>
+            <span className="text-xs font-bold text-[#222222]">Weather AI</span>
             <span className="text-xs text-[#6B7280] truncate max-w-[130px]">
               {activeLocation.name}
             </span>
@@ -193,9 +191,7 @@ export function FloatingAiAssistant({
                 <h3 className="text-xs font-bold text-[#222222]">
                   Weather Assistant
                 </h3>
-                <p className="text-xs text-[#6B7280]">
-                  {activeLocation.name}
-                </p>
+                <p className="text-xs text-[#6B7280]">{activeLocation.name}</p>
               </div>
             </div>
 
@@ -265,7 +261,8 @@ export function FloatingAiAssistant({
                   Ask about {activeLocation.name}
                 </h4>
                 <p className="text-xs text-[#6B7280] max-w-[260px] mx-auto">
-                  Get quick answers about today&apos;s weather, rain timing, and wind.
+                  Get quick answers about today&apos;s weather, rain timing, and
+                  wind.
                 </p>
 
                 {/* Quick suggestions */}
@@ -309,7 +306,9 @@ export function FloatingAiAssistant({
                     )}
                     {msg.role === "assistant" && (
                       <div className="mt-1.5 pt-1.5 border-t border-[#E5E7EB] flex items-center justify-between text-xs text-[#6B7280]">
-                        <span className="text-emerald-600 font-medium">Verified</span>
+                        <span className="text-emerald-600 font-medium">
+                          Verified
+                        </span>
                         <VoicePlayerButton text={msg.content} />
                       </div>
                     )}

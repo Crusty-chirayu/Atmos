@@ -18,7 +18,10 @@ export interface GlobeCanvasProps {
     name?: string;
   };
   onSelectCity?: (city: FeaturedCity) => void;
-  onSelectCoordinates?: (coords: { latitude: number; longitude: number }) => void;
+  onSelectCoordinates?: (coords: {
+    latitude: number;
+    longitude: number;
+  }) => void;
   className?: string;
 }
 
@@ -282,8 +285,10 @@ export function GlobeCanvas({
     selectedGroup.lookAt(initPos.x * 2, initPos.y * 2, initPos.z * 2);
 
     // Initial globe orientation to selected coordinates
-    globeGroup.rotation.y = -(selectedLocationRef.current.longitude * Math.PI) / 180;
-    globeGroup.rotation.x = (selectedLocationRef.current.latitude * Math.PI) / 180;
+    globeGroup.rotation.y =
+      -(selectedLocationRef.current.longitude * Math.PI) / 180;
+    globeGroup.rotation.x =
+      (selectedLocationRef.current.latitude * Math.PI) / 180;
 
     // 10. Animation Loop
     let pulseAngle = 0;
@@ -472,7 +477,10 @@ export function GlobeCanvas({
 
     // 2. Second priority: Raycast against the actual Earth globe sphere
     if (earthMeshRef.current && (onSelectCoordinates || onSelectCity)) {
-      const earthIntersects = raycaster.intersectObject(earthMeshRef.current, false);
+      const earthIntersects = raycaster.intersectObject(
+        earthMeshRef.current,
+        false
+      );
       if (earthIntersects.length > 0) {
         const hit = earthIntersects[0];
         // Convert world hit point into globeGroup's local coordinate system (accounts for all rotations)
@@ -486,7 +494,10 @@ export function GlobeCanvas({
           localPoint.z
         );
 
-        const validLat = Math.max(-90, Math.min(90, Number(latitude.toFixed(4))));
+        const validLat = Math.max(
+          -90,
+          Math.min(90, Number(latitude.toFixed(4)))
+        );
         let validLon = Number(longitude.toFixed(4));
         while (validLon > 180) validLon -= 360;
         while (validLon < -180) validLon += 360;
@@ -496,7 +507,11 @@ export function GlobeCanvas({
         if (selectedMarkerRef.current) {
           const newPos = latLonToCartesian(validLat, validLon, 1.01);
           selectedMarkerRef.current.position.set(newPos.x, newPos.y, newPos.z);
-          selectedMarkerRef.current.lookAt(newPos.x * 2, newPos.y * 2, newPos.z * 2);
+          selectedMarkerRef.current.lookAt(
+            newPos.x * 2,
+            newPos.y * 2,
+            newPos.z * 2
+          );
         }
 
         if (onSelectCoordinates) {

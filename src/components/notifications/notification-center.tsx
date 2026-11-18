@@ -214,7 +214,8 @@ export function NotificationCenter() {
                 Weather Alerts
               </h3>
               <p className="text-xs text-[#6B7280] mb-4 max-w-xs leading-relaxed">
-                Sign in to configure threshold rules for frost conditions, rain onset, gale-force winds, and severe storm alerts.
+                Sign in to configure threshold rules for frost conditions, rain
+                onset, gale-force winds, and severe storm alerts.
               </p>
               <a
                 href="/login"
@@ -283,7 +284,9 @@ export function NotificationCenter() {
                         />
                       </svg>
                     </div>
-                    <p className="text-sm font-semibold text-[#222222]">All clear</p>
+                    <p className="text-sm font-semibold text-[#222222]">
+                      All clear
+                    </p>
                     <p className="text-xs text-[#6B7280] mt-0.5">
                       No active weather alerts for your tracked locations.
                     </p>

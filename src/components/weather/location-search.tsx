@@ -240,7 +240,9 @@ export function LocationSearch({
             results.length === 0 &&
             query.trim().length >= 2 && (
               <div className="px-4 py-5 text-center text-xs text-[#6B7280]">
-                <p className="font-semibold text-[#222222]">No locations found</p>
+                <p className="font-semibold text-[#222222]">
+                  No locations found
+                </p>
                 <p className="mt-0.5">
                   Check spelling or search for a nearby city.
                 </p>

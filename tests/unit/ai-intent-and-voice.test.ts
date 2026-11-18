@@ -17,7 +17,9 @@ describe("AI Intent & Entity Extraction", () => {
     assert.equal(res1?.latitude, 27.9881);
     assert.equal(res1?.longitude, 86.925);
 
-    const res2 = extractCoordinates("Conditions around lat: -33.8688, lon: 151.2093 please");
+    const res2 = extractCoordinates(
+      "Conditions around lat: -33.8688, lon: 151.2093 please"
+    );
     assert.ok(res2);
     assert.equal(res2?.latitude, -33.8688);
     assert.equal(res2?.longitude, 151.2093);
@@ -35,7 +37,9 @@ describe("AI Intent & Entity Extraction", () => {
     assert.equal(res2.target, "Mumbai");
     assert.equal(res2.isTravel, false);
 
-    const res3 = extractTargetCity("I am in Bangalore and travelling to Mumbai tomorrow");
+    const res3 = extractTargetCity(
+      "I am in Bangalore and travelling to Mumbai tomorrow"
+    );
     assert.equal(res3.target, "Mumbai");
     assert.equal(res3.origin, "Bangalore");
     assert.equal(res3.isTravel, true);
@@ -51,9 +55,15 @@ describe("AI Intent & Entity Extraction", () => {
     assert.equal(isGeneralNonWeatherQuery("what is 45 * 20?"), true);
     assert.equal(isGeneralNonWeatherQuery("how does a jet engine work?"), true);
     assert.equal(isGeneralNonWeatherQuery("tell me a joke about clouds"), true);
-    assert.equal(isGeneralNonWeatherQuery("what is the capital of France?"), true);
+    assert.equal(
+      isGeneralNonWeatherQuery("what is the capital of France?"),
+      true
+    );
 
-    assert.equal(isGeneralNonWeatherQuery("what is the weather in Bangalore?"), false);
+    assert.equal(
+      isGeneralNonWeatherQuery("what is the weather in Bangalore?"),
+      false
+    );
     assert.equal(isGeneralNonWeatherQuery("will it rain today?"), false);
     assert.equal(isGeneralNonWeatherQuery("forecast for tomorrow"), false);
   });
@@ -61,7 +71,8 @@ describe("AI Intent & Entity Extraction", () => {
 
 describe("Voice Text Normalization & Synthesis Utilities", () => {
   it("strips markdown formatting and punctuation noise", () => {
-    const raw = "### Weather Update\n\nHere is the **summary** for *today*:\n- Item 1\n- Item 2\n\nVisit [ATMOS](https://atmos.local)";
+    const raw =
+      "### Weather Update\n\nHere is the **summary** for *today*:\n- Item 1\n- Item 2\n\nVisit [ATMOS](https://atmos.local)";
     const normalized = normalizeTextForSpeech(raw);
 
     assert.ok(!normalized.includes("#"));
@@ -73,7 +84,8 @@ describe("Voice Text Normalization & Synthesis Utilities", () => {
   });
 
   it("expands meteorological abbreviations and units for natural speech", () => {
-    const input = "Temp: 25°C, rain: 2 mm, wind: 15 km/h from SSW with 60% humidity and 1013 hPa pressure.";
+    const input =
+      "Temp: 25°C, rain: 2 mm, wind: 15 km/h from SSW with 60% humidity and 1013 hPa pressure.";
     const output = normalizeTextForSpeech(input);
 
     assert.ok(output.includes("25 degrees Celsius"));
@@ -86,22 +98,49 @@ describe("Voice Text Normalization & Synthesis Utilities", () => {
 
   it("selects natural female voices based on priority hierarchy", () => {
     const mockVoices = [
-      { name: "Microsoft David - English (United States)", lang: "en-US", default: true } as SpeechSynthesisVoice,
-      { name: "Microsoft Zira - English (United States)", lang: "en-US", default: false } as SpeechSynthesisVoice,
-      { name: "Google US English Female", lang: "en-US", default: false } as SpeechSynthesisVoice,
-      { name: "Microsoft Jenny Online (Natural) - English (United States)", lang: "en-US", default: false } as SpeechSynthesisVoice,
+      {
+        name: "Microsoft David - English (United States)",
+        lang: "en-US",
+        default: true,
+      } as SpeechSynthesisVoice,
+      {
+        name: "Microsoft Zira - English (United States)",
+        lang: "en-US",
+        default: false,
+      } as SpeechSynthesisVoice,
+      {
+        name: "Google US English Female",
+        lang: "en-US",
+        default: false,
+      } as SpeechSynthesisVoice,
+      {
+        name: "Microsoft Jenny Online (Natural) - English (United States)",
+        lang: "en-US",
+        default: false,
+      } as SpeechSynthesisVoice,
     ];
 
     const selected = selectNaturalFemaleVoice(mockVoices);
     assert.ok(selected);
     // Microsoft Jenny Online (Natural) is top priority in the preferred list
-    assert.equal(selected?.name, "Microsoft Jenny Online (Natural) - English (United States)");
+    assert.equal(
+      selected?.name,
+      "Microsoft Jenny Online (Natural) - English (United States)"
+    );
   });
 
   it("falls back gracefully when preferred voices are absent", () => {
     const mockVoices = [
-      { name: "Generic Voice", lang: "fr-FR", default: true } as SpeechSynthesisVoice,
-      { name: "English Speaker", lang: "en-GB", default: false } as SpeechSynthesisVoice,
+      {
+        name: "Generic Voice",
+        lang: "fr-FR",
+        default: true,
+      } as SpeechSynthesisVoice,
+      {
+        name: "English Speaker",
+        lang: "en-GB",
+        default: false,
+      } as SpeechSynthesisVoice,
     ];
 
     const selected = selectNaturalFemaleVoice(mockVoices);

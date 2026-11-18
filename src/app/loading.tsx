@@ -25,7 +25,9 @@ export default function Loading() {
           aria-label="Loading weather data"
           className="w-6 h-6 border-2 border-[#E5E7EB] border-t-[#FFC928] rounded-full animate-spin"
         />
-        <span className="text-xs text-[#6B7280]">Updating forecast data...</span>
+        <span className="text-xs text-[#6B7280]">
+          Updating forecast data...
+        </span>
       </div>
     </div>
   );

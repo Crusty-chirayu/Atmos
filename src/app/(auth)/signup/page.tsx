@@ -83,7 +83,8 @@ function SignupForm() {
         </h2>
         <p className="text-xs sm:text-sm text-[#6B7280] leading-relaxed mb-6">
           We&apos;ve sent a confirmation link to{" "}
-          <strong className="text-[#222222]">{email}</strong>. Please check your inbox and click the link to activate your ATMOS account.
+          <strong className="text-[#222222]">{email}</strong>. Please check your
+          inbox and click the link to activate your ATMOS account.
         </p>
         <Link
           href="/login"
@@ -137,7 +138,8 @@ function SignupForm() {
           <div>
             <p className="font-semibold">Local Environment Notice</p>
             <p className="mt-0.5 text-[#B45309] text-xs leading-relaxed">
-              Supabase Auth is unconfigured in this environment. Anonymous weather exploration remains fully operational.
+              Supabase Auth is unconfigured in this environment. Anonymous
+              weather exploration remains fully operational.
             </p>
           </div>
         </div>
