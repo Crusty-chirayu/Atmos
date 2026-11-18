@@ -45,9 +45,7 @@ export function DailyForecastComponent({
             Daily Forecast
           </span>
         </h2>
-        <span className="text-xs text-[#6B7280]">
-          Low / High
-        </span>
+        <span className="text-xs text-[#6B7280]">Low / High</span>
       </div>
 
       <div className="space-y-2">
@@ -85,9 +83,7 @@ export function DailyForecastComponent({
                 >
                   {weekday}
                 </span>
-                <span className="text-xs text-[#626B78]">
-                  {dateLabel}
-                </span>
+                <span className="text-xs text-[#626B78]">{dateLabel}</span>
               </div>
 
               {/* Weather Condition Icon & Text */}

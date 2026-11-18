@@ -10,7 +10,10 @@ export interface GlobeFallbackProps {
     name?: string;
   };
   onSelectCity?: (city: FeaturedCity) => void;
-  onSelectCoordinates?: (coords: { latitude: number; longitude: number }) => void;
+  onSelectCoordinates?: (coords: {
+    latitude: number;
+    longitude: number;
+  }) => void;
   className?: string;
   reason?: string;
 }
@@ -145,9 +148,7 @@ export function GlobeFallback({
         </div>
 
         {reason ? (
-          <p className="text-xs text-[#6B7280] max-w-sm">
-            {reason}
-          </p>
+          <p className="text-xs text-[#6B7280] max-w-sm">{reason}</p>
         ) : (
           <p className="text-xs text-[#6B7280]">
             Use the location search or featured cities below to inspect weather.

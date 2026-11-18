@@ -122,7 +122,8 @@ export function CurrentConditions({
             </h1>
 
             <p className="text-sm text-[#6B7280] mt-1 flex flex-wrap items-center gap-1.5">
-              {[location.adminArea, location.country].filter(Boolean).length > 0 && (
+              {[location.adminArea, location.country].filter(Boolean).length >
+                0 && (
                 <>
                   <span>
                     {[location.adminArea, location.country]
@@ -133,8 +134,10 @@ export function CurrentConditions({
                 </>
               )}
               <span className="font-mono text-xs text-[#737D8A]">
-                {Math.abs(location.latitude).toFixed(2)}°{location.latitude >= 0 ? "N" : "S"},{" "}
-                {Math.abs(location.longitude).toFixed(2)}°{location.longitude >= 0 ? "E" : "W"}
+                {Math.abs(location.latitude).toFixed(2)}°
+                {location.latitude >= 0 ? "N" : "S"},{" "}
+                {Math.abs(location.longitude).toFixed(2)}°
+                {location.longitude >= 0 ? "E" : "W"}
               </span>
               <span>·</span>
               <span>Local time {localTimeString}</span>
@@ -248,7 +251,9 @@ export function CurrentConditions({
                   : (todayForecast?.uvIndexMax ?? "--")}
               </span>
             </div>
-            <span className={`text-xs font-semibold ${uvDescriptor.colorClass}`}>
+            <span
+              className={`text-xs font-semibold ${uvDescriptor.colorClass}`}
+            >
               {uvDescriptor.label}
             </span>
           </div>
@@ -267,7 +272,9 @@ export function CurrentConditions({
 
           {/* Precipitation */}
           <div className="p-3 rounded-md flex flex-col justify-between bg-[#F7F7F7] border border-[#E5E7EB]">
-            <span className="text-xs text-[#6B7280] font-medium">Rain / Precip</span>
+            <span className="text-xs text-[#6B7280] font-medium">
+              Rain / Precip
+            </span>
             <div className="my-1">
               <span className="text-lg font-bold text-[#222222] tabular-nums">
                 {current.precipitation}
@@ -284,7 +291,9 @@ export function CurrentConditions({
 
           {/* Sun Cycle */}
           <div className="p-3 rounded-md flex flex-col justify-between bg-[#F7F7F7] border border-[#E5E7EB]">
-            <span className="text-xs text-[#6B7280] font-medium">Sun Cycle</span>
+            <span className="text-xs text-[#6B7280] font-medium">
+              Sun Cycle
+            </span>
             <div className="my-1 text-xs space-y-0.5">
               {todayForecast?.sunrise ? (
                 <div>

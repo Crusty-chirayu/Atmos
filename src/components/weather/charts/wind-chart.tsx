@@ -140,7 +140,10 @@ export function WindChart({ entries, unit, timezone }: WindChartProps) {
           </div>
         ) : (
           <div className="text-[#6B7280] text-xs">
-            Max Sustained: <strong className="text-[#222222] tabular-nums">{formatWindSpeed(Math.max(...speeds), unit)}</strong>
+            Max Sustained:{" "}
+            <strong className="text-[#222222] tabular-nums">
+              {formatWindSpeed(Math.max(...speeds), unit)}
+            </strong>
             {gusts.length > 0 &&
               ` · Max Gust: ${formatWindSpeed(Math.max(...gusts), unit)}`}
           </div>

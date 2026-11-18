@@ -91,9 +91,9 @@ export function DeveloperContactSection() {
       </div>
 
       <p className="text-xs text-[#222222] leading-relaxed">
-        ATMOS is a high-precision meteorological intelligence platform
-        featuring interactive 3D planetary rendering, real-time Open-Meteo
-        synthesis, ECMWF ERA5 reanalysis, and AI-assisted climate foresight.
+        ATMOS is a high-precision meteorological intelligence platform featuring
+        interactive 3D planetary rendering, real-time Open-Meteo synthesis,
+        ECMWF ERA5 reanalysis, and AI-assisted climate foresight.
       </p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 pt-1">

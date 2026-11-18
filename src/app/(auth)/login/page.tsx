@@ -90,7 +90,8 @@ function LoginForm() {
           <div>
             <p className="font-semibold">Local Environment Notice</p>
             <p className="mt-0.5 text-[#B45309] text-xs leading-relaxed">
-              Supabase Auth is unconfigured in this environment. Anonymous weather exploration remains fully operational.
+              Supabase Auth is unconfigured in this environment. Anonymous
+              weather exploration remains fully operational.
             </p>
           </div>
         </div>

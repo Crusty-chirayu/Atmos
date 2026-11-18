@@ -7,7 +7,8 @@ if (!fs.existsSync(OUT_DIR)) {
   fs.mkdirSync(OUT_DIR, { recursive: true });
 }
 
-const EDGE_PATH = "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe";
+const EDGE_PATH =
+  "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe";
 
 async function main() {
   console.log("Launching Edge browser for ATMOS QA validation...");
@@ -59,7 +60,9 @@ async function main() {
   });
 
   // Scroll down to footer
-  await pageDashboard.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+  await pageDashboard.evaluate(() =>
+    window.scrollTo(0, document.body.scrollHeight)
+  );
   await pageDashboard.waitForTimeout(1000);
   await pageDashboard.screenshot({
     path: path.join(OUT_DIR, "05_dashboard_footer_attribution.png"),
@@ -79,7 +82,7 @@ async function main() {
   // Try submitting a question to show the interaction
   try {
     const input = pageAi.locator('input[placeholder*="Ask about"]');
-    if (await input.count() > 0) {
+    if ((await input.count()) > 0) {
       await input.fill("Will it rain in London today?");
       await pageAi.keyboard.press("Enter");
       await pageAi.waitForTimeout(3000);
@@ -95,7 +98,9 @@ async function main() {
   // 4. About & Developer Attribution Page
   console.log("Capturing 4. About & Developer Credit Page (/about)...");
   const pageAbout = await ctxDesktop.newPage();
-  await pageAbout.goto("http://localhost:3000/about", { waitUntil: "networkidle" });
+  await pageAbout.goto("http://localhost:3000/about", {
+    waitUntil: "networkidle",
+  });
   await pageAbout.waitForTimeout(1500);
   await pageAbout.screenshot({
     path: path.join(OUT_DIR, "08_about_developer_credit.png"),
@@ -117,7 +122,9 @@ async function main() {
     fullPage: false,
   });
 
-  await pageMobile.goto("http://localhost:3000/dashboard", { waitUntil: "networkidle" });
+  await pageMobile.goto("http://localhost:3000/dashboard", {
+    waitUntil: "networkidle",
+  });
   await pageMobile.waitForTimeout(2000);
   await pageMobile.screenshot({
     path: path.join(OUT_DIR, "10_mobile_dashboard.png"),

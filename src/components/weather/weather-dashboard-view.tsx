@@ -486,16 +486,10 @@ export function WeatherDashboardView({
             <span>· Clean Weather Intelligence</span>
           </div>
           <div className="flex items-center gap-4">
-            <Link
-              href="/"
-              className="hover:text-[#222222] transition-colors"
-            >
+            <Link href="/" className="hover:text-[#222222] transition-colors">
               Globe
             </Link>
-            <Link
-              href="/ai"
-              className="hover:text-[#222222] transition-colors"
-            >
+            <Link href="/ai" className="hover:text-[#222222] transition-colors">
               AI Assistant
             </Link>
             <Link

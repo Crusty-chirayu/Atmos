@@ -12,9 +12,18 @@ import {
 
 describe("Arbitrary Globe Coordinate Picking & Reverse Resolution", () => {
   it("formats coordinate labels cleanly in hemispherically correct notation", () => {
-    assert.strictEqual(formatCoordinateLabel(51.5074, -0.1278), "51.51° N, 0.13° W");
-    assert.strictEqual(formatCoordinateLabel(40.7128, -74.006), "40.71° N, 74.01° W");
-    assert.strictEqual(formatCoordinateLabel(-33.8688, 151.2093), "33.87° S, 151.21° E");
+    assert.strictEqual(
+      formatCoordinateLabel(51.5074, -0.1278),
+      "51.51° N, 0.13° W"
+    );
+    assert.strictEqual(
+      formatCoordinateLabel(40.7128, -74.006),
+      "40.71° N, 74.01° W"
+    );
+    assert.strictEqual(
+      formatCoordinateLabel(-33.8688, 151.2093),
+      "33.87° S, 151.21° E"
+    );
     assert.strictEqual(formatCoordinateLabel(0, 0), "0.00° N, 0.00° E");
     assert.strictEqual(formatCoordinateLabel(-90, 180), "90.00° S, 180.00° E");
   });
@@ -45,7 +54,9 @@ describe("Arbitrary Globe Coordinate Picking & Reverse Resolution", () => {
 
       // 2. Transform local position to world space (as raycaster hit.point would be)
       globeGroup.updateMatrixWorld(true);
-      const worldHitPoint = testPoint.clone().applyMatrix4(globeGroup.matrixWorld);
+      const worldHitPoint = testPoint
+        .clone()
+        .applyMatrix4(globeGroup.matrixWorld);
 
       // 3. Apply the production coordinate picking formula: globeGroup.worldToLocal(hit.point)
       const recoveredLocal = globeGroup.worldToLocal(worldHitPoint.clone());
@@ -72,7 +83,11 @@ describe("Arbitrary Globe Coordinate Picking & Reverse Resolution", () => {
     const controller = new AbortController();
     controller.abort(); // Pre-aborted signal
 
-    const result = await reverseGeocodeCoordinates(25.0, -71.0, controller.signal);
+    const result = await reverseGeocodeCoordinates(
+      25.0,
+      -71.0,
+      controller.signal
+    );
     assert.strictEqual(result.name, "25.00° N, 71.00° W");
   });
 });

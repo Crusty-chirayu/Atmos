@@ -21,8 +21,6 @@ import {
 } from "@/lib/geocoding/reverse";
 import { useCurrentLocation } from "@/lib/location/location-context";
 
-
-
 export function CinematicHomepage() {
   const { activeLocation, setActiveLocation } = useCurrentLocation();
   const selectedLocation = activeLocation;
@@ -390,7 +388,8 @@ export function CinematicHomepage() {
                       Want comprehensive radar maps and historical data?
                     </span>
                     <span className="text-xs text-[#6B7280]">
-                      Open the full dashboard for interactive radar maps, high-resolution charts, and ERA5 reanalysis.
+                      Open the full dashboard for interactive radar maps,
+                      high-resolution charts, and ERA5 reanalysis.
                     </span>
                   </div>
                   <Link
@@ -426,8 +425,12 @@ export function CinematicHomepage() {
         {effectiveWeatherBundle && (
           <footer className="w-full max-w-5xl mx-auto px-4 mt-12 text-center text-xs space-y-2 text-[#626B78]">
             <p>
-              Weather Data: Open-Meteo Meteorological Engine (CC-BY 4.0) · Updated:{" "}
-              {new Date(effectiveWeatherBundle.meta.fetchedAt).toLocaleTimeString()} ({selectedLocation.name})
+              Weather Data: Open-Meteo Meteorological Engine (CC-BY 4.0) ·
+              Updated:{" "}
+              {new Date(
+                effectiveWeatherBundle.meta.fetchedAt
+              ).toLocaleTimeString()}{" "}
+              ({selectedLocation.name})
             </p>
             <div className="pt-2 border-t border-[#E5E7EB]">
               <DeveloperFooter />
