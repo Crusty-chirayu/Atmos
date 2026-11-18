@@ -80,8 +80,8 @@ const rawSupabaseAnonKey =
   typeof process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY === "string"
     ? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY.trim()
     : typeof process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY === "string"
-    ? process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY.trim()
-    : "";
+      ? process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY.trim()
+      : "";
 const rawAppUrl =
   typeof process.env.NEXT_PUBLIC_APP_URL === "string" &&
   process.env.NEXT_PUBLIC_APP_URL.trim() !== ""
@@ -90,7 +90,8 @@ const rawAppUrl =
 const rawAppEnv =
   typeof process.env.NEXT_PUBLIC_APP_ENV === "string" &&
   process.env.NEXT_PUBLIC_APP_ENV.trim() !== ""
-    ? (process.env.NEXT_PUBLIC_APP_ENV.trim() as "development" | "preview" | "production")
+    ? (process.env.NEXT_PUBLIC_APP_ENV.trim() as
+        "development" | "preview" | "production")
     : "development";
 const rawVapidKey =
   typeof process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY === "string"

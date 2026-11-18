@@ -1,7 +1,10 @@
 import React from "react";
 import Link from "next/link";
 import { Metadata } from "next";
-import { DeveloperContactSection, DeveloperFooter } from "@/components/common/developer-credit";
+import {
+  DeveloperContactSection,
+  DeveloperFooter,
+} from "@/components/common/developer-credit";
 
 export const metadata: Metadata = {
   title: "About ATMOS & Developer Credit",
@@ -58,9 +61,10 @@ export default function AboutPage() {
             About ATMOS
           </h1>
           <p className="text-sm text-[#626B78] max-w-2xl leading-relaxed">
-            Engineered as a clean, highly reliable meteorological cockpit combining
-            interactive 3D planetary rendering, real-time Open-Meteo telemetry,
-            ECMWF ERA5 historical reanalysis, and AI-assisted climate foresight.
+            Engineered as a clean, highly reliable meteorological cockpit
+            combining interactive 3D planetary rendering, real-time Open-Meteo
+            telemetry, ECMWF ERA5 historical reanalysis, and AI-assisted climate
+            foresight.
           </p>
         </div>
 
@@ -77,34 +81,43 @@ export default function AboutPage() {
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs leading-relaxed text-[#626B78]">
             <div className="p-4 rounded-md bg-[#F7F8FA] border border-[#E5E7EB] space-y-1.5">
-              <h3 className="font-bold text-[#222222]">3D Photorealistic Planetary Visualization</h3>
+              <h3 className="font-bold text-[#222222]">
+                3D Photorealistic Planetary Visualization
+              </h3>
               <p>
-                Three.js WebGL globe utilizing genuine NASA Blue Marble equirectangular
-                satellite imagery, specular ocean reflection maps, dynamic atmospheric shells,
-                and astronomical solar terminator lighting.
+                Three.js WebGL globe utilizing genuine NASA Blue Marble
+                equirectangular satellite imagery, specular ocean reflection
+                maps, dynamic atmospheric shells, and astronomical solar
+                terminator lighting.
               </p>
             </div>
             <div className="p-4 rounded-md bg-[#F7F8FA] border border-[#E5E7EB] space-y-1.5">
-              <h3 className="font-bold text-[#222222]">Authoritative Meteorological Synthesis</h3>
+              <h3 className="font-bold text-[#222222]">
+                Authoritative Meteorological Synthesis
+              </h3>
               <p>
-                Grounded in high-resolution Open-Meteo forecast models (ECMWF IFS, GFS, ICON)
-                with WMO-standard weather code interpretation, precipitation probabilities,
-                and historical ERA5 reanalysis spanning decades.
+                Grounded in high-resolution Open-Meteo forecast models (ECMWF
+                IFS, GFS, ICON) with WMO-standard weather code interpretation,
+                precipitation probabilities, and historical ERA5 reanalysis
+                spanning decades.
               </p>
             </div>
             <div className="p-4 rounded-md bg-[#F7F8FA] border border-[#E5E7EB] space-y-1.5">
-              <h3 className="font-bold text-[#222222]">OpenRouter AI Intelligence</h3>
+              <h3 className="font-bold text-[#222222]">
+                OpenRouter AI Intelligence
+              </h3>
               <p>
-                Context-grounded natural language weather intelligence powered by OpenRouter,
-                ensuring live forecast data is accurately synthesized without hallucinations
-                or stale model deprecations.
+                Context-grounded natural language weather intelligence powered
+                by OpenRouter, ensuring live forecast data is accurately
+                synthesized without hallucinations or stale model deprecations.
               </p>
             </div>
             <div className="p-4 rounded-md bg-[#F7F8FA] border border-[#E5E7EB] space-y-1.5">
               <h3 className="font-bold text-[#222222]">Design System</h3>
               <p>
-                Light-first, high-contrast palette (#FFFFFF, #F7F8FA, #FFF8E1, #FFC928)
-                engineered for consumer clarity, WCAG AA compliance, and zero visual clutter.
+                Light-first, high-contrast palette (#FFFFFF, #F7F8FA, #FFF8E1,
+                #FFC928) engineered for consumer clarity, WCAG AA compliance,
+                and zero visual clutter.
               </p>
             </div>
           </div>
@@ -135,8 +148,9 @@ export default function AboutPage() {
               Open-Meteo
             </a>{" "}
             under Creative Commons Attribution 4.0 International (CC BY 4.0).
-            Historical atmospheric data derived from European Centre for Medium-Range Weather Forecasts (ECMWF) ERA5.
-            Planetary imagery courtesy of NASA Visible Earth.
+            Historical atmospheric data derived from European Centre for
+            Medium-Range Weather Forecasts (ECMWF) ERA5. Planetary imagery
+            courtesy of NASA Visible Earth.
           </p>
         </section>
       </main>

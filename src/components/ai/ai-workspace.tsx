@@ -256,7 +256,8 @@ export function AiWorkspace() {
             Weather Intelligence & Planning
           </h1>
           <p className="mt-1 text-xs sm:text-sm text-[#6B7280] max-w-2xl">
-            Conversational weather insights grounded in real-time Open-Meteo forecasts.
+            Conversational weather insights grounded in real-time Open-Meteo
+            forecasts.
           </p>
         </div>
 
@@ -315,7 +316,9 @@ export function AiWorkspace() {
                       : "bg-[#F7F7F7] border-[#E5E7EB] text-[#6B7280] hover:text-[#222222] hover:bg-[#E5E7EB]"
                   }`}
                 >
-                  <span className="font-semibold text-[#222222]">{m.label}</span>
+                  <span className="font-semibold text-[#222222]">
+                    {m.label}
+                  </span>
                   <span className="text-xs text-[#6B7280]">{m.desc}</span>
                 </button>
               ))}
@@ -546,7 +549,8 @@ export function AiWorkspace() {
                         : `Ask about weather in ${selectedLocation.name}`}
                   </h3>
                   <p className="mt-1 text-xs text-[#6B7280]">
-                    Get quick answers on rain timing, wind conditions, and packing recommendations.
+                    Get quick answers on rain timing, wind conditions, and
+                    packing recommendations.
                   </p>
                 </div>
 
@@ -566,12 +570,12 @@ export function AiWorkspace() {
                           "Which city is better for walking outdoors?",
                           "How do temperatures compare?",
                         ]
-                    : [
-                        "Will it rain in the next 12 hours?",
-                        "What is the temperature trend today?",
-                        "How humid will it be this afternoon?",
-                        "Summary of the 7-day outlook",
-                      ]
+                      : [
+                          "Will it rain in the next 12 hours?",
+                          "What is the temperature trend today?",
+                          "How humid will it be this afternoon?",
+                          "Summary of the 7-day outlook",
+                        ]
                   ).map((prompt) => (
                     <button
                       key={prompt}

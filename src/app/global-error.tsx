@@ -60,7 +60,8 @@ export default function GlobalError({
               lineHeight: 1.6,
             }}
           >
-            ATMOS encountered an unexpected error loading weather data. Please try refreshing.
+            ATMOS encountered an unexpected error loading weather data. Please
+            try refreshing.
           </p>
           {error.digest && (
             <p

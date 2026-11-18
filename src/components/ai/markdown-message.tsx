@@ -19,7 +19,9 @@ export function MarkdownMessage({
   className = "",
 }: MarkdownMessageProps) {
   return (
-    <div className={`markdown-chat-content text-xs leading-relaxed text-[#222222] ${className}`}>
+    <div
+      className={`markdown-chat-content text-xs leading-relaxed text-[#222222] ${className}`}
+    >
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{

@@ -173,9 +173,7 @@ export default function AccountPage() {
               <p className="text-base font-bold text-[#222222]">
                 {displayName}
               </p>
-              <p className="text-xs text-[#6B7280] mt-0.5">
-                {user.email}
-              </p>
+              <p className="text-xs text-[#6B7280] mt-0.5">{user.email}</p>
               <p className="text-xs text-[#9CA3AF] mt-0.5">
                 Account ID: {user.id.slice(0, 8)}...
               </p>
@@ -230,7 +228,8 @@ export default function AccountPage() {
                 No saved locations yet
               </p>
               <p className="text-xs text-[#6B7280] mt-1 max-w-sm mx-auto">
-                Search for any city on the dashboard and click &ldquo;Save City&rdquo; to add it to your collection.
+                Search for any city on the dashboard and click &ldquo;Save
+                City&rdquo; to add it to your collection.
               </p>
             </div>
           ) : (
@@ -455,7 +454,8 @@ export default function AccountPage() {
             Danger Zone
           </h2>
           <p className="text-xs text-[#6B7280] leading-relaxed mb-4">
-            Deleting your account will irreversibly remove your user profile, all saved locations, and customized preferences.
+            Deleting your account will irreversibly remove your user profile,
+            all saved locations, and customized preferences.
           </p>
           <button
             type="button"
@@ -483,8 +483,10 @@ export default function AccountPage() {
               Delete Account
             </h3>
             <p className="text-xs text-[#6B7280] leading-relaxed mb-4">
-              All your saved locations and preferences will be permanently removed. To proceed, please type{" "}
-              <strong className="text-[#D94841] font-mono">DELETE</strong> below:
+              All your saved locations and preferences will be permanently
+              removed. To proceed, please type{" "}
+              <strong className="text-[#D94841] font-mono">DELETE</strong>{" "}
+              below:
             </p>
 
             {deleteError && (

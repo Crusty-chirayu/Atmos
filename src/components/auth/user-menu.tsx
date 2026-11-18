@@ -118,9 +118,7 @@ export function UserMenu() {
             <p className="text-xs font-bold text-[#222222] truncate">
               {displayName}
             </p>
-            <p className="text-xs text-[#6B7280] truncate">
-              {user.email}
-            </p>
+            <p className="text-xs text-[#6B7280] truncate">{user.email}</p>
           </div>
 
           {/* Menu Items */}

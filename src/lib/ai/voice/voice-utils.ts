@@ -93,11 +93,20 @@ export function normalizeTextForSpeech(text: string): string {
 
   // 5. Expand weather units into natural spoken language
   cleaned = cleaned.replace(/(\d+(?:\.\d+)?)\s*°C\b/gi, "$1 degrees Celsius");
-  cleaned = cleaned.replace(/(\d+(?:\.\d+)?)\s*°F\b/gi, "$1 degrees Fahrenheit");
+  cleaned = cleaned.replace(
+    /(\d+(?:\.\d+)?)\s*°F\b/gi,
+    "$1 degrees Fahrenheit"
+  );
   cleaned = cleaned.replace(/(\d+(?:\.\d+)?)\s*°\b/g, "$1 degrees");
-  cleaned = cleaned.replace(/(\d+(?:\.\d+)?)\s*km\/h\b/gi, "$1 kilometers per hour");
+  cleaned = cleaned.replace(
+    /(\d+(?:\.\d+)?)\s*km\/h\b/gi,
+    "$1 kilometers per hour"
+  );
   cleaned = cleaned.replace(/(\d+(?:\.\d+)?)\s*mph\b/gi, "$1 miles per hour");
-  cleaned = cleaned.replace(/(\d+(?:\.\d+)?)\s*m\/s\b/gi, "$1 meters per second");
+  cleaned = cleaned.replace(
+    /(\d+(?:\.\d+)?)\s*m\/s\b/gi,
+    "$1 meters per second"
+  );
   cleaned = cleaned.replace(/(\d+(?:\.\d+)?)\s*mm\b/gi, "$1 millimeters");
   cleaned = cleaned.replace(/(\d+(?:\.\d+)?)\s*hPa\b/gi, "$1 hectopascals");
   cleaned = cleaned.replace(/(\d+(?:\.\d+)?)\s*%/g, "$1 percent");

@@ -149,12 +149,12 @@ export async function POST(request: NextRequest) {
               longitude: groundingContext.location.longitude,
             }
           : location
-          ? {
-              name: location.name,
-              latitude: location.latitude,
-              longitude: location.longitude,
-            }
-          : undefined,
+            ? {
+                name: location.name,
+                latitude: location.latitude,
+                longitude: location.longitude,
+              }
+            : undefined,
         fetchedAt: groundingContext?.fetchedAt,
       },
       { status: 200, headers }

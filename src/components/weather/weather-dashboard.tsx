@@ -230,9 +230,7 @@ export function WeatherDashboard({
           <h2 className="text-xl font-bold text-[#222222]">
             Weather Forecast Unavailable
           </h2>
-          <p className="text-sm text-[#6B7280]">
-            {error}
-          </p>
+          <p className="text-sm text-[#6B7280]">{error}</p>
           <button
             type="button"
             onClick={handleRefresh}

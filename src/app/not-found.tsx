@@ -17,10 +17,7 @@ export default function NotFound() {
       role="main"
       aria-labelledby="not-found-heading"
     >
-      <p
-        aria-hidden="true"
-        className="text-5xl mb-4 leading-none select-none"
-      >
+      <p aria-hidden="true" className="text-5xl mb-4 leading-none select-none">
         🌤️
       </p>
 
@@ -32,7 +29,8 @@ export default function NotFound() {
       </h1>
 
       <p className="mb-6 max-w-sm text-sm text-[#6B7280] leading-relaxed">
-        The weather forecast or page you were looking for doesn&apos;t exist or may have been moved.
+        The weather forecast or page you were looking for doesn&apos;t exist or
+        may have been moved.
       </p>
 
       <Link
