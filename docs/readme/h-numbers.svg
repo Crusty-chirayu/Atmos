@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1664" height="128" viewBox="0 0 1664 128" role="img" aria-labelledby="a464489273">
+<title id="a464489273">By the numbers</title>
+<style>@media (prefers-reduced-motion: reduce){*{animation:none !important}}</style>
+<rect width="1664" height="128" fill="#FFFFFF"/>
+<g transform="translate(32 0)">
+<circle cx="22" cy="58" r="12" fill="#FFC928"/>
+<text x="50" y="50" font-family="ui-monospace, 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', 'DejaVu Sans Mono', monospace" font-size="20" font-weight="400" fill="#656B75" text-anchor="start" textLength="57" lengthAdjust="spacing">05 /</text>
+<text x="48" y="104" font-family="Inter, 'Segoe UI', system-ui, -apple-system, Helvetica, Arial, sans-serif" font-size="56" font-weight="800" fill="#111418" text-anchor="start" textLength="431" lengthAdjust="spacingAndGlyphs" >By the numbers</text>
+<text x="1596" y="50" font-family="ui-monospace, 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', 'DejaVu Sans Mono', monospace" font-size="18" font-weight="400" fill="#656B75" text-anchor="end" textLength="301" lengthAdjust="spacing">MEASURED FROM THE REPO</text>
+<line x1="0" x2="1600" y1="116" y2="116" stroke="#111418" stroke-width="3"/>
+<rect x="0" y="110" width="120" height="12" fill="#FFC928"/></g>
+</svg>

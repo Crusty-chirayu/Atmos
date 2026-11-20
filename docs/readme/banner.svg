@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="760" viewBox="0 0 1600 760" role="img" aria-labelledby="a1535229220">
+<title id="a1535229220">ATMOS: weather, understood by exploring, not just reading.</title><desc>AI-powered weather intelligence platform with an interactive 3D Earth, a grounded assistant and voice.</desc>
+<style>.pulse{transform-box:fill-box;transform-origin:center;animation:p 2.4s ease-out infinite}@keyframes p{0%{transform:scale(.8);opacity:.9}100%{transform:scale(2.6);opacity:0}}@media (prefers-reduced-motion: reduce){*{animation:none !important}}</style>
+<rect width="1600" height="760" fill="#FFFFFF"/>
+
+<rect x="3" y="3" width="1594" height="754" rx="36" fill="#FFFFFF" stroke="#E3E1D9" stroke-width="3"/>
+<rect x="3" y="3" width="1594" height="14" rx="7" fill="#FFC928"/>
+
+<!-- left column -->
+<rect x="72" y="80" width="338" height="52" rx="26" fill="#FFF1BF" stroke="#FFC928" stroke-width="2.5"/>
+<circle cx="102" cy="106" r="9" fill="#FFC928"/>
+<text x="124" y="113" font-family="ui-monospace, 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', 'DejaVu Sans Mono', monospace" font-size="17" font-weight="500" fill="#111418" text-anchor="start" textLength="290" lengthAdjust="spacing">AI WEATHER INTELLIGENCE</text>
+
+<text x="68" y="330" font-family="Inter, 'Segoe UI', system-ui, -apple-system, Helvetica, Arial, sans-serif" font-size="230" font-weight="800" fill="#111418" text-anchor="start" textLength="800" lengthAdjust="spacingAndGlyphs" letter-spacing="-6" >ATMOS</text>
+<circle cx="908" cy="292" r="30" fill="#FFC928"/>
+
+<rect x="684" y="396" width="270" height="28" fill="#FFF1BF"/>
+<text x="72" y="440" font-family="Inter, 'Segoe UI', system-ui, -apple-system, Helvetica, Arial, sans-serif" font-size="52" font-weight="700" fill="#111418" text-anchor="start" textLength="606" lengthAdjust="spacingAndGlyphs" >Weather, understood by</text>
+<text x="692" y="440" font-family="Inter, 'Segoe UI', system-ui, -apple-system, Helvetica, Arial, sans-serif" font-size="52" font-weight="700" fill="#111418" text-anchor="start" textLength="257" lengthAdjust="spacingAndGlyphs" >exploring</text>
+<text x="72" y="504" font-family="Inter, 'Segoe UI', system-ui, -apple-system, Helvetica, Arial, sans-serif" font-size="52" font-weight="700" fill="#656B75" text-anchor="start" textLength="410" lengthAdjust="spacingAndGlyphs" >not just reading.</text>
+
+<text x="72" y="580" font-family="Inter, 'Segoe UI', system-ui, -apple-system, Helvetica, Arial, sans-serif" font-size="26" font-weight="400" fill="#3A3F47" text-anchor="start" textLength="780" lengthAdjust="spacingAndGlyphs" >Click a real 3D Earth, ask in plain language or by voice,</text>
+<text x="72" y="618" font-family="Inter, 'Segoe UI', system-ui, -apple-system, Helvetica, Arial, sans-serif" font-size="26" font-weight="400" fill="#3A3F47" text-anchor="start" textLength="690" lengthAdjust="spacingAndGlyphs" >and get answers grounded in live data for exactly</text>
+<text x="72" y="656" font-family="Inter, 'Segoe UI', system-ui, -apple-system, Helvetica, Arial, sans-serif" font-size="26" font-weight="400" fill="#3A3F47" text-anchor="start" textLength="390" lengthAdjust="spacingAndGlyphs" >the place you’re looking at.</text>
+
+<rect x="72" y="690" width="154" height="40" rx="20" fill="#FFFFFF" stroke="#111418" stroke-width="2"/><text x="149" y="716" font-family="ui-monospace, 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', 'DejaVu Sans Mono', monospace" font-size="17" font-weight="500" fill="#111418" text-anchor="middle" textLength="120" lengthAdjust="spacing">NEXT.JS 16</text><rect x="238" y="690" width="130" height="40" rx="20" fill="#FFFFFF" stroke="#111418" stroke-width="2"/><text x="303" y="716" font-family="ui-monospace, 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', 'DejaVu Sans Mono', monospace" font-size="17" font-weight="500" fill="#111418" text-anchor="middle" textLength="96" lengthAdjust="spacing">REACT 19</text><rect x="380" y="690" width="130" height="40" rx="20" fill="#FFFFFF" stroke="#111418" stroke-width="2"/><text x="445" y="716" font-family="ui-monospace, 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', 'DejaVu Sans Mono', monospace" font-size="17" font-weight="500" fill="#111418" text-anchor="middle" textLength="96" lengthAdjust="spacing">THREE.JS</text><rect x="522" y="690" width="130" height="40" rx="20" fill="#FFFFFF" stroke="#111418" stroke-width="2"/><text x="587" y="716" font-family="ui-monospace, 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', 'DejaVu Sans Mono', monospace" font-size="17" font-weight="500" fill="#111418" text-anchor="middle" textLength="96" lengthAdjust="spacing">SUPABASE</text><rect x="664" y="690" width="154" height="40" rx="20" fill="#FFFFFF" stroke="#111418" stroke-width="2"/><text x="741" y="716" font-family="ui-monospace, 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', 'DejaVu Sans Mono', monospace" font-size="17" font-weight="500" fill="#111418" text-anchor="middle" textLength="120" lengthAdjust="spacing">OPEN-METEO</text>
+
+<!-- globe -->
+<circle cx="1308" cy="394" r="274" fill="none" stroke="#FFC928" stroke-width="6" stroke-opacity=".55"/>
+<circle cx="1308" cy="394" r="248" fill="#F6F6F3" stroke="#111418" stroke-width="4"/>
+<clipPath id="gc"><circle cx="1308" cy="394" r="248"/></clipPath>
+<g clip-path="url(#gc)">
+  <ellipse cx="1308" cy="179.22569986145922" rx="124.0" ry="19.8" fill="none" stroke="#CFCCC1" stroke-width="2"/><ellipse cx="1308" cy="270" rx="214.8" ry="34.4" fill="none" stroke="#CFCCC1" stroke-width="2"/><ellipse cx="1308" cy="394" rx="248.0" ry="39.7" fill="none" stroke="#CFCCC1" stroke-width="2"/><ellipse cx="1308" cy="518" rx="214.8" ry="34.4" fill="none" stroke="#CFCCC1" stroke-width="2"/><ellipse cx="1308" cy="608.7743001385408" rx="124.0" ry="19.8" fill="none" stroke="#CFCCC1" stroke-width="2"/><ellipse cx="1308" cy="394" rx="69.4" ry="248" fill="none" stroke="#CFCCC1" stroke-width="2"/><ellipse cx="1308" cy="394" rx="138.9" ry="248" fill="none" stroke="#CFCCC1" stroke-width="2"/><ellipse cx="1308" cy="394" rx="208.3" ry="248" fill="none" stroke="#CFCCC1" stroke-width="2"/><line x1="1308" x2="1308" y1="146" y2="642" stroke="#CFCCC1" stroke-width="2"/>
+  <path d="M1348 146 A248 248 0 0 1 1348 642 A153.76 248 0 0 0 1348 146 Z" fill="#111418" fill-opacity=".09"/>
+</g>
+<!-- marker + label -->
+<circle class="pulse" cx="1268" cy="450" r="16" fill="#FFC928" fill-opacity=".45"/>
+<circle cx="1268" cy="450" r="11" fill="#FFC928" stroke="#111418" stroke-width="3"/>
+<path d="M1268 438 L1268 348" stroke="#111418" stroke-width="3" stroke-dasharray="2 8" stroke-linecap="round"/>
+<g transform="translate(1140 244)">
+  <rect x="6" y="6" width="300" height="104" rx="18" fill="#111418"/>
+  <rect width="300" height="104" rx="18" fill="#FFFFFF" stroke="#111418" stroke-width="3"/>
+  <text x="22" y="32" font-family="ui-monospace, 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', 'DejaVu Sans Mono', monospace" font-size="15" font-weight="400" fill="#656B75" text-anchor="start" textLength="205" lengthAdjust="spacing">SAMPLE · BENGALURU</text>
+  <text x="22" y="86" font-family="Inter, 'Segoe UI', system-ui, -apple-system, Helvetica, Arial, sans-serif" font-size="54" font-weight="800" fill="#111418" text-anchor="start" textLength="128" lengthAdjust="spacingAndGlyphs" >21°C</text>
+  <text x="166" y="86" font-family="Inter, 'Segoe UI', system-ui, -apple-system, Helvetica, Arial, sans-serif" font-size="26" font-weight="600" fill="#3A3F47" text-anchor="start" textLength="112" lengthAdjust="spacingAndGlyphs" >Clear sky</text>
+</g>
+</svg>

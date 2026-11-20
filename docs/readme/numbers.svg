@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="250" viewBox="0 0 1600 250" role="img" aria-labelledby="a67040504">
+<title id="a67040504">By the numbers: 340+ automated tests, 15+ API routes, 6 alert rule types, 12 cities per batch, 3 SQL migrations, ERA5 history from 1940.</title>
+<style>@media (prefers-reduced-motion: reduce){*{animation:none !important}}</style>
+<rect width="1600" height="250" fill="#FFFFFF"/>
+<rect x="26" y="30" width="256" height="190" rx="20" fill="#111418"/>
+<rect x="20" y="24" width="256" height="190" rx="20" fill="#FFC928" stroke="#111418" stroke-width="3"/>
+<text x="148" y="124" font-family="Inter, 'Segoe UI', system-ui, -apple-system, Helvetica, Arial, sans-serif" font-size="84" font-weight="800" fill="#111418" text-anchor="middle" textLength="195" lengthAdjust="spacingAndGlyphs" >340+</text>
+<text x="148" y="180" font-family="ui-monospace, 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', 'DejaVu Sans Mono', monospace" font-size="16" font-weight="500" fill="#111418" text-anchor="middle" textLength="179" lengthAdjust="spacing">AUTOMATED TESTS</text><rect x="294" y="30" width="256" height="190" rx="20" fill="#111418"/>
+<rect x="288" y="24" width="256" height="190" rx="20" fill="#FFFFFF" stroke="#111418" stroke-width="3"/>
+<text x="416" y="124" font-family="Inter, 'Segoe UI', system-ui, -apple-system, Helvetica, Arial, sans-serif" font-size="84" font-weight="800" fill="#111418" text-anchor="middle" textLength="146" lengthAdjust="spacingAndGlyphs" >15+</text>
+<text x="416" y="180" font-family="ui-monospace, 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', 'DejaVu Sans Mono', monospace" font-size="16" font-weight="500" fill="#111418" text-anchor="middle" textLength="119" lengthAdjust="spacing">API ROUTES</text><rect x="562" y="30" width="256" height="190" rx="20" fill="#111418"/>
+<rect x="556" y="24" width="256" height="190" rx="20" fill="#FFC928" stroke="#111418" stroke-width="3"/>
+<text x="684" y="124" font-family="Inter, 'Segoe UI', system-ui, -apple-system, Helvetica, Arial, sans-serif" font-size="84" font-weight="800" fill="#111418" text-anchor="middle" textLength="49" lengthAdjust="spacingAndGlyphs" >6</text>
+<text x="684" y="180" font-family="ui-monospace, 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', 'DejaVu Sans Mono', monospace" font-size="16" font-weight="500" fill="#111418" text-anchor="middle" textLength="191" lengthAdjust="spacing">ALERT RULE TYPES</text><rect x="830" y="30" width="256" height="190" rx="20" fill="#111418"/>
+<rect x="824" y="24" width="256" height="190" rx="20" fill="#FFFFFF" stroke="#111418" stroke-width="3"/>
+<text x="952" y="124" font-family="Inter, 'Segoe UI', system-ui, -apple-system, Helvetica, Arial, sans-serif" font-size="84" font-weight="800" fill="#111418" text-anchor="middle" textLength="97" lengthAdjust="spacingAndGlyphs" >12</text>
+<text x="952" y="180" font-family="ui-monospace, 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', 'DejaVu Sans Mono', monospace" font-size="16" font-weight="500" fill="#111418" text-anchor="middle" textLength="191" lengthAdjust="spacing">CITIES PER BATCH</text><rect x="1098" y="30" width="256" height="190" rx="20" fill="#111418"/>
+<rect x="1092" y="24" width="256" height="190" rx="20" fill="#FFC928" stroke="#111418" stroke-width="3"/>
+<text x="1220" y="124" font-family="Inter, 'Segoe UI', system-ui, -apple-system, Helvetica, Arial, sans-serif" font-size="84" font-weight="800" fill="#111418" text-anchor="middle" textLength="49" lengthAdjust="spacingAndGlyphs" >3</text>
+<text x="1220" y="180" font-family="ui-monospace, 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', 'DejaVu Sans Mono', monospace" font-size="16" font-weight="500" fill="#111418" text-anchor="middle" textLength="167" lengthAdjust="spacing">SQL MIGRATIONS</text><rect x="1366" y="30" width="256" height="190" rx="20" fill="#111418"/>
+<rect x="1360" y="24" width="256" height="190" rx="20" fill="#FFFFFF" stroke="#111418" stroke-width="3"/>
+<text x="1488" y="124" font-family="Inter, 'Segoe UI', system-ui, -apple-system, Helvetica, Arial, sans-serif" font-size="84" font-weight="800" fill="#111418" text-anchor="middle" textLength="216" lengthAdjust="spacingAndGlyphs" >1940+</text>
+<text x="1488" y="180" font-family="ui-monospace, 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', 'DejaVu Sans Mono', monospace" font-size="16" font-weight="500" fill="#111418" text-anchor="middle" textLength="143" lengthAdjust="spacing">ERA5 HISTORY</text>
+</svg>
